@@ -1,24 +1,43 @@
 import Image from "next/image";
 import { site } from "@/app/lib/site";
 
-/**
- * The club emblem. Expects the artwork at public/logo.png.
- * The gradient ring stands in for the red/violet arcs while the image loads.
- */
-export function Logo({ size = 44 }: { size?: number }) {
+/** The official club emblem — public/logo.png. */
+export function Logo({
+  size = 44,
+  variant = "default",
+  withWordmark = false,
+}: {
+  size?: number;
+  variant?: "default" | "mono-light";
+  withWordmark?: boolean;
+}) {
+  const mono = variant === "mono-light";
+
   return (
-    <span
-      className="inline-flex shrink-0 items-center justify-center rounded-full bg-linear-to-br from-leo-red to-leo-violet p-px"
-      style={{ width: size, height: size }}
-    >
-      <Image
-        src="/logo.png"
-        alt={`${site.name} emblem`}
-        width={size}
-        height={size}
-        priority
-        className="h-full w-full rounded-full bg-white object-contain"
-      />
+    <span className="inline-flex shrink-0 items-center gap-3">
+      <span
+        className={`relative inline-flex shrink-0 overflow-hidden rounded-full bg-white shadow-soft-sm ${
+          mono ? "ring-1 ring-white/25" : ""
+        }`}
+        style={{ width: size, height: size }}
+      >
+        <Image
+          src="/logo.png"
+          alt={`${site.name} emblem`}
+          fill
+          sizes={`${size}px`}
+          className="object-cover"
+          priority
+        />
+      </span>
+
+      {withWordmark && (
+        <span
+          className={`text-lg font-bold tracking-tight ${mono ? "text-on-navy" : "text-foreground"}`}
+        >
+          {site.shortName}
+        </span>
+      )}
     </span>
   );
 }

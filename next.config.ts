@@ -33,6 +33,9 @@ const nextConfig: NextConfig = {
     dangerouslyAllowLocalIP: isDev,
     remotePatterns: isDev ? [backendPattern, ...localPatterns] : [backendPattern],
   },
+  async redirects() {
+    return [{ source: "/membership", destination: "/join", permanent: true }];
+  },
 };
 
 export default nextConfig;

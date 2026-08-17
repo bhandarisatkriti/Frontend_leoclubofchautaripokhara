@@ -1,216 +1,174 @@
-import Image from "next/image";
-import Link from "next/link";
-import { Logo } from "@/app/components/logo";
-import { endpoints, fetchList, getClubInformation, mediaUrl } from "@/app/lib/api";
-import { clubProfile, site } from "@/app/lib/site";
-import type { Article, LeoEvent } from "@/app/lib/types";
+import { AboutSection } from "@/app/components/home/about-section";
+import { GalleryStrip } from "@/app/components/home/gallery-strip";
+import { Hero } from "@/app/components/home/hero";
+import { WhyJoinSection } from "@/app/components/home/why-join-section";
+import { type ClubStats } from "@/app/components/home/stats-grid";
+import { ArticleCard, type Article } from "@/app/components/news/article-card";
+import { EmptyState } from "@/app/components/page-header";
+import { TeamCard, type Member } from "@/app/components/team/team-card";
+import {
+  CompactEventItem,
+  FeaturedEventCard,
+} from "@/app/components/events/events-spotlight";
+import { type LeoEvent } from "@/app/components/events/event-card";
+import { ButtonLink } from "@/app/components/ui/button-link";
+import { Container } from "@/app/components/ui/container";
+import { Reveal } from "@/app/components/ui/reveal";
+import { SectionLabel } from "@/app/components/ui/section-label";
+import { apiFetchOr, endpoints, mediaUrl, type Paginated } from "@/app/lib/api";
+import { localGalleryPhotos } from "@/app/lib/local-photos";
+import { type ResolvedPhoto } from "@/app/gallery/gallery-grid";
+import { stagger } from "@/app/lib/motion";
 
-const focusAreas = [
-  {
-    title: "Health & Wellbeing",
-    body: "Blood donation drives, health camps, and awareness campaigns across the Pokhara valley.",
-    accent: "text-leo-red",
-  },
-  {
-    title: "Education & Youth",
-    body: "Scholarships, stationery support, and skill sessions for students in local schools.",
-    accent: "text-leo-violet",
-  },
-  {
-    title: "Environment",
-    body: "Tree plantation, clean-up campaigns, and conservation work — the tree on our emblem.",
-    accent: "text-leo-green",
-  },
-];
-
-const dateFormat = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
-
-function formatDate(value: string) {
-  const parsed = new Date(value);
-  return Number.isNaN(parsed.valueOf()) ? value : dateFormat.format(parsed);
-}
+type BackendPhoto = { id: number; caption?: string | null; image: string | null };
 
 export default async function Home() {
-  // Everything here degrades to an empty list if the backend is unreachable,
-  // so the homepage always renders.
-  const [clubInfo, upcoming, articles] = await Promise.all([
-    getClubInformation(),
-    fetchList<LeoEvent>(endpoints.events, {
-      upcoming: true,
-      ordering: "event_date",
-      page_size: 3,
-    }),
-    fetchList<Article>(endpoints.articles, { page_size: 3 }),
+  const [eventsData, teamData, photosData, newsData, clubStats] = await Promise.all([
+    apiFetchOr<Paginated<LeoEvent> | LeoEvent[]>(endpoints.events, []),
+    apiFetchOr<Paginated<Member> | Member[]>(endpoints.team, []),
+    apiFetchOr<Paginated<BackendPhoto> | BackendPhoto[]>(endpoints.gallery, []),
+    apiFetchOr<Paginated<Article> | Article[]>(endpoints.news, []),
+    apiFetchOr<ClubStats | null>(endpoints.club, null),
   ]);
 
-  const club = clubProfile(clubInfo);
+  const events = [...(Array.isArray(eventsData) ? eventsData : eventsData.results)].sort(
+    (a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf(),
+  );
+  const team = (Array.isArray(teamData) ? teamData : teamData.results).slice(0, 4);
+  const backendPhotos: ResolvedPhoto[] = (Array.isArray(photosData) ? photosData : photosData.results)
+    .filter((photo) => photo.image)
+    .map((photo) => ({ id: photo.id, src: mediaUrl(photo.image)!, caption: photo.caption }));
+  // Real uploaded photos first — see the IMAGE PRIORITY note in app/lib/local-photos.ts.
+  const photos: ResolvedPhoto[] = [...localGalleryPhotos, ...backendPhotos].slice(0, 6);
+  const news = [...(Array.isArray(newsData) ? newsData : newsData.results)]
+    .sort((a, b) => {
+      const aTime = a.published_at ? new Date(a.published_at).valueOf() : 0;
+      const bTime = b.published_at ? new Date(b.published_at).valueOf() : 0;
+      return bTime - aTime;
+    })
+    .slice(0, 4);
 
-  const stats = [
-    { value: `${new Date().getFullYear() - club.established}+`, label: "Years of service" },
-    { value: site.district.split(",")[0], label: "Leo District" },
-    { value: "Pokhara", label: "Home community" },
-  ];
+  const [featuredEvent, ...secondaryEvents] = events;
+  const compactEvents = secondaryEvents.slice(0, 2);
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-border">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-linear-to-br from-leo-red/10 via-transparent to-leo-violet/15"
-        />
-        <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 py-20 text-center sm:py-28">
-          <Logo size={140} />
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-leo-violet">
-              {site.district} · Estd. {club.established}
-            </p>
-            <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-              {club.name}
-            </h1>
-            <p className="mt-4 text-2xl font-semibold uppercase tracking-[0.15em] text-leo-red">
-              {club.motto}
-            </p>
-          </div>
-          <p className="max-w-2xl text-lg text-muted">
-            {club.description ||
-              "We are young people from Pokhara who give our time to the community — through service projects in health, education, and the environment."}
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link
-              href="/membership"
-              className="rounded-full bg-leo-red px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-leo-red-dark"
-            >
-              Become a Leo
-            </Link>
-            <Link
-              href="/events"
-              className="rounded-full border border-border px-6 py-3 text-sm font-semibold transition-colors hover:border-leo-violet hover:text-leo-violet"
-            >
-              See our events
-            </Link>
-          </div>
-        </div>
-      </section>
+      <Hero />
+      <AboutSection clubStats={clubStats} />
+      <WhyJoinSection />
 
-      <section className="mx-auto max-w-6xl px-4 py-16">
-        <h2 className="text-2xl font-bold tracking-tight">What we work on</h2>
-        <p className="mt-2 max-w-2xl text-muted">
-          Three service pillars guide the projects we take on each Leo year.
-        </p>
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {focusAreas.map((area) => (
-            <article
-              key={area.title}
-              className="rounded-xl border border-border bg-surface p-6"
-            >
-              <h3 className={`text-lg font-semibold ${area.accent}`}>{area.title}</h3>
-              <p className="mt-2 text-sm text-muted">{area.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {upcoming.length > 0 && (
-        <section className="border-t border-border bg-surface">
-          <div className="mx-auto max-w-6xl px-4 py-16">
-            <div className="flex flex-wrap items-baseline justify-between gap-3">
-              <h2 className="text-2xl font-bold tracking-tight">Upcoming events</h2>
-              <Link href="/events" className="text-sm font-semibold text-leo-violet hover:text-leo-red">
-                All events →
-              </Link>
+      <section className="bg-surface-blue py-16 sm:py-20">
+        <Container>
+          <Reveal className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <SectionLabel>Upcoming Activity</SectionLabel>
+              <h2 className="mt-3 text-h2 font-bold tracking-tight">Our Next Events</h2>
             </div>
-            <ul className="mt-8 grid gap-6 md:grid-cols-3">
-              {upcoming.map((event) => {
-                const image = mediaUrl(event.featured_image);
-                return (
-                  <li
-                    key={event.id}
-                    className="flex flex-col overflow-hidden rounded-xl border border-border bg-background"
-                  >
-                    {image && (
-                      <div className="relative aspect-16/9">
-                        <Image
-                          src={image}
-                          alt={event.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-cover"
-                        />
-                      </div>
-                    )}
-                    <div className="flex flex-1 flex-col p-5">
-                      <p className="text-xs font-semibold uppercase tracking-widest text-leo-red">
-                        {formatDate(event.event_date)}
-                      </p>
-                      <h3 className="mt-2 font-semibold">{event.title}</h3>
-                      {event.location && (
-                        <p className="mt-1 text-sm text-muted">{event.location}</p>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </section>
-      )}
+            <ButtonLink href="/events" variant="outline" withArrow>
+              View All Events
+            </ButtonLink>
+          </Reveal>
 
-      {articles.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-16">
-          <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <h2 className="text-2xl font-bold tracking-tight">Latest news</h2>
-            <Link href="/news" className="text-sm font-semibold text-leo-violet hover:text-leo-red">
-              All news →
-            </Link>
+          <div className="mt-10">
+            {!featuredEvent ? (
+              <EmptyState message="Events will appear here once they are published from the backend." />
+            ) : (
+              <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+                <Reveal>
+                  <FeaturedEventCard event={featuredEvent} />
+                </Reveal>
+                <div className="flex flex-col gap-6">
+                  {compactEvents.map((event, i) => (
+                    <Reveal key={event.id} delay={stagger(i)}>
+                      <CompactEventItem event={event} />
+                    </Reveal>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-          <ul className="mt-8 grid gap-6 md:grid-cols-3">
-            {articles.map((article) => (
-              <li key={article.id} className="rounded-xl border border-border p-5">
-                <p className="text-xs font-semibold uppercase tracking-widest text-leo-violet">
-                  {formatDate(article.published_at)}
-                </p>
-                <h3 className="mt-2 font-semibold">{article.title}</h3>
-                {article.excerpt && (
-                  <p className="mt-2 text-sm text-muted">{article.excerpt}</p>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+        </Container>
+      </section>
 
-      <section className="border-t border-border bg-surface">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 sm:grid-cols-3">
-          {stats.map((stat) => (
-            <div key={stat.label} className="text-center">
-              <p className="text-3xl font-bold tracking-tight text-leo-violet">
-                {stat.value}
+      <section className="bg-background py-16 sm:py-20">
+        <Container>
+          <Reveal className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <SectionLabel tone="violet">Meet the Team</SectionLabel>
+              <h2 className="mt-3 text-h2 font-bold tracking-tight">Our Leadership Team</h2>
+            </div>
+            <ButtonLink href="/team" variant="outline" withArrow>
+              View All Team
+            </ButtonLink>
+          </Reveal>
+
+          <div className="mt-10">
+            {team.length === 0 ? (
+              <EmptyState message="Team members will appear here once they are added in the Django admin." />
+            ) : (
+              <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {team.map((member, i) => (
+                  <Reveal key={member.id} as="li" delay={stagger(i)} className="list-none">
+                    <TeamCard member={member} />
+                  </Reveal>
+                ))}
+              </ul>
+            )}
+          </div>
+        </Container>
+      </section>
+
+      <GalleryStrip photos={photos} />
+
+      <section className="bg-background py-16 sm:py-20">
+        <Container>
+          <Reveal className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(100deg,#6D28D9_0%,#4338CA_50%,#1E5EFF_100%)] px-6 py-12 text-center text-white sm:px-12 sm:py-14 lg:flex lg:items-center lg:justify-between lg:text-left">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 animate-float-slow rounded-full bg-white/10 blur-3xl"
+            />
+            <div className="relative lg:max-w-xl">
+              <h2 className="text-h2 font-bold tracking-tight text-balance">
+                Ready to Make a Difference?
+              </h2>
+              <p className="mx-auto mt-3 max-w-lg text-white/85 lg:mx-0">
+                Membership is open to young people aged 12–30 in and around
+                Pokhara. Tell us a little about yourself and we will get in
+                touch.
               </p>
-              <p className="mt-1 text-sm text-muted">{stat.label}</p>
             </div>
-          ))}
-        </div>
+            <div className="relative mt-8 flex justify-center lg:mt-0 lg:justify-end">
+              <ButtonLink href="/join" variant="dark" size="lg" withArrow>
+                Join Leo Club Today
+              </ButtonLink>
+            </div>
+          </Reveal>
+        </Container>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-20 text-center">
-        <h2 className="text-2xl font-bold tracking-tight">
-          Ready to serve with us?
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-muted">
-          Membership is open to young people aged 12–30 in and around Pokhara.
-          Tell us a little about yourself and we will get in touch.
-        </p>
-        <Link
-          href="/membership"
-          className="mt-7 inline-block rounded-full bg-leo-violet px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-leo-violet-dark"
-        >
-          Apply for membership
-        </Link>
-      </section>
+      {news.length > 0 && (
+        <section className="bg-surface py-16 sm:py-20">
+          <Container>
+            <Reveal className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <SectionLabel tone="blue">Latest News</SectionLabel>
+                <h2 className="mt-3 text-h2 font-bold tracking-tight">Stay Updated</h2>
+              </div>
+              <ButtonLink href="/news" variant="outline" withArrow>
+                View All News
+              </ButtonLink>
+            </Reveal>
+
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {news.map((article, i) => (
+                <Reveal key={article.id} delay={stagger(i)}>
+                  <ArticleCard article={article} />
+                </Reveal>
+              ))}
+            </div>
+          </Container>
+        </section>
+      )}
     </>
   );
 }
