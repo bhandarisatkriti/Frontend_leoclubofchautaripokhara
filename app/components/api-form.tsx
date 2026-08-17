@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { buttonClasses } from "@/app/components/ui/button-link";
 import { API_URL } from "@/app/lib/api";
 
 export type Field = {
@@ -62,7 +63,7 @@ export function ApiForm({
   }
 
   const inputClass =
-    "mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-leo-violet";
+    "mt-1.5 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition-[border-color,box-shadow] duration-[var(--duration-fast)] focus:border-leo-blue focus:shadow-soft-sm";
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-5 sm:grid-cols-2">
@@ -119,7 +120,7 @@ export function ApiForm({
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="rounded-full bg-leo-red px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-leo-red-dark disabled:opacity-60"
+          className={buttonClasses("primary", "md", "disabled:opacity-60 disabled:hover:translate-y-0")}
         >
           {status === "submitting" ? "Sending…" : submitLabel}
         </button>

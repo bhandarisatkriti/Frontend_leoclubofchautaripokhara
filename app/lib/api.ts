@@ -52,12 +52,18 @@ export async function apiFetchOr<T>(
  * frontend reads from here.
  */
 export const endpoints = {
+  club: "/club/",
   team: "/team/",
   events: "/events/",
   gallery: "/gallery/",
-  news: "/news/",
+  galleryCategories: "/gallery/categories/",
+  news: "/articles/",
+  resources: "/resources/",
+  partners: "/partners/",
+  clubs: "/clubs/",
   contact: "/contact/",
   memberships: "/memberships/",
+  newsletter: "/newsletter/",
 } as const;
 
 /** Django REST Framework's default pagination envelope. */

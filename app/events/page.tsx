@@ -1,86 +1,65 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { EmptyState, PageHeader } from "@/app/components/page-header";
-import { apiFetchOr, endpoints, mediaUrl, type Paginated } from "@/app/lib/api";
+import { EventCard, type LeoEvent } from "@/app/components/events/event-card";
+import { ViewTabs } from "@/app/components/events/view-tabs";
+import { Container } from "@/app/components/ui/container";
+import { Reveal } from "@/app/components/ui/reveal";
+import { apiFetchOr, endpoints, type Paginated } from "@/app/lib/api";
+import { stagger } from "@/app/lib/motion";
 
 export const metadata: Metadata = {
   title: "Events",
   description: "Upcoming and past service projects run by the club.",
 };
 
-type LeoEvent = {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  location?: string | null;
-  image: string | null;
-};
-
-const dateFormat = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
-
-function formatDate(value: string) {
-  const parsed = new Date(value);
-  return Number.isNaN(parsed.valueOf()) ? value : dateFormat.format(parsed);
-}
-
 export default async function EventsPage() {
   const data = await apiFetchOr<Paginated<LeoEvent> | LeoEvent[]>(
     endpoints.events,
     [],
   );
-  const events = Array.isArray(data) ? data : data.results;
+  const events = [...(Array.isArray(data) ? data : data.results)].sort(
+    (a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf(),
+  );
+
+  // Server Component rendered fresh per request — reading the current time here is intentional.
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
+  const featuredIndex = events.findIndex((event) => new Date(event.date).valueOf() >= now);
+  const featured = featuredIndex >= 0 ? events[featuredIndex] : null;
+  const rest = featured ? events.filter((_, i) => i !== featuredIndex) : events;
 
   return (
     <>
       <PageHeader
-        title="Events"
-        description="Service projects, camps, and club gatherings — upcoming and past."
+        kicker="Events"
+        title="Service projects &amp; club gatherings"
+        description="Camps, drives, and get-togethers — upcoming and past."
       />
 
-      <div className="mx-auto max-w-6xl px-4 py-16">
-        {events.length === 0 ? (
-          <EmptyState message="Events will appear here once they are published from the backend." />
-        ) : (
-          <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {events.map((event) => {
-              const image = mediaUrl(event.image);
-              return (
-                <li
-                  key={event.id}
-                  className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface"
-                >
-                  <div className="relative aspect-16/9 bg-linear-to-br from-leo-green/20 to-leo-violet/20">
-                    {image && (
-                      <Image
-                        src={image}
-                        alt={event.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover"
-                      />
-                    )}
-                  </div>
-                  <div className="flex flex-1 flex-col p-5">
-                    <p className="text-xs font-semibold uppercase tracking-widest text-leo-red">
-                      {formatDate(event.date)}
-                    </p>
-                    <h2 className="mt-2 text-lg font-semibold">{event.title}</h2>
-                    {event.location && (
-                      <p className="mt-1 text-sm text-muted">{event.location}</p>
-                    )}
-                    <p className="mt-3 text-sm text-muted">{event.description}</p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
+      <Container className="py-16 sm:py-20">
+        <Reveal className="flex justify-end">
+          <ViewTabs />
+        </Reveal>
+
+        <div className="mt-8">
+          {events.length === 0 ? (
+            <EmptyState message="Events will appear here once they are published from the backend." />
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {featured && (
+                <Reveal className="md:col-span-2 lg:col-span-3">
+                  <EventCard event={featured} featured />
+                </Reveal>
+              )}
+              {rest.map((event, i) => (
+                <Reveal key={event.id} delay={stagger(i)}>
+                  <EventCard event={event} />
+                </Reveal>
+              ))}
+            </div>
+          )}
+        </div>
+      </Container>
     </>
   );
 }
