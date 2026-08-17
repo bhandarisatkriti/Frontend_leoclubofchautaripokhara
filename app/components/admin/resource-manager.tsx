@@ -13,6 +13,7 @@ import {
   Modal,
   fieldClasses,
 } from "@/app/components/admin/ui";
+import { DateField } from "@/app/components/date-field";
 import { ApiError, adminApi } from "@/app/lib/admin/client";
 import type { Paginated } from "@/app/lib/types";
 
@@ -579,6 +580,14 @@ function ResourceForm<T extends RowLike>({
                         </option>
                       ))}
                     </select>
+                  ) : field.type === "date" ? (
+                    <DateField
+                      id={id}
+                      required={field.required}
+                      value={String(values[field.name] ?? "")}
+                      onChange={(event) => setValue(field.name, event.target.value)}
+                      className={fieldClasses}
+                    />
                   ) : (
                     <input
                       id={id}

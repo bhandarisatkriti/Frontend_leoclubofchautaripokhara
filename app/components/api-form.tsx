@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { buttonClasses } from "@/app/components/ui/button-link";
 import { submitForm } from "@/app/lib/api";
+import { DateField } from "@/app/components/date-field";
 
 export type Field = {
   name: string;
@@ -113,6 +114,8 @@ export function ApiForm({
                   </option>
                 ))}
               </select>
+            ) : field.type === "date" ? (
+              <DateField {...shared} birthdate={field.name === "date_of_birth"} />
             ) : (
               <input {...shared} type={field.type ?? "text"} />
             )}
