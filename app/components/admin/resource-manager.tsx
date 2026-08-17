@@ -14,6 +14,7 @@ import {
   fieldClasses,
 } from "@/app/components/admin/ui";
 import { DateField } from "@/app/components/date-field";
+import { TimeField } from "@/app/components/time-field";
 import { ApiError, adminApi } from "@/app/lib/admin/client";
 import type { Paginated } from "@/app/lib/types";
 
@@ -381,7 +382,7 @@ export function ResourceManager<T extends RowLike>({
 function forInput(value: unknown, type?: FieldType): unknown {
   const text = String(value);
   if (type === "date") return text.slice(0, 10);
-  if (type === "time") return text.slice(0, 8);
+  if (type === "time") return text.slice(0, 5);
   return value;
 }
 
@@ -629,6 +630,14 @@ function ResourceForm<T extends RowLike>({
                         </option>
                       ))}
                     </select>
+                  ) : field.type === "time" ? (
+                    <TimeField
+                      id={id}
+                      required={field.required}
+                      value={String(values[field.name] ?? "")}
+                      onValueChange={(next) => setValue(field.name, next)}
+                      className={fieldClasses}
+                    />
                   ) : field.type === "date" ? (
                     <DateField
                       id={id}
