@@ -3,65 +3,135 @@ import { ButtonLink } from "@/app/components/ui/button-link";
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { SectionLabel } from "@/app/components/ui/section-label";
-import { site } from "@/app/lib/site";
-import { StatsGrid, type ClubStats } from "@/app/components/home/stats-grid";
+import { site, whoWeAreParagraphs } from "@/app/lib/site";
+import {
+  StatsGrid,
+  type ClubCounts,
+  type ClubStats,
+} from "@/app/components/home/stats-grid";
 
-export function AboutSection({ clubStats }: { clubStats: ClubStats | null }) {
+/**
+ * The club's own description, edited from the Django admin
+ * (ClubInformation.full_description, falling back to short_description).
+ */
+export type ClubAbout = {
+  full_description?: string | null;
+  short_description?: string | null;
+};
+
+/** The collage. One portrait anchor plus two smaller supporting frames. */
+const collage = [
+  {
+    src: "/images/about/members-uniform.jpg",
+    alt: "Leo Club of Chautari Pokhara members in club uniform",
+    className: "absolute inset-y-0 left-0 w-[64%] rounded-[22px]",
+    sizes: "(max-width: 1024px) 60vw, 27vw",
+  },
+  {
+    src: "/images/about/community-service.jpg",
+    alt: "Club members carrying out a community service activity",
+    className: "absolute right-0 top-[6%] h-[40%] w-[46%] rounded-[18px]",
+    sizes: "(max-width: 1024px) 40vw, 18vw",
+  },
+  {
+    src: "/images/about/youth-camp.jpg",
+    alt: "Leos gathered at a district youth camp",
+    className: "absolute bottom-[6%] right-0 h-[44%] w-[52%] rounded-[18px]",
+    sizes: "(max-width: 1024px) 45vw, 20vw",
+  },
+];
+
+export function AboutSection({
+  clubStats,
+  club,
+  counts,
+}: {
+  clubStats?: ClubStats | null;
+  club?: ClubAbout | null;
+  counts?: ClubCounts;
+}) {
+  const paragraphs = whoWeAreParagraphs(
+    club?.full_description || club?.short_description,
+  );
+
   return (
-    <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-background pb-10 pt-10 sm:-mt-14 sm:rounded-t-[3rem] sm:pb-16 sm:pt-14 lg:pb-20 lg:pt-16">
+    <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-background pb-16 pt-12 sm:-mt-14 sm:rounded-t-[3rem] sm:pb-20 sm:pt-16 lg:pb-24">
       <Container>
-        <div className="grid gap-8 lg:grid-cols-[0.95fr_1fr_0.95fr] lg:items-center">
-          <Reveal direction="right" className="relative mx-auto h-[260px] w-full max-w-xs sm:h-[300px]">
-            <div className="absolute left-0 top-0 h-full w-[68%] overflow-hidden rounded-2xl shadow-soft-md">
-              <Image
-                src="/images/about/members-uniform.jpg"
-                alt="Leo Club of Chautari Pokhara members"
-                fill
-                sizes="(max-width: 1024px) 45vw, 22vw"
-                className="object-cover"
-              />
-            </div>
-            <div className="absolute right-1 top-1 h-[42%] w-[46%] overflow-hidden rounded-xl border-2 border-background shadow-soft-md">
-              <Image
-                src="/images/about/community-service.jpg"
-                alt="Club members carrying out a community service activity"
-                fill
-                sizes="(max-width: 1024px) 22vw, 12vw"
-                className="object-cover"
-              />
-            </div>
-            <div className="absolute bottom-1 right-0 h-[46%] w-[52%] overflow-hidden rounded-xl border-2 border-background shadow-soft-md">
-              <Image
-                src="/images/about/youth-camp.jpg"
-                alt="Leos at a youth camp"
-                fill
-                sizes="(max-width: 1024px) 26vw, 14vw"
-                className="object-cover"
-              />
+        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
+          {/* Media ------------------------------------------------------- */}
+          <Reveal
+            direction="right"
+            className="relative mx-auto w-full max-w-[420px] lg:col-span-5 lg:mx-0 lg:max-w-none"
+          >
+            {/* Soft accent glow, purely decorative. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -left-8 -top-8 h-40 w-40 rounded-full bg-leo-blue/15 blur-3xl"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-leo-violet/15 blur-3xl"
+            />
+
+            <div className="relative aspect-4/5 w-full sm:aspect-[5/4] lg:aspect-4/5">
+              {collage.map((frame) => (
+                <div
+                  key={frame.src}
+                  className={`${frame.className} overflow-hidden shadow-soft-md ring-4 ring-background`}
+                >
+                  <Image
+                    src={frame.src}
+                    alt={frame.alt}
+                    fill
+                    sizes={frame.sizes}
+                    className="object-cover"
+                  />
+                </div>
+              ))}
             </div>
           </Reveal>
 
-          <Reveal>
-            <SectionLabel>Who We Are</SectionLabel>
-            <h2 className="mt-2.5 text-[clamp(2rem,3vw,3rem)] font-bold leading-[1.05] tracking-tight text-balance">
-              Empowering Youth,{" "}
-              <span className="text-leo-blue">Building Leaders</span>
+          {/* Copy -------------------------------------------------------- */}
+          <Reveal className="lg:col-span-7">
+            <SectionLabel>{site.name}</SectionLabel>
+            <h2 className="mt-3 text-[clamp(2.25rem,4vw,3.5rem)] font-bold leading-[1.02] tracking-tight text-balance">
+              Who We <span className="text-leo-blue">Are?</span>
             </h2>
-            <p className="mt-3 max-w-[460px] text-base leading-relaxed text-muted">
-              {site.name} is a youth-led service club operating under{" "}
-              {site.district}. Chartered in {site.established}, we bring
-              together young people who want to give their time to the place
-              they come from — through service projects in health, education,
-              and the environment.
-            </p>
-            <div className="mt-5">
-              <ButtonLink href="/about" variant="primary" size="sm" withArrow>
+
+            {/* Short accent rule to anchor the heading to the copy. */}
+            <div
+              aria-hidden
+              className="mt-5 h-1 w-14 rounded-full bg-linear-to-r from-leo-blue to-leo-violet"
+            />
+
+            <div className="mt-6 max-w-[60ch] space-y-4">
+              {paragraphs.map((paragraph, i) => (
+                <p
+                  key={paragraph.slice(0, 40)}
+                  className={
+                    i === 0
+                      ? "text-lg leading-relaxed text-foreground/90"
+                      : "text-base leading-relaxed text-muted"
+                  }
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+
+            <div className="mt-7">
+              <ButtonLink href="/about" variant="primary" size="md" withArrow>
                 Discover Our Story
               </ButtonLink>
             </div>
-          </Reveal>
 
-          <StatsGrid clubStats={clubStats} />
+            {/* Headline figures sit with the copy rather than in a full-width
+                band: the number of tiles varies with how much content exists,
+                and a sparse full-width row reads as unfinished. */}
+            <div className="mt-9 border-t border-border pt-8">
+              <StatsGrid clubStats={clubStats} counts={counts} />
+            </div>
+          </Reveal>
         </div>
       </Container>
     </section>
