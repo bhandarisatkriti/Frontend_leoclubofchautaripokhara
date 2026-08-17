@@ -129,7 +129,7 @@ export default function JoinPage() {
 
             <Reveal direction="left" delay={stagger(2)}>
               <div className="rounded-xl border border-border p-6">
-                <p className="text-sm font-semibold uppercase tracking-widest text-leo-violet">
+                <p className="text-sm font-semibold uppercase tracking-widest text-leo-blue">
                   {site.motto}
                 </p>
                 <p className="mt-2 text-sm text-muted">

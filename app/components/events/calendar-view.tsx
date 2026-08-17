@@ -105,7 +105,7 @@ export function CalendarView({ events }: { events: LeoEvent[] }) {
               {dayEvents.length > 0 && (
                 <span
                   aria-hidden
-                  className={`absolute bottom-1.5 h-1.5 w-1.5 rounded-full ${isSelected ? "bg-white" : "bg-leo-violet"}`}
+                  className={`absolute bottom-1.5 h-1.5 w-1.5 rounded-full ${isSelected ? "bg-white" : "bg-leo-blue-dark"}`}
                 />
               )}
             </button>

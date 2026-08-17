@@ -65,7 +65,7 @@ export function EventCard({
           <Motif variant="waves" tone="blue" />
         )}
         {featured && (
-          <span className="absolute left-4 top-4 rounded-full bg-leo-violet px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-soft-sm">
+          <span className="absolute left-4 top-4 rounded-full bg-leo-blue-dark px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-soft-sm">
             Upcoming
           </span>
         )}

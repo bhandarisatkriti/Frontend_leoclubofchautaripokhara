@@ -64,7 +64,7 @@ export function ArticleCard({
       </div>
       <div className="flex flex-1 flex-col p-5">
         {hasPublished && published && (
-          <p className="text-xs font-semibold uppercase tracking-widest text-leo-violet">
+          <p className="text-xs font-semibold uppercase tracking-widest text-leo-blue-dark">
             {dateFormat.format(published)}
           </p>
         )}

@@ -15,7 +15,7 @@ const panels = [
   },
   {
     label: "Our Vision",
-    tone: "violet" as const,
+    tone: "cyan" as const,
     icon: <path d="M12 2 7 10h3l-4 7h4v5h4v-5h4l-4-7h3L12 2Z" />,
     statement:
       "A generation of confident young leaders in Pokhara, empowered through service to build a stronger, more compassionate community.",
@@ -24,7 +24,7 @@ const panels = [
 
 const toneClasses = {
   blue: "bg-leo-blue/15 text-leo-blue-light",
-  violet: "bg-leo-violet/15 text-leo-violet-light",
+  cyan: "bg-leo-cyan/15 text-leo-cyan",
 } as const;
 
 export function MissionVision() {

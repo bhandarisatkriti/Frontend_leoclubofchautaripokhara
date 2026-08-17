@@ -60,7 +60,7 @@ export default async function EventDetailPage({
         <Reveal>
           <Link
             href="/events"
-            className="text-sm font-semibold text-leo-violet transition-colors duration-[var(--duration-fast)] hover:text-leo-violet-dark"
+            className="text-sm font-semibold text-leo-blue transition-colors duration-[var(--duration-fast)] hover:text-leo-blue-dark"
           >
             ← Back to events
           </Link>

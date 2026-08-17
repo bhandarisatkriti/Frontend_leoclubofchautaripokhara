@@ -15,7 +15,7 @@ export function ResourcesHero() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -left-16 bottom-0 h-64 w-64 rounded-full bg-leo-violet/10 blur-3xl"
+        className="pointer-events-none absolute -left-16 bottom-0 h-64 w-64 rounded-full bg-leo-cyan/10 blur-3xl"
       />
 
       <span
@@ -28,7 +28,7 @@ export function ResourcesHero() {
       </span>
       <span
         aria-hidden
-        className="pointer-events-none absolute right-[15%] top-24 hidden animate-float-slower text-leo-violet-light/20 sm:block"
+        className="pointer-events-none absolute right-[15%] top-24 hidden animate-float-slower text-leo-blue-dark/30 sm:block"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2 4 5v6c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V5l-8-3Z" />
@@ -63,7 +63,7 @@ export function ResourcesHero() {
         <Reveal delay={stagger(2, 100)} distance={24}>
           <h1 className="mt-3 text-[clamp(2.25rem,5vw,3.5rem)] font-bold leading-[1.05] tracking-tight text-balance text-white">
             Everything You Need,{" "}
-            <span className="bg-linear-to-r from-leo-blue-light to-leo-violet-light bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-leo-blue-light to-leo-cyan bg-clip-text text-transparent">
               All in One Place.
             </span>
           </h1>
