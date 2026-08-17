@@ -112,7 +112,6 @@ export function SiteFooter() {
         </div>
 
         <div>
-<<<<<<< HEAD
           <h2 className="text-lg font-bold text-on-navy">Calendar</h2>
           {/* Third-party Nepali calendar widget (hamropatro.com). Note their
               path spells it "calender"; 320x360 is the size they document for
@@ -124,21 +123,6 @@ export function SiteFooter() {
             scrolling="no"
             className="mt-5 h-[360px] w-[320px] max-w-full overflow-hidden rounded-lg border-0 bg-white"
           />
-=======
-          <h2 className="text-sm font-semibold text-on-navy">Resources</h2>
-          <ul className="mt-4 space-y-2.5 text-sm">
-            {resourceLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="text-on-navy-muted transition-colors duration-[var(--duration-fast)] hover:text-leo-cyan"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
->>>>>>> a2025c71eaf0b3b292b07bd19c46b3c2b5bf73ad
         </div>
 
         <div>
