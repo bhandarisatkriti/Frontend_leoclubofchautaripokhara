@@ -369,6 +369,48 @@ export function ResourceManager<T extends RowLike>({
 
 /* ------------------------------------------------------------------- form -- */
 
+/**
+ * Coerce an API value into what the matching HTML input can display.
+ *
+ * `<input type="date">` only accepts `YYYY-MM-DD`, but some backend fields are
+ * datetimes (an article's `published_at` arrives as
+ * `2026-08-17T17:24:40+05:45`). Handing that to a date input renders it blank,
+ * which then silently clears the value on save. Same story for `type="time"`,
+ * which wants `HH:MM[:SS]`.
+ */
+function forInput(value: unknown, type?: FieldType): unknown {
+  const text = String(value);
+  if (type === "date") return text.slice(0, 10);
+  if (type === "time") return text.slice(0, 8);
+  return value;
+}
+
+/**
+ * Empty date, time and number inputs must not be sent as `""`.
+ *
+ * DRF rejects an empty string for those field types outright ("Date has wrong
+ * format"), so leaving an optional start time blank would fail the whole save.
+ * `null` is what actually clears a nullable column.
+ */
+function forApi(
+  values: Record<string, unknown>,
+  fields: FieldSpec[],
+): Record<string, unknown> {
+  const typeByName = new Map(fields.map((field) => [field.name, field.type]));
+  const payload: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(values)) {
+    const type = typeByName.get(key);
+    const blank = value === "" || value === null || value === undefined;
+    if (blank && (type === "date" || type === "time" || type === "number")) {
+      payload[key] = null;
+    } else {
+      payload[key] = value;
+    }
+  }
+  return payload;
+}
+
+
 function ResourceForm<T extends RowLike>({
   config,
   row,
@@ -386,7 +428,10 @@ function ResourceForm<T extends RowLike>({
     for (const field of config.fields) {
       if (field.type === "image") continue;
       const value = row[field.name];
-      initial[field.name] = value ?? config.defaults[field.name] ?? "";
+      initial[field.name] =
+        value === null || value === undefined
+          ? (config.defaults[field.name] ?? "")
+          : forInput(value, field.type);
     }
     return initial;
   });
@@ -433,20 +478,24 @@ function ResourceForm<T extends RowLike>({
     const label = String(values[config.fields[0].name] ?? config.singular);
 
     try {
+      const payload = forApi(values, config.fields);
       const hasFile = Object.keys(files).length > 0;
+
       if (hasFile) {
         const form = new FormData();
-        for (const [key, value] of Object.entries(values)) {
-          if (value === null || value === undefined) continue;
-          form.append(key, typeof value === "boolean" ? String(value) : String(value));
+        for (const [key, value] of Object.entries(payload)) {
+          // Multipart has no null, so a blank optional field is omitted
+          // instead — the backend then leaves it untouched.
+          if (value === null || value === undefined || value === "") continue;
+          form.append(key, String(value));
         }
         for (const [key, file] of Object.entries(files)) form.append(key, file);
         if (id) await adminApi.patchForm(`${config.path}/${id}`, form);
         else await adminApi.postForm(config.path, form);
       } else if (id) {
-        await adminApi.patch(`${config.path}/${id}`, values);
+        await adminApi.patch(`${config.path}/${id}`, payload);
       } else {
-        await adminApi.post(config.path, values);
+        await adminApi.post(config.path, payload);
       }
 
       onSaved(
