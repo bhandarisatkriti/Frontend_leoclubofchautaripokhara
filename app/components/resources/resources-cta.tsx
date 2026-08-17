@@ -6,7 +6,7 @@ export function ResourcesCta() {
   return (
     <section className="bg-background py-16 sm:py-20">
       <Container>
-        <Reveal className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(100deg,#6D28D9_0%,#4338CA_50%,#1E5EFF_100%)] px-6 py-14 text-center text-white sm:px-12">
+        <Reveal className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(100deg,#06142F_0%,#1747C7_55%,#38BDF8_100%)] px-6 py-14 text-center text-white sm:px-12">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 animate-float-slow rounded-full bg-white/10 blur-3xl"

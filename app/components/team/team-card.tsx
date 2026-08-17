@@ -33,7 +33,7 @@ export function TeamCard({ member }: { member: Member }) {
   ).filter((entry): entry is { href: string; label: string } => Boolean(entry));
 
   return (
-    <li className="group overflow-hidden rounded-xl border border-border bg-surface shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1 hover:border-leo-violet/30 hover:shadow-soft-md">
+    <li className="group overflow-hidden rounded-xl border border-border bg-surface shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1 hover:border-leo-blue/30 hover:shadow-soft-md">
       <div className="relative aspect-square overflow-hidden">
         {photo ? (
           <Image
@@ -45,13 +45,13 @@ export function TeamCard({ member }: { member: Member }) {
           />
         ) : (
           <>
-            <Motif variant="dots" tone="violet" />
-            <span className="relative flex h-full items-center justify-center text-4xl font-bold text-leo-violet">
+            <Motif variant="dots" tone="blue" />
+            <span className="relative flex h-full items-center justify-center text-4xl font-bold text-leo-blue">
               {initials(member.name)}
             </span>
           </>
         )}
-        <span className="absolute bottom-3 left-3 rounded-full bg-background/95 px-3 py-1 text-xs font-semibold text-leo-violet shadow-soft-sm transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:-translate-y-0.5">
+        <span className="absolute bottom-3 left-3 rounded-full bg-background/95 px-3 py-1 text-xs font-semibold text-leo-blue shadow-soft-sm transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:-translate-y-0.5">
           {member.position}
         </span>
       </div>
@@ -68,7 +68,7 @@ export function TeamCard({ member }: { member: Member }) {
                 rel="noopener noreferrer"
                 aria-label={`${member.name} on ${social.label}`}
                 className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold text-white shadow-soft-sm transition-[transform,box-shadow] duration-[var(--duration-fast)] hover:-translate-y-0.5 ${
-                  i % 2 === 0 ? "bg-leo-blue" : "bg-leo-violet"
+                  i % 2 === 0 ? "bg-leo-blue" : "bg-leo-blue-dark"
                 }`}
               >
                 {social.label[0]}

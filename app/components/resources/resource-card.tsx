@@ -46,7 +46,7 @@ export function ResourceCard({ resource }: { resource: Resource }) {
           </svg>
         </span>
         {resource.featured && (
-          <span className="rounded-full bg-leo-violet/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-leo-violet">
+          <span className="rounded-full bg-leo-cyan/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-leo-blue-dark">
             Featured
           </span>
         )}

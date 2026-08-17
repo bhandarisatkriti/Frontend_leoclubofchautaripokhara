@@ -1,8 +1,8 @@
 const toneGradients = {
-  red: "from-leo-red/15 to-leo-violet/20",
-  violet: "from-leo-violet/15 to-leo-blue/20",
-  blue: "from-leo-blue/15 to-leo-violet/20",
-  green: "from-leo-green/15 to-leo-violet/20",
+  red: "from-leo-red/15 to-leo-blue/15",
+  violet: "from-leo-violet/12 to-leo-blue/18",
+  blue: "from-leo-blue/15 to-leo-cyan/15",
+  green: "from-leo-green/15 to-leo-blue/15",
   navy: "",
 } as const;
 

@@ -62,13 +62,13 @@ export default async function NewsDetailPage({
         <Reveal>
           <Link
             href="/news"
-            className="text-sm font-semibold text-leo-violet transition-colors duration-[var(--duration-fast)] hover:text-leo-violet-dark"
+            className="text-sm font-semibold text-leo-blue transition-colors duration-[var(--duration-fast)] hover:text-leo-blue-dark"
           >
             ← Back to news
           </Link>
 
           <div className="mt-6">
-            {article.category && <SectionLabel tone="violet">{article.category}</SectionLabel>}
+            {article.category && <SectionLabel>{article.category}</SectionLabel>}
             <h1 className="mt-3 text-h1 font-bold tracking-tight">{article.title}</h1>
             {hasPublished && published && (
               <p className="mt-3 text-sm font-semibold uppercase tracking-widest text-muted">
@@ -89,7 +89,7 @@ export default async function NewsDetailPage({
             <span className="font-semibold text-muted">Share:</span>
             <a
               href={shareHref}
-              className="rounded-full border border-border px-4 py-1.5 font-medium transition-colors duration-[var(--duration-fast)] hover:border-leo-violet hover:text-leo-violet"
+              className="rounded-full border border-border px-4 py-1.5 font-medium transition-colors duration-[var(--duration-fast)] hover:border-leo-blue hover:text-leo-blue"
             >
               Email
             </a>
@@ -97,7 +97,7 @@ export default async function NewsDetailPage({
               href={site.socials.facebook}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-border px-4 py-1.5 font-medium transition-colors duration-[var(--duration-fast)] hover:border-leo-violet hover:text-leo-violet"
+              className="rounded-full border border-border px-4 py-1.5 font-medium transition-colors duration-[var(--duration-fast)] hover:border-leo-blue hover:text-leo-blue"
             >
               Facebook
             </a>

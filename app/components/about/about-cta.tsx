@@ -19,7 +19,7 @@ export function AboutCta() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -left-16 top-1/2 h-72 w-72 -translate-y-1/2 animate-float-slow rounded-full bg-leo-violet/15 blur-3xl"
+        className="pointer-events-none absolute -left-16 top-1/2 h-72 w-72 -translate-y-1/2 animate-float-slow rounded-full bg-leo-blue/15 blur-3xl"
       />
 
       <Container size="narrow" className="relative">

@@ -27,7 +27,7 @@ export function FeaturedEventCard({ event }: { event: LeoEvent }) {
             className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-105"
           />
         ) : (
-          <Motif variant="waves" tone="violet" />
+          <Motif variant="waves" tone="blue" />
         )}
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/25 to-transparent" />
       </div>

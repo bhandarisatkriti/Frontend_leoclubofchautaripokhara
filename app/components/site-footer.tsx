@@ -68,7 +68,7 @@ export function SiteFooter() {
                 rel="noopener noreferrer"
                 aria-label={social.label}
                 className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-on-navy transition-[transform,background-color] duration-[var(--duration-fast)] ease-[var(--ease-premium)] hover:-translate-y-0.5 ${
-                  i % 2 === 0 ? "hover:bg-leo-blue/25" : "hover:bg-leo-violet/25"
+                  i % 2 === 0 ? "hover:bg-leo-blue/25" : "hover:bg-leo-cyan/20"
                 }`}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -102,7 +102,7 @@ export function SiteFooter() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-on-navy-muted transition-colors duration-[var(--duration-fast)] hover:text-leo-violet-light"
+                  className="text-on-navy-muted transition-colors duration-[var(--duration-fast)] hover:text-leo-cyan"
                 >
                   {link.label}
                 </Link>
