@@ -20,7 +20,7 @@ const emblem = [
     icon: (
       <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="8" />
     ),
-    tone: "text-leo-violet bg-leo-violet/10",
+    tone: "text-leo-indigo bg-leo-indigo/10",
   },
   {
     part: "The lion mark",

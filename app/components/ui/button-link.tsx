@@ -26,6 +26,21 @@ const variantClasses: Record<ButtonVariant, string> = {
     "bg-transparent text-current underline decoration-current/30 underline-offset-4 hover:decoration-current focus-visible:ring-current",
 };
 
+/**
+ * Solid dark-blue rectangular CTA from the club's reference design (nav
+ * "Join Now", hero "Learn More"). Kept out of `variantClasses` because those
+ * all inherit `rounded-full` from `base`, and overriding a radius via className
+ * is not reliable in Tailwind v4 — generated-CSS order decides the winner, not
+ * the order classes appear in the attribute.
+ */
+export const solidBlueButton =
+  "inline-flex items-center justify-center rounded-lg bg-leo-indigo px-6 py-2.5 text-sm font-bold " +
+  "uppercase tracking-wide text-white shadow-soft-sm " +
+  "transition-[transform,background-color,box-shadow] duration-[var(--duration-base)] ease-[var(--ease-premium)] " +
+  "hover:-translate-y-0.5 hover:bg-leo-indigo-dark hover:shadow-glow-indigo " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-indigo focus-visible:ring-offset-2 " +
+  "focus-visible:ring-offset-background";
+
 /** Shared class recipe, exported so plain <button> elements (e.g. ApiForm's submit) match ButtonLink exactly. */
 export function buttonClasses(
   variant: ButtonVariant = "primary",

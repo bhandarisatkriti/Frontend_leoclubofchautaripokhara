@@ -68,6 +68,7 @@ export default async function NewsDetailPage({
           </Link>
 
           <div className="mt-6">
+            {/* The API nests the category object, so render its name. */}
             {article.category && <SectionLabel>{article.category.name}</SectionLabel>}
             <h1 className="mt-3 text-h1 font-bold tracking-tight">{article.title}</h1>
             {hasPublished && published && (

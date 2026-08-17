@@ -4,7 +4,7 @@
  *
  * Set NEXT_PUBLIC_API_URL in .env.local — see .env.example.
  */
-import type { ClubInformation, Paginated } from "@/app/lib/types";
+import type { ClubInformation, Paginated, SiteImage } from "@/app/lib/types";
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api";
@@ -58,6 +58,7 @@ export const endpoints = {
   club: "/club/",
   clubs: "/clubs/",
   partners: "/partners/",
+  siteImages: "/site-images/",
   team: "/team/",
   teamPositions: "/team/positions/",
   events: "/events/",
@@ -224,4 +225,20 @@ export function mediaUrl(path: string | null | undefined): string | null {
   if (!path) return null;
   if (path.startsWith("http://") || path.startsWith("https://")) return path;
   return new URL(path, API_URL).toString();
+}
+
+/**
+ * The image an administrator placed in a named slot, or null when none is set
+ * (the caller then falls back to the checked-in artwork).
+ */
+export async function getSiteImage(
+  placement: SiteImage["placement"],
+  options?: ApiOptions,
+): Promise<SiteImage | null> {
+  const images = await fetchList<SiteImage>(
+    endpoints.siteImages,
+    { placement, page_size: 1, ordering: "display_order" },
+    { revalidate: 300, ...options },
+  );
+  return images[0] ?? null;
 }

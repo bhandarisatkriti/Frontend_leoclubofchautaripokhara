@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { ApiForm, type Field } from "@/app/components/api-form";
-import { PageHeader } from "@/app/components/page-header";
 import { Container } from "@/app/components/ui/container";
 import { Motif } from "@/app/components/ui/motif";
 import { Reveal } from "@/app/components/ui/reveal";
@@ -53,12 +52,6 @@ const contactMethods = [
 export default function ContactPage() {
   return (
     <>
-      <PageHeader
-        kicker="Contact"
-        title="We would love to hear from you"
-        description="Questions, project ideas, or partnership proposals — reach out any time."
-      />
-
       <Container className="py-16 sm:py-20">
         <div className="grid gap-12 lg:grid-cols-3">
           <Reveal className="lg:col-span-2">

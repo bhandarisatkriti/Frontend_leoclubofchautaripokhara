@@ -215,3 +215,24 @@ export type Club = {
   facebook_url: string;
   instagram_url: string;
 };
+
+/** GET /api/site-images/ — images the site renders in named slots. */
+export type SiteImagePlacement =
+  | "HERO"
+  | "ABOUT_PRIMARY"
+  | "ABOUT_SECONDARY"
+  | "ABOUT_TERTIARY"
+  | "JOIN"
+  | "OTHER";
+
+export type SiteImage = {
+  id: number;
+  title: string;
+  alt_text: string;
+  description: string;
+  image: string;
+  placement: SiteImagePlacement;
+  placement_display: string;
+  is_active: boolean;
+  display_order: number;
+};

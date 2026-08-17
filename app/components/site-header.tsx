@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/app/components/logo";
-import { ButtonLink } from "@/app/components/ui/button-link";
-import { navLinks } from "@/app/lib/site";
+import { solidBlueButton } from "@/app/components/ui/button-link";
+import { navLinks, site } from "@/app/lib/site";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -75,16 +75,16 @@ export function SiteHeader() {
         }`}
       >
         <Link href="/" className="flex items-center gap-2.5">
-          <Logo size={38} />
+          <Logo size={scrolled ? 34 : 38} />
           <span className="leading-tight">
             <span className="block text-[13px] font-bold tracking-tight sm:text-sm">
-              Leo Club of Chautari Pokhara
+              {site.name}
             </span>
-            <span className="block text-[10px] text-muted">LDC 325 J, Nepal</span>
+            <span className="block text-[10px] text-muted">{site.district}</span>
           </span>
         </Link>
 
-        <nav className="ml-auto hidden items-center gap-1 lg:flex">
+        <nav className="ml-auto hidden items-center gap-1 lg:flex xl:gap-2">
           {primaryLinks.map((link) =>
             link.children ? (
               <div key={link.href} ref={eventsRef} className="relative">
@@ -142,8 +142,10 @@ export function SiteHeader() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`group relative rounded-md px-3 py-2 text-sm font-medium transition-colors duration-[var(--duration-fast)] ${
-                  isActive(link.href) ? "text-leo-blue" : "text-muted hover:text-foreground"
+                className={`group relative whitespace-nowrap rounded-md px-3 py-2 text-[15px] font-semibold transition-colors duration-[var(--duration-fast)] ${
+                  isActive(link.href)
+                    ? "text-leo-blue"
+                    : "text-leo-indigo hover:text-leo-blue"
                 }`}
               >
                 {link.label}
@@ -158,9 +160,9 @@ export function SiteHeader() {
           )}
 
           {joinLink && (
-            <ButtonLink href={joinLink.href} variant="primary" size="md" className="ml-2">
+            <Link href={joinLink.href} className={`ml-3 ${solidBlueButton}`}>
               {joinLink.label}
-            </ButtonLink>
+            </Link>
           )}
         </nav>
 
@@ -245,8 +247,8 @@ export function SiteHeader() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`block rounded-md px-3 py-2.5 text-sm font-medium ${
-                    isActive(link.href) ? "text-leo-blue" : "text-muted"
+                  className={`block rounded-md px-3 py-2.5 text-sm font-semibold ${
+                    isActive(link.href) ? "text-leo-blue" : "text-leo-indigo"
                   }`}
                 >
                   {link.label}
@@ -255,9 +257,12 @@ export function SiteHeader() {
             )}
 
             {joinLink && (
-              <ButtonLink href={joinLink.href} variant="primary" size="md" className="mt-3 w-full">
+              <Link
+                href={joinLink.href}
+                className={`mt-3 w-full ${solidBlueButton}`}
+              >
                 {joinLink.label}
-              </ButtonLink>
+              </Link>
             )}
           </nav>
         </div>
