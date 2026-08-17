@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ArticleCard, type Article } from "@/app/components/news/article-card";
-import { EmptyState, PageHeader } from "@/app/components/page-header";
+import { EmptyState } from "@/app/components/page-header";
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { apiFetchOr, endpoints, type Paginated } from "@/app/lib/api";
@@ -26,12 +26,6 @@ export default async function NewsPage() {
 
   return (
     <>
-      <PageHeader
-        kicker="News"
-        title="Announcements &amp; updates"
-        description="Project reports, announcements, and updates from the club."
-      />
-
       <Container size="narrow" className="py-16 sm:py-20">
         {articles.length === 0 ? (
           <EmptyState message="Articles will appear here once they are published from the backend." />

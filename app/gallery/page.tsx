@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/app/components/page-header";
 import { Container } from "@/app/components/ui/container";
 import { apiFetchOr, endpoints, mediaUrl, type Paginated } from "@/app/lib/api";
 import { localGalleryPhotos } from "@/app/lib/local-photos";
@@ -49,16 +48,8 @@ export default async function GalleryPage() {
     : localGalleryPhotos;
 
   return (
-    <>
-      <PageHeader
-        kicker="Gallery"
-        title="Moments from club life"
-        description="Photos from our projects, camps, and club life in Pokhara."
-      />
-
-      <Container className="py-16 sm:py-20">
-        <GalleryGrid photos={photos} />
-      </Container>
-    </>
+    <Container className="py-16 sm:py-20">
+      <GalleryGrid photos={photos} />
+    </Container>
   );
 }
