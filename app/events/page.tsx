@@ -18,13 +18,13 @@ export default async function EventsPage() {
     [],
   );
   const events = [...(Array.isArray(data) ? data : data.results)].sort(
-    (a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf(),
+    (a, b) => new Date(a.event_date).valueOf() - new Date(b.event_date).valueOf(),
   );
 
   // Server Component rendered fresh per request — reading the current time here is intentional.
   // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
-  const featuredIndex = events.findIndex((event) => new Date(event.date).valueOf() >= now);
+  const featuredIndex = events.findIndex((event) => new Date(event.event_date).valueOf() >= now);
   const featured = featuredIndex >= 0 ? events[featuredIndex] : null;
   const rest = featured ? events.filter((_, i) => i !== featuredIndex) : events;
 

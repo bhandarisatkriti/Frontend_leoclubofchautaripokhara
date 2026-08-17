@@ -1,6 +1,7 @@
 import { AboutSection } from "@/app/components/home/about-section";
 import { GalleryStrip } from "@/app/components/home/gallery-strip";
 import { Hero } from "@/app/components/home/hero";
+import { MissionVisionCards } from "@/app/components/home/mission-vision-cards";
 import { WhyJoinSection } from "@/app/components/home/why-join-section";
 import { type ClubStats } from "@/app/components/home/stats-grid";
 import { ArticleCard, type Article } from "@/app/components/news/article-card";
@@ -20,7 +21,13 @@ import { localGalleryPhotos } from "@/app/lib/local-photos";
 import { type ResolvedPhoto } from "@/app/gallery/gallery-grid";
 import { stagger } from "@/app/lib/motion";
 
-type BackendPhoto = { id: number; caption?: string | null; image: string | null };
+/** Mirrors `GalleryImageSerializer`: the caption field is `description`. */
+type BackendPhoto = {
+  id: number;
+  title?: string | null;
+  description?: string | null;
+  image: string | null;
+};
 
 export default async function Home() {
   const [eventsData, teamData, photosData, newsData, clubStats] = await Promise.all([
@@ -32,14 +39,17 @@ export default async function Home() {
   ]);
 
   const events = [...(Array.isArray(eventsData) ? eventsData : eventsData.results)].sort(
-    (a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf(),
+    (a, b) => new Date(a.event_date).valueOf() - new Date(b.event_date).valueOf(),
   );
   const team = (Array.isArray(teamData) ? teamData : teamData.results).slice(0, 4);
   const backendPhotos: ResolvedPhoto[] = (Array.isArray(photosData) ? photosData : photosData.results)
     .filter((photo) => photo.image)
-    .map((photo) => ({ id: photo.id, src: mediaUrl(photo.image)!, caption: photo.caption }));
-  // Real uploaded photos first — see the IMAGE PRIORITY note in app/lib/local-photos.ts.
-  const photos: ResolvedPhoto[] = [...localGalleryPhotos, ...backendPhotos].slice(0, 6);
+    .map((photo) => ({ id: photo.id, src: mediaUrl(photo.image)!, caption: photo.description ?? photo.title }));
+  // Backend photos are authoritative once the gallery is populated; the
+  // checked-in set is the fallback. See the note in app/gallery/page.tsx.
+  const photos: ResolvedPhoto[] = (
+    backendPhotos.length ? backendPhotos : localGalleryPhotos
+  ).slice(0, 6);
   const news = [...(Array.isArray(newsData) ? newsData : newsData.results)]
     .sort((a, b) => {
       const aTime = a.published_at ? new Date(a.published_at).valueOf() : 0;
@@ -55,6 +65,7 @@ export default async function Home() {
     <>
       <Hero />
       <AboutSection clubStats={clubStats} />
+      <MissionVisionCards />
       <WhyJoinSection />
 
       <section className="bg-surface-blue py-16 sm:py-20">

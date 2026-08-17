@@ -2,11 +2,12 @@ import Image from "next/image";
 import { Motif } from "@/app/components/ui/motif";
 import { mediaUrl } from "@/app/lib/api";
 
+/** Mirrors `PublicTeamMemberSerializer` on the backend. */
 export type Member = {
   id: number;
   name: string;
   position: string;
-  photo: string | null;
+  profile_image: string | null;
   bio?: string | null;
   facebook_url?: string | null;
   instagram_url?: string | null;
@@ -23,7 +24,7 @@ function initials(name: string) {
 }
 
 export function TeamCard({ member }: { member: Member }) {
-  const photo = mediaUrl(member.photo);
+  const photo = mediaUrl(member.profile_image);
   const socials = (
     [
       member.facebook_url && { href: member.facebook_url, label: "Facebook" },

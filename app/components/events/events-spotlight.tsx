@@ -8,13 +8,13 @@ const dayFormat = new Intl.DateTimeFormat("en-GB", { day: "numeric" });
 const monthFormat = new Intl.DateTimeFormat("en-GB", { month: "short" });
 
 export function FeaturedEventCard({ event }: { event: LeoEvent }) {
-  const image = mediaUrl(event.image);
-  const parsed = new Date(event.date);
+  const image = mediaUrl(event.featured_image);
+  const parsed = new Date(event.event_date);
   const hasDate = !Number.isNaN(parsed.valueOf());
 
   return (
     <Link
-      href={`/events/${event.id}`}
+      href={`/events/${event.slug}`}
       className="group relative flex h-full min-h-[380px] flex-col justify-end overflow-hidden rounded-xl border border-border shadow-soft-sm transition-shadow duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:shadow-soft-lg"
     >
       <div className="absolute inset-0">
@@ -49,7 +49,7 @@ export function FeaturedEventCard({ event }: { event: LeoEvent }) {
 
       <div className="relative p-6 text-white sm:p-8">
         <h3 className="text-xl font-bold tracking-tight sm:text-2xl">{event.title}</h3>
-        <p className="mt-2 text-sm text-white/80">{formatEventDate(event.date)}</p>
+        <p className="mt-2 text-sm text-white/80">{formatEventDate(event.event_date)}</p>
         {event.location && <p className="mt-1 text-sm text-white/70">{event.location}</p>}
       </div>
     </Link>
@@ -57,13 +57,13 @@ export function FeaturedEventCard({ event }: { event: LeoEvent }) {
 }
 
 export function CompactEventItem({ event }: { event: LeoEvent }) {
-  const image = mediaUrl(event.image);
-  const parsed = new Date(event.date);
+  const image = mediaUrl(event.featured_image);
+  const parsed = new Date(event.event_date);
   const hasDate = !Number.isNaN(parsed.valueOf());
 
   return (
     <Link
-      href={`/events/${event.id}`}
+      href={`/events/${event.slug}`}
       className="group flex items-center gap-4 rounded-xl border border-border bg-surface p-4 shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-0.5 hover:border-leo-blue/30 hover:shadow-soft-md"
     >
       <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg">
@@ -81,7 +81,7 @@ export function CompactEventItem({ event }: { event: LeoEvent }) {
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-xs font-semibold uppercase tracking-widest text-leo-blue">
-          {hasDate ? formatEventDate(event.date) : event.date}
+          {hasDate ? formatEventDate(event.event_date) : event.event_date}
         </p>
         <h4 className="mt-1 truncate font-semibold">{event.title}</h4>
         {event.location && <p className="mt-0.5 truncate text-sm text-muted">{event.location}</p>}

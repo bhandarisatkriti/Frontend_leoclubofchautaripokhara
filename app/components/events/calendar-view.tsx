@@ -24,7 +24,7 @@ export function CalendarView({ events }: { events: LeoEvent[] }) {
   const parsedEvents = useMemo(
     () =>
       events
-        .map((event) => ({ event, date: new Date(event.date) }))
+        .map((event) => ({ event, date: new Date(event.event_date) }))
         .filter((entry) => !Number.isNaN(entry.date.valueOf())),
     [events],
   );
@@ -125,12 +125,12 @@ export function CalendarView({ events }: { events: LeoEvent[] }) {
             {eventsForSelected.map(({ event }) => (
               <li key={event.id}>
                 <Link
-                  href={`/events/${event.id}`}
+                  href={`/events/${event.slug}`}
                   className="group flex items-center justify-between rounded-lg border border-border bg-surface p-4 transition-colors duration-[var(--duration-fast)] hover:border-leo-blue/30"
                 >
                   <span>
                     <span className="block font-semibold">{event.title}</span>
-                    <span className="block text-sm text-muted">{formatEventDate(event.date)}</span>
+                    <span className="block text-sm text-muted">{formatEventDate(event.event_date)}</span>
                   </span>
                   <span
                     aria-hidden

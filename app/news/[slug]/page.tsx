@@ -16,17 +16,17 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", {
   year: "numeric",
 });
 
-async function getArticle(id: string) {
-  return apiFetchOr<Article | null>(`${endpoints.news}${id}/`, null, {
+async function getArticle(slug: string) {
+  return apiFetchOr<Article | null>(`${endpoints.articles}${slug}/`, null, {
     revalidate: false,
   });
 }
 
 export async function generateMetadata({
   params,
-}: PageProps<"/news/[id]">): Promise<Metadata> {
-  const { id } = await params;
-  const article = await getArticle(id);
+}: PageProps<"/news/[slug]">): Promise<Metadata> {
+  const { slug } = await params;
+  const article = await getArticle(slug);
   return article
     ? { title: article.title, description: article.excerpt ?? undefined }
     : { title: "Article" };
@@ -34,12 +34,12 @@ export async function generateMetadata({
 
 export default async function NewsDetailPage({
   params,
-}: PageProps<"/news/[id]">) {
-  const { id } = await params;
-  const article = await getArticle(id);
+}: PageProps<"/news/[slug]">) {
+  const { slug } = await params;
+  const article = await getArticle(slug);
   if (!article) notFound();
 
-  const image = mediaUrl(article.cover_image);
+  const image = mediaUrl(article.featured_image);
   const published = article.published_at ? new Date(article.published_at) : null;
   const hasPublished = published && !Number.isNaN(published.valueOf());
   const paragraphs = (article.content ?? article.excerpt ?? "")
@@ -68,7 +68,9 @@ export default async function NewsDetailPage({
           </Link>
 
           <div className="mt-6">
-            {article.category && <SectionLabel tone="violet">{article.category}</SectionLabel>}
+            {article.category && (
+              <SectionLabel tone="violet">{article.category.name}</SectionLabel>
+            )}
             <h1 className="mt-3 text-h1 font-bold tracking-tight">{article.title}</h1>
             {hasPublished && published && (
               <p className="mt-3 text-sm font-semibold uppercase tracking-widest text-muted">

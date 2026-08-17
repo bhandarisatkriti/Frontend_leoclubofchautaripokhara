@@ -8,30 +8,30 @@ import { Motif } from "@/app/components/ui/motif";
 import { Reveal } from "@/app/components/ui/reveal";
 import { apiFetchOr, endpoints, mediaUrl } from "@/app/lib/api";
 
-async function getEvent(id: string) {
-  return apiFetchOr<LeoEvent | null>(`${endpoints.events}${id}/`, null, {
+async function getEvent(slug: string) {
+  return apiFetchOr<LeoEvent | null>(`${endpoints.events}${slug}/`, null, {
     revalidate: false,
   });
 }
 
 export async function generateMetadata({
   params,
-}: PageProps<"/events/[id]">): Promise<Metadata> {
-  const { id } = await params;
-  const event = await getEvent(id);
+}: PageProps<"/events/[slug]">): Promise<Metadata> {
+  const { slug } = await params;
+  const event = await getEvent(slug);
   return event
-    ? { title: event.title, description: event.description }
+    ? { title: event.title, description: event.short_description ?? undefined }
     : { title: "Event" };
 }
 
 export default async function EventDetailPage({
   params,
-}: PageProps<"/events/[id]">) {
-  const { id } = await params;
-  const event = await getEvent(id);
+}: PageProps<"/events/[slug]">) {
+  const { slug } = await params;
+  const event = await getEvent(slug);
   if (!event) notFound();
 
-  const image = mediaUrl(event.image);
+  const image = mediaUrl(event.featured_image);
 
   return (
     <>
@@ -47,7 +47,7 @@ export default async function EventDetailPage({
         <Container className="absolute inset-x-0 bottom-0 pb-8">
           <Reveal>
             <p className="text-xs font-semibold uppercase tracking-widest text-white/80">
-              {formatEventDate(event.date)}
+              {formatEventDate(event.event_date)}
             </p>
             <h1 className="mt-2 max-w-3xl text-h1 font-bold tracking-tight text-white">
               {event.title}
@@ -70,7 +70,9 @@ export default async function EventDetailPage({
               {event.location}
             </p>
           )}
-          <p className="mt-4 text-lead text-foreground">{event.description}</p>
+          <p className="mt-4 text-lead text-foreground">
+            {event.description || event.short_description}
+          </p>
         </Reveal>
       </Container>
     </>

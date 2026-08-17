@@ -4,8 +4,8 @@ export const site = {
   district: "LDC 325 J, Nepal",
   motto: "Work Together",
   established: 2000,
-  email: "info@leoclubofchautaripokhara.org",
-  phone: "+977-XXXXXXXXXX",
+  email: "info@leoclubofchautaripokhara.com",
+  phone: "+977 984-6602696",
   address: "Pokhara, Gandaki Province, Nepal",
   // Confirmed from the club's own Charter Night banner (public/images/hero/charter-night-cover.jpg).
   sponsoringClub: "Lions Club of Pokhara Chautari" as string | null,

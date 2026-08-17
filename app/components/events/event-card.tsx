@@ -3,13 +3,20 @@ import Link from "next/link";
 import { Motif } from "@/app/components/ui/motif";
 import { mediaUrl } from "@/app/lib/api";
 
+/**
+ * Mirrors `EventListSerializer` on the backend. List rows carry
+ * `short_description`; the full `description` only comes back from the detail
+ * endpoint, so it is optional here.
+ */
 export type LeoEvent = {
   id: number;
   title: string;
-  description: string;
-  date: string;
+  slug: string;
+  short_description?: string | null;
+  description?: string | null;
+  event_date: string;
   location?: string | null;
-  image: string | null;
+  featured_image: string | null;
 };
 
 const dateFormat = new Intl.DateTimeFormat("en-GB", {
@@ -32,13 +39,13 @@ export function EventCard({
   event: LeoEvent;
   featured?: boolean;
 }) {
-  const image = mediaUrl(event.image);
-  const parsed = new Date(event.date);
+  const image = mediaUrl(event.featured_image);
+  const parsed = new Date(event.event_date);
   const hasDate = !Number.isNaN(parsed.valueOf());
 
   return (
     <Link
-      href={`/events/${event.id}`}
+      href={`/events/${event.slug}`}
       className={`group flex flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1 hover:border-leo-blue/30 hover:shadow-soft-md ${
         featured ? "lg:col-span-2 lg:flex-row" : ""
       }`}
@@ -75,11 +82,13 @@ export function EventCard({
       </div>
       <div className="flex flex-1 flex-col p-5">
         <p className="text-xs font-semibold uppercase tracking-widest text-leo-blue">
-          {formatEventDate(event.date)}
+          {formatEventDate(event.event_date)}
         </p>
         <h3 className="mt-2 text-lg font-semibold">{event.title}</h3>
         {event.location && <p className="mt-1 text-sm text-muted">{event.location}</p>}
-        <p className="mt-3 line-clamp-3 text-sm text-muted">{event.description}</p>
+        <p className="mt-3 line-clamp-3 text-sm text-muted">
+          {event.short_description || event.description}
+        </p>
         <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-semibold text-leo-blue">
           View details
           <span

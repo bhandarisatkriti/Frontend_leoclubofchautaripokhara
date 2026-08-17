@@ -3,14 +3,19 @@ import Link from "next/link";
 import { Motif } from "@/app/components/ui/motif";
 import { mediaUrl } from "@/app/lib/api";
 
+/** Mirrors `ArticleListSerializer` on the backend. */
 export type Article = {
   id: number;
   title: string;
+  slug: string;
   excerpt?: string | null;
   content?: string | null;
   published_at?: string | null;
-  cover_image?: string | null;
-  category?: string | null;
+  featured_image?: string | null;
+  /** The API nests the category object; `null` when uncategorised. */
+  category?: { id: number; name: string; slug: string } | null;
+  byline?: string | null;
+  reading_time_minutes?: number | null;
 };
 
 const dateFormat = new Intl.DateTimeFormat("en-GB", {
@@ -26,13 +31,13 @@ export function ArticleCard({
   article: Article;
   featured?: boolean;
 }) {
-  const image = mediaUrl(article.cover_image);
+  const image = mediaUrl(article.featured_image);
   const published = article.published_at ? new Date(article.published_at) : null;
   const hasPublished = published && !Number.isNaN(published.valueOf());
 
   return (
     <Link
-      href={`/news/${article.id}`}
+      href={`/news/${article.slug}`}
       className={`group flex flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1 hover:border-leo-blue/30 hover:shadow-soft-md ${
         featured ? "sm:flex-row" : ""
       }`}
@@ -53,7 +58,7 @@ export function ArticleCard({
         )}
         {article.category && (
           <span className="absolute left-4 top-4 rounded-full bg-background/95 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-leo-blue shadow-soft-sm">
-            {article.category}
+            {article.category.name}
           </span>
         )}
       </div>

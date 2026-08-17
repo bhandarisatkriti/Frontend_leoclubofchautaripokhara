@@ -36,14 +36,17 @@ export default async function GalleryPage() {
       id: photo.id,
       src: mediaUrl(photo.image)!,
       title: photo.title,
-      caption: photo.caption ?? photo.description,
+      caption: photo.description ?? photo.title,
       category: categoryName(photo.category),
     }));
 
-  // Real uploaded club photos take priority over backend photos until the
-  // gallery endpoint is populated — see the IMAGE PRIORITY note this mirrors
-  // in app/lib/local-photos.ts.
-  const photos: ResolvedPhoto[] = [...localGalleryPhotos, ...backendPhotos];
+  // The Django gallery is authoritative once an administrator has put photos
+  // in it; the checked-in set in app/lib/local-photos.ts is the fallback for a
+  // fresh or unreachable backend. Concatenating the two would show every photo
+  // twice, since they are the same pictures.
+  const photos: ResolvedPhoto[] = backendPhotos.length
+    ? backendPhotos
+    : localGalleryPhotos;
 
   return (
     <>
