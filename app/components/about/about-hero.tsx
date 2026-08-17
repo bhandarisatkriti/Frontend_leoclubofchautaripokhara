@@ -45,7 +45,7 @@ export function AboutHero() {
             Driven by Service.
             <br />
             Built for{" "}
-            <span className="bg-linear-to-r from-leo-blue-light to-leo-violet-light bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-leo-blue-light to-leo-cyan bg-clip-text text-transparent">
               Leadership.
             </span>
             <br />
@@ -54,7 +54,7 @@ export function AboutHero() {
         </Reveal>
 
         <Reveal delay={stagger(3, 100)}>
-          <div className="mt-4 h-1 w-14 rounded-full bg-linear-to-r from-leo-blue to-leo-violet" />
+          <div className="mt-4 h-1 w-14 rounded-full bg-linear-to-r from-leo-blue-dark to-leo-blue" />
           <p className="mt-4 max-w-lg text-sm leading-relaxed text-on-navy-muted sm:text-base">
             Discover the story, purpose, and people behind Leo Club of
             Chautari Pokhara.

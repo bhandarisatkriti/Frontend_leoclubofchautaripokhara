@@ -16,7 +16,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-linear-to-br from-leo-violet to-leo-blue text-white shadow-soft-sm hover:shadow-glow-blue focus-visible:ring-leo-blue",
+    "bg-linear-to-br from-leo-blue-dark to-leo-blue text-white shadow-soft-sm hover:shadow-glow-blue focus-visible:ring-leo-blue",
   secondary:
     "bg-surface-navy text-white shadow-soft-sm hover:bg-surface-navy-soft hover:shadow-glow-blue focus-visible:ring-leo-blue",
   outline:

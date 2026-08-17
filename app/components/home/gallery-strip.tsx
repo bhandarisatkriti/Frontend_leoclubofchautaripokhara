@@ -68,7 +68,7 @@ export function GalleryStrip({ photos }: { photos: ResolvedPhoto[] }) {
               <SectionLabel tone="cyan">Gallery Highlights</SectionLabel>
               <h2 className="mt-3 text-[clamp(1.75rem,3.4vw,2.75rem)] font-bold leading-[1.08] tracking-tight text-white">
                 Moments{" "}
-                <span className="bg-linear-to-r from-leo-blue-light to-leo-violet-light bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-leo-blue-light to-leo-cyan bg-clip-text text-transparent">
                   That Define Us
                 </span>
               </h2>

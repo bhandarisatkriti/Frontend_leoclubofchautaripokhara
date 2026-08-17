@@ -45,7 +45,7 @@ export default function ClubsPage() {
         </Reveal>
 
         <Reveal className="mt-14">
-          <SectionLabel tone="violet">Where we fit</SectionLabel>
+          <SectionLabel>Where we fit</SectionLabel>
           <h2 className="mt-3 text-h3 font-bold tracking-tight">Our place in the structure</h2>
         </Reveal>
 
@@ -61,7 +61,7 @@ export default function ClubsPage() {
                 )}
                 <span
                   className={`relative z-10 mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white ${
-                    i === structure.length - 1 ? "bg-leo-blue" : "bg-leo-violet"
+                    i === structure.length - 1 ? "bg-leo-blue" : "bg-leo-blue-dark"
                   }`}
                 >
                   {i + 1}

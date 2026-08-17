@@ -6,11 +6,11 @@ import { stagger } from "@/app/lib/motion";
 
 const values = [
   { word: "Leadership", body: "Taking initiative and guiding real projects.", tone: "text-leo-blue" },
-  { word: "Experience", body: "Learning by doing, one project at a time.", tone: "text-leo-violet" },
+  { word: "Experience", body: "Learning by doing, one project at a time.", tone: "text-leo-blue-dark" },
   { word: "Opportunity", body: "Open doors for growth and connection.", tone: "text-leo-blue" },
-  { word: "Service", body: "Putting the community's needs first.", tone: "text-leo-violet" },
+  { word: "Service", body: "Putting the community's needs first.", tone: "text-leo-blue-dark" },
   { word: "Fellowship", body: "Friendship built through shared purpose.", tone: "text-leo-blue" },
-  { word: "Responsibility", body: "Following through on every commitment.", tone: "text-leo-violet" },
+  { word: "Responsibility", body: "Following through on every commitment.", tone: "text-leo-blue-dark" },
 ] as const;
 
 export function CoreValues() {

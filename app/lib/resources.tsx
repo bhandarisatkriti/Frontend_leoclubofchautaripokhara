@@ -138,9 +138,9 @@ const iconPaths = {
 const categoryIcon: { match: (category: string) => boolean; icon: IconKey; tone: keyof typeof iconToneClasses }[] = [
   { match: (c) => c.includes("blood"), icon: "droplet", tone: "red" },
   { match: (c) => c.includes("partner"), icon: "handshake", tone: "blue" },
-  { match: (c) => c.includes("district") || c.includes("directory"), icon: "mapPin", tone: "violet" },
+  { match: (c) => c.includes("district") || c.includes("directory"), icon: "mapPin", tone: "navy" },
   { match: (c) => c.includes("development") || c.includes("team"), icon: "code", tone: "cyan" },
-  { match: (c) => c.includes("foundation"), icon: "landmark", tone: "violet" },
+  { match: (c) => c.includes("foundation"), icon: "landmark", tone: "cyan" },
   { match: (c) => c.includes("nlf") || c.includes("membership"), icon: "badge", tone: "blue" },
   { match: (c) => c.includes("leo resource"), icon: "book", tone: "blue" },
 ];

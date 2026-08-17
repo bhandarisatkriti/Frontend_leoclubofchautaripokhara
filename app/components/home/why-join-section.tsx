@@ -6,7 +6,7 @@ import { stagger } from "@/app/lib/motion";
 
 const iconToneClasses = {
   blue: "text-leo-blue-light",
-  violet: "text-leo-violet-light",
+  navy: "text-white",
   cyan: "text-leo-cyan",
 } as const;
 
@@ -21,7 +21,7 @@ const benefits = [
     title: "Community Service",
     body: "Hands-on work in health, education, and the environment across Pokhara.",
     icon: <path d="M12 21s-7-4.35-9.5-8.5C.7 8.9 2.4 5 6 5c2 0 3.3 1 4 2 .7-1 2-2 4-2 3.6 0 5.3 3.9 3.5 7.5C19 16.65 12 21 12 21Z" />,
-    tone: "violet" as const,
+    tone: "navy" as const,
   },
   {
     title: "Skill Development",
@@ -39,7 +39,7 @@ const benefits = [
     title: "Global Opportunities",
     body: "District events, camps, and conventions within LDC 325 J and beyond.",
     icon: <path d="M12 2 2 8.5 12 15l10-6.5L12 2Zm0 10.7L2 6.2v11.6l10 6.2 10-6.2V6.2l-10 6.5Z" />,
-    tone: "violet" as const,
+    tone: "navy" as const,
   },
   {
     title: "Personal Growth",

@@ -13,7 +13,7 @@ export function Hero() {
       <Container className="relative flex min-h-[440px] flex-col justify-center sm:min-h-[520px] lg:min-h-[600px]">
         <div className="max-w-[460px]">
           <Reveal delay={stagger(0, 100)}>
-            <span className="inline-flex rounded-full bg-linear-to-r from-leo-violet to-leo-blue px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-white shadow-soft-sm">
+            <span className="inline-flex rounded-full bg-linear-to-r from-leo-blue-dark to-leo-blue px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-white shadow-soft-sm">
               {site.motto}
             </span>
           </Reveal>
@@ -24,7 +24,7 @@ export function Hero() {
               <br />
               Experience,
               <br />
-              <span className="bg-linear-to-r from-leo-violet-light to-leo-blue-light bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-leo-cyan to-leo-blue-light bg-clip-text text-transparent">
                 Opportunity.
               </span>
             </h1>
@@ -57,7 +57,7 @@ export function Hero() {
           <Reveal delay={stagger(4, 100)}>
             <div aria-hidden className="mt-6 flex items-center gap-2 text-white/40">
               <span className="h-px w-6 bg-current" />
-              <span className="h-1.5 w-1.5 rounded-full bg-leo-violet-light" />
+              <span className="h-1.5 w-1.5 rounded-full bg-leo-cyan" />
               <span className="h-px w-6 bg-current" />
             </div>
           </Reveal>

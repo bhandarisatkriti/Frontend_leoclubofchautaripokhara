@@ -6,7 +6,7 @@ import { stagger } from "@/app/lib/motion";
 
 const toneClasses = {
   blue: "text-leo-blue-light border-leo-blue/40",
-  violet: "text-leo-violet-light border-leo-violet/40",
+  navy: "text-white border-white/30",
   cyan: "text-leo-cyan border-leo-cyan/40",
 } as const;
 
@@ -21,7 +21,7 @@ const activities = [
     title: "Leadership Development",
     body: "Plan, lead, and run real service projects from the ground up.",
     icon: <path d="M12 2 2 8.5 12 15l10-6.5L12 2Zm0 10.7L2 6.2v11.6l10 6.2 10-6.2V6.2l-10 6.5Z" />,
-    tone: "violet" as const,
+    tone: "navy" as const,
   },
   {
     title: "Education & Youth",
@@ -39,7 +39,7 @@ const activities = [
     title: "Environment",
     body: "Tree plantation, clean-up campaigns, and conservation work.",
     icon: <path d="M12 2 7 10h3l-4 7h4v5h4v-5h4l-4-7h3L12 2Z" />,
-    tone: "violet" as const,
+    tone: "navy" as const,
   },
   {
     title: "Networking",
