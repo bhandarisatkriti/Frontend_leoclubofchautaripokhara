@@ -1,69 +1,57 @@
 import type { Metadata } from "next";
+import { ArticleCard, type Article } from "@/app/components/news/article-card";
 import { EmptyState, PageHeader } from "@/app/components/page-header";
+import { Container } from "@/app/components/ui/container";
+import { Reveal } from "@/app/components/ui/reveal";
 import { apiFetchOr, endpoints, type Paginated } from "@/app/lib/api";
+import { stagger } from "@/app/lib/motion";
 
 export const metadata: Metadata = {
   title: "News",
   description: "Announcements and updates from the club.",
 };
 
-type Article = {
-  id: number;
-  title: string;
-  excerpt?: string | null;
-  content?: string | null;
-  published_at?: string | null;
-};
-
-const dateFormat = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
-
 export default async function NewsPage() {
   const data = await apiFetchOr<Paginated<Article> | Article[]>(
     endpoints.news,
     [],
   );
-  const articles = Array.isArray(data) ? data : data.results;
+  const articles = [...(Array.isArray(data) ? data : data.results)].sort((a, b) => {
+    const aTime = a.published_at ? new Date(a.published_at).valueOf() : 0;
+    const bTime = b.published_at ? new Date(b.published_at).valueOf() : 0;
+    return bTime - aTime;
+  });
+
+  const [featured, ...rest] = articles;
 
   return (
     <>
       <PageHeader
-        title="News"
-        description="Announcements, project reports, and updates from the club."
+        kicker="News"
+        title="Announcements &amp; updates"
+        description="Project reports, announcements, and updates from the club."
       />
 
-      <div className="mx-auto max-w-3xl px-4 py-16">
+      <Container size="narrow" className="py-16 sm:py-20">
         {articles.length === 0 ? (
           <EmptyState message="Articles will appear here once they are published from the backend." />
         ) : (
-          <ul className="space-y-8">
-            {articles.map((article) => {
-              const published = article.published_at
-                ? new Date(article.published_at)
-                : null;
-              return (
-                <li
-                  key={article.id}
-                  className="border-b border-border pb-8 last:border-0"
-                >
-                  {published && !Number.isNaN(published.valueOf()) && (
-                    <p className="text-xs font-semibold uppercase tracking-widest text-leo-violet">
-                      {dateFormat.format(published)}
-                    </p>
-                  )}
-                  <h2 className="mt-2 text-xl font-semibold">{article.title}</h2>
-                  <p className="mt-2 text-muted">
-                    {article.excerpt ?? article.content}
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="space-y-6">
+            <Reveal>
+              <ArticleCard article={featured} featured />
+            </Reveal>
+            {rest.length > 0 && (
+              <div className="grid gap-6 sm:grid-cols-2">
+                {rest.map((article, i) => (
+                  <Reveal key={article.id} delay={stagger(i)}>
+                    <ArticleCard article={article} />
+                  </Reveal>
+                ))}
+              </div>
+            )}
+          </div>
         )}
-      </div>
+      </Container>
     </>
   );
 }

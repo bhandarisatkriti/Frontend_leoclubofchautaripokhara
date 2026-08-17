@@ -7,19 +7,53 @@ export const site = {
   email: "info@leoclubofchautaripokhara.org",
   phone: "+977-XXXXXXXXXX",
   address: "Pokhara, Gandaki Province, Nepal",
+  // Confirmed from the club's own Charter Night banner (public/images/hero/charter-night-cover.jpg).
+  sponsoringClub: "Lions Club of Pokhara Chautari" as string | null,
+  clubId: "74600",
   socials: {
     facebook: "https://facebook.com/",
     instagram: "https://instagram.com/",
   },
 } as const;
 
-export const navLinks = [
+/**
+ * Club history milestones. Only entries we can actually confirm — extend this
+ * array as real milestones are documented, never with invented dates.
+ */
+export const milestones = [
+  {
+    year: String(site.established),
+    title: "Club Chartered",
+    description: `${site.name} was officially chartered under ${site.district}, sponsored by the Lions Club of Pokhara Chautari.`,
+  },
+  {
+    year: "Today",
+    title: "Continuing the Journey",
+    description: "Still serving Pokhara, one project and one member at a time.",
+  },
+] as const;
+
+export type NavLink = {
+  href: string;
+  label: string;
+  children?: readonly { href: string; label: string }[];
+};
+
+export const navLinks: readonly NavLink[] = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/team", label: "Team" },
-  { href: "/events", label: "Events" },
   { href: "/gallery", label: "Gallery" },
-  { href: "/news", label: "News" },
-  { href: "/membership", label: "Membership" },
+  { href: "/resources", label: "Resources" },
+  {
+    href: "/events",
+    label: "Events & Calendar",
+    children: [
+      { href: "/events", label: "All Events" },
+      { href: "/events/calendar", label: "Calendar" },
+    ],
+  },
+  { href: "/team", label: "Team" },
+  { href: "/clubs", label: "Clubs" },
   { href: "/contact", label: "Contact" },
+  { href: "/join", label: "Join" },
 ] as const;

@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "localhost", port: "8000", pathname: "/media/**" },
     ],
   },
+  async redirects() {
+    return [{ source: "/membership", destination: "/join", permanent: true }];
+  },
 };
 
 export default nextConfig;
