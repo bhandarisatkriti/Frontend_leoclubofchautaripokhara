@@ -9,18 +9,47 @@ export const metadata: Metadata = {
   description: `Join ${site.name} — membership is open to young people aged 12–30 in and around Pokhara.`,
 };
 
+/**
+ * Field names match `MembershipApplicationCreateSerializer` on the backend.
+ * Hints mirror its validation rules so applicants see them before submitting.
+ */
 const fields: readonly Field[] = [
   { name: "full_name", label: "Full name", required: true },
   { name: "email", label: "Email", type: "email", required: true },
   { name: "phone", label: "Phone", type: "tel", required: true },
-  { name: "date_of_birth", label: "Date of birth", type: "date", required: true },
-  { name: "address", label: "Address", required: true },
+  {
+    name: "date_of_birth",
+    label: "Date of birth",
+    type: "date",
+    required: true,
+    hint: "You must be at least 12 years old to apply.",
+  },
+  { name: "address", label: "Address", required: true, full: true },
+  { name: "education", label: "Education" },
   { name: "occupation", label: "Occupation / Institution" },
   {
-    name: "motivation",
+    name: "skills",
+    label: "Skills",
+    type: "textarea",
+    placeholder: "e.g. event coordination, design, public speaking",
+  },
+  {
+    name: "previous_experience",
+    label: "Previous volunteering experience",
+    type: "textarea",
+  },
+  {
+    name: "social_media",
+    label: "Social media profile",
+    full: true,
+    placeholder: "Facebook or Instagram link (optional)",
+  },
+  {
+    name: "reason_for_joining",
     label: "Why do you want to join?",
     type: "textarea",
     required: true,
+    hint: "Please write at least 20 characters.",
   },
 ];
 

@@ -1,27 +1,17 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { EmptyState, PageHeader } from "@/app/components/page-header";
-import { apiFetchOr, endpoints, mediaUrl, type Paginated } from "@/app/lib/api";
+import { endpoints, fetchList, mediaUrl } from "@/app/lib/api";
+import type { TeamMember } from "@/app/lib/types";
 
 export const metadata: Metadata = {
   title: "Team",
   description: "Meet the office bearers and members serving this Leo year.",
 };
 
-type Member = {
-  id: number;
-  name: string;
-  position: string;
-  photo: string | null;
-  bio?: string | null;
-};
-
 export default async function TeamPage() {
-  const data = await apiFetchOr<Paginated<Member> | Member[]>(
-    endpoints.team,
-    [],
-  );
-  const members = Array.isArray(data) ? data : data.results;
+  // The API already returns active members ordered by `display_order`.
+  const members = await fetchList<TeamMember>(endpoints.team, { page_size: 100 });
 
   return (
     <>
@@ -36,7 +26,7 @@ export default async function TeamPage() {
         ) : (
           <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {members.map((member) => {
-              const photo = mediaUrl(member.photo);
+              const photo = mediaUrl(member.profile_image);
               return (
                 <li
                   key={member.id}
