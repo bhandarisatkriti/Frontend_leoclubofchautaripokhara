@@ -44,6 +44,19 @@
   --color-leo-green: #3fa535;
   --color-leo-charcoal: #0a1f44;
 
+  /* Admin dashboard palette. The public site is light; the dashboard is a
+     dark navy workspace, so it gets its own scale rather than reusing the
+     public surface tokens. */
+  --color-admin-bg: #061426;
+  --color-admin-panel: #0b1f3a;
+  --color-admin-card: #0d223d;
+  --color-admin-raised: #123b66;
+  --color-admin-border: #1e3a5f;
+  --color-admin-text: #f8fafc;
+  --color-admin-muted: #94a3b8;
+  --color-admin-accent: #2563eb;
+  --color-admin-accent-bright: #3b82f6;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
