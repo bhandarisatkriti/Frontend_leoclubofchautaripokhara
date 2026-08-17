@@ -1,12 +1,25 @@
 import Image from "next/image";
+import { getSiteImage } from "@/app/lib/api";
 
-/** The club's real Charter Night cover photo, with a readable gradient scrim for the hero copy. */
-export function HeroBackground() {
+/**
+ * Hero backdrop. Uses whatever an administrator placed in the HERO slot
+ * (Admin → Website images) and falls back to the checked-in Charter Night
+ * cover photo when none is set, so the hero is never blank.
+ */
+export async function HeroBackground() {
+  const placed = await getSiteImage("HERO");
+
+  const src = placed?.image ?? "/images/hero/charter-night-cover.jpg";
+  const alt =
+    placed?.alt_text ||
+    placed?.title ||
+    "Leo Club of Chautari Pokhara members at their 6th Charter Night ceremony";
+
   return (
     <>
       <Image
-        src="/images/hero/charter-night-cover.jpg"
-        alt="Leo Club of Chautari Pokhara members at their 6th Charter Night ceremony"
+        src={src}
+        alt={alt}
         fill
         priority
         sizes="100vw"

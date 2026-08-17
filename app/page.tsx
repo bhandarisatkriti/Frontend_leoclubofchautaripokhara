@@ -1,4 +1,4 @@
-import { AboutSection } from "@/app/components/home/about-section";
+import { AboutSection, type ClubAbout } from "@/app/components/home/about-section";
 import { GalleryStrip } from "@/app/components/home/gallery-strip";
 import { Hero } from "@/app/components/home/hero";
 import { MissionVisionCards } from "@/app/components/home/mission-vision-cards";
@@ -18,6 +18,7 @@ import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { SectionLabel } from "@/app/components/ui/section-label";
 import { apiFetchOr, endpoints, mediaUrl, type Paginated } from "@/app/lib/api";
+import type { ClubInformation } from "@/app/lib/types";
 import { localGalleryPhotos } from "@/app/lib/local-photos";
 import { type ResolvedPhoto } from "@/app/gallery/gallery-grid";
 import { stagger } from "@/app/lib/motion";
@@ -31,13 +32,24 @@ type BackendPhoto = {
 };
 
 export default async function Home() {
-  const [eventsData, teamData, photosData, newsData, clubStats] = await Promise.all([
+  const [eventsData, teamData, photosData, newsData, club] = await Promise.all([
     apiFetchOr<Paginated<LeoEvent> | LeoEvent[]>(endpoints.events, []),
     apiFetchOr<Paginated<Member> | Member[]>(endpoints.team, []),
     apiFetchOr<Paginated<BackendPhoto> | BackendPhoto[]>(endpoints.gallery, []),
     apiFetchOr<Paginated<Article> | Article[]>(endpoints.news, []),
-    apiFetchOr<ClubStats | null>(endpoints.club, null),
+    apiFetchOr<(ClubInformation & ClubStats & ClubAbout) | null>(endpoints.club, null),
   ]);
+
+  // The pagination envelope carries the full total, which the stat tiles need;
+  // a bare array (unpaginated endpoint) falls back to its own length.
+  const totalOf = <T,>(data: Paginated<T> | T[]) =>
+    Array.isArray(data) ? data.length : data.count;
+
+  const counts = {
+    members: totalOf(teamData),
+    events: totalOf(eventsData),
+    photos: totalOf(photosData),
+  };
 
   const events = [...(Array.isArray(eventsData) ? eventsData : eventsData.results)].sort(
     (a, b) => new Date(a.event_date).valueOf() - new Date(b.event_date).valueOf(),
@@ -64,9 +76,9 @@ export default async function Home() {
 
   return (
     <>
-      <Hero />
-      <AboutSection clubStats={clubStats} />
-      <MissionVisionCards />
+      <Hero heading={club?.name} description={club?.short_description} />
+      <AboutSection clubStats={club} club={club} counts={counts} />
+      <MissionVisionCards mission={club?.mission} vision={club?.vision} intro={club?.tagline} />
       <WhyJoinSection />
 
       <section className="bg-surface-blue py-16 sm:py-20">

@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { API_URL } from "@/app/lib/api";
 import { getAccessToken, refreshAccessToken } from "@/app/lib/admin/session";
@@ -66,6 +67,15 @@ async function forward(request: Request, pathParts: string[]) {
       { detail: "Could not reach the server." },
       { status: 502 },
     );
+  }
+
+  // A successful write means the public pages are now stale. Public fetches
+  // are cached for five minutes, so without this an administrator would save a
+  // change and not see it on the website for several minutes — the single most
+  // confusing thing a CMS can do. Purging here makes the update appear on the
+  // next page load instead.
+  if (res.ok && request.method !== "GET" && request.method !== "HEAD") {
+    revalidatePath("/", "layout");
   }
 
   // 204 and friends must not carry a body.

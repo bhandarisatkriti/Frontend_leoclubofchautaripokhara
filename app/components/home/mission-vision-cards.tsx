@@ -3,7 +3,7 @@ import { Reveal } from "@/app/components/ui/reveal";
 import { stagger } from "@/app/lib/motion";
 import { site } from "@/app/lib/site";
 
-const panels = [
+const fallbackPanels = [
   {
     title: "Mission",
     body: "To empower the youth of Pokhara and beyond by developing their leadership skills, fostering a sense of community service, and inspiring them to become compassionate and responsible global citizens.",
@@ -26,8 +26,26 @@ const panels = [
   },
 ];
 
-/** "About us" — the club's mission and vision statements. */
-export function MissionVisionCards() {
+/**
+ * "About us" — the club's mission and vision.
+ *
+ * Both statements come from the club profile (Admin -> Website content); the
+ * wording below is used only until an administrator fills them in.
+ */
+export function MissionVisionCards({
+  mission,
+  vision,
+  intro,
+}: {
+  mission?: string | null;
+  vision?: string | null;
+  intro?: string | null;
+} = {}) {
+  const panels = [
+    { ...fallbackPanels[0], body: mission || fallbackPanels[0].body },
+    { ...fallbackPanels[1], body: vision || fallbackPanels[1].body },
+  ];
+
   return (
     <section className="bg-surface-blue py-16 sm:py-20">
       <Container>
@@ -36,8 +54,8 @@ export function MissionVisionCards() {
             About us
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-balance text-muted">
-            The {site.name} empowers youth through leadership, service, and
-            global connections.
+            {intro ||
+              `The ${site.name} empowers youth through leadership, service, and global connections.`}
           </p>
         </Reveal>
 

@@ -74,19 +74,32 @@ export default async function AdminDashboardPage() {
       <section>
         <h2 className="sr-only">Statistics</h2>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {cards.map((card) => (
-            <Link
-              key={card.label}
-              href={card.href}
-              className="rounded-xl border border-admin-border bg-admin-card p-5 transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-admin-accent"
-            >
-              <p className="text-xs font-semibold uppercase tracking-widest text-admin-muted">
-                {card.label}
-              </p>
-              <p className="mt-3 text-3xl font-bold tabular-nums">{card.value}</p>
-              <p className="mt-1 text-xs text-admin-muted">{card.sub}</p>
-            </Link>
-          ))}
+          {cards.map((card) => {
+            const body = (
+              <>
+                <p className="text-xs font-semibold uppercase tracking-widest text-admin-muted">
+                  {card.label}
+                </p>
+                <p className="mt-3 text-3xl font-bold tabular-nums">{card.value}</p>
+                <p className="mt-1 text-xs text-admin-muted">{card.sub}</p>
+              </>
+            );
+            const base = "rounded-xl border border-admin-border bg-admin-card p-5";
+
+            return card.href ? (
+              <Link
+                key={card.label}
+                href={card.href}
+                className={`${base} transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-admin-accent`}
+              >
+                {body}
+              </Link>
+            ) : (
+              <div key={card.label} className={base}>
+                {body}
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -115,7 +128,6 @@ export default async function AdminDashboardPage() {
                     <th className="px-5 py-3 font-semibold">Contact</th>
                     <th className="px-5 py-3 font-semibold">Submitted</th>
                     <th className="px-5 py-3 font-semibold">Status</th>
-                    <th className="px-5 py-3" />
                   </tr>
                 </thead>
                 <tbody>
@@ -137,14 +149,6 @@ export default async function AdminDashboardPage() {
                         >
                           {row.status_display}
                         </span>
-                      </td>
-                      <td className="px-5 py-3 text-right">
-                        <Link
-                          href={`/admin/join-applications/${row.id}`}
-                          className="text-xs font-semibold text-admin-accent-bright hover:underline"
-                        >
-                          View
-                        </Link>
                       </td>
                     </tr>
                   ))}
