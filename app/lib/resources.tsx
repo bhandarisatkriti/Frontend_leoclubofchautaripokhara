@@ -100,7 +100,7 @@ export function resourceHref(resource: Resource): string | null {
 
 const iconToneClasses = {
   blue: "bg-leo-blue/10 text-leo-blue",
-  violet: "bg-leo-violet/10 text-leo-violet",
+  indigo: "bg-leo-indigo/10 text-leo-indigo",
   cyan: "bg-leo-cyan/10 text-leo-cyan",
   red: "bg-leo-red/10 text-leo-red",
   navy: "bg-leo-charcoal/10 text-leo-charcoal",

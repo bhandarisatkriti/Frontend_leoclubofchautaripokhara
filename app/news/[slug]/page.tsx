@@ -68,13 +68,8 @@ export default async function NewsDetailPage({
           </Link>
 
           <div className="mt-6">
-<<<<<<< HEAD:app/news/[slug]/page.tsx
-            {article.category && (
-              <SectionLabel tone="violet">{article.category.name}</SectionLabel>
-            )}
-=======
-            {article.category && <SectionLabel>{article.category}</SectionLabel>}
->>>>>>> a2025c71eaf0b3b292b07bd19c46b3c2b5bf73ad:app/news/[id]/page.tsx
+            {/* The API nests the category object, so render its name. */}
+            {article.category && <SectionLabel>{article.category.name}</SectionLabel>}
             <h1 className="mt-3 text-h1 font-bold tracking-tight">{article.title}</h1>
             {hasPublished && published && (
               <p className="mt-3 text-sm font-semibold uppercase tracking-widest text-muted">

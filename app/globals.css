@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
-/* Premium dark-blue brand system: deep navy for identity, royal blue as the
-   main accent, violet used sparingly as a secondary accent, cyan for tiny
-   highlights. Lions red is kept only for the real logo artwork and universal
-   "required field" UI, not as a theme color. */
+/* Dark-blue brand system: deep navy for identity, royal blue as the main
+   accent, indigo as the darker secondary accent, cyan for tiny highlights.
+   The palette is entirely blue — no violet. Lions red is kept only for the
+   real logo artwork and universal "required field" UI, not as a theme color. */
 :root {
   --background: #ffffff;
   --foreground: #101828;
@@ -34,9 +34,9 @@
   --color-on-navy-muted: var(--on-navy-muted);
 
   --color-leo-red: #e4002b;
-  --color-leo-violet: #6d35d6;
-  --color-leo-violet-dark: #5a28ad;
-  --color-leo-violet-light: #a78bfa;
+  --color-leo-indigo: #1e3a8a;
+  --color-leo-indigo-dark: #16307a;
+  --color-leo-indigo-light: #60a5fa;
   --color-leo-blue: #1e5eff;
   --color-leo-blue-dark: #1747c7;
   --color-leo-blue-light: #3b82f6;
@@ -58,7 +58,7 @@
   --shadow-soft-md: 0 12px 35px rgba(6, 20, 47, 0.08);
   --shadow-soft-lg: 0 24px 48px -12px rgba(6, 20, 47, 0.18);
   --shadow-glow-blue: 0 18px 45px -10px rgba(30, 94, 255, 0.28);
-  --shadow-glow-violet: 0 18px 45px -10px rgba(109, 53, 214, 0.28);
+  --shadow-glow-indigo: 0 18px 45px -10px rgba(30, 58, 138, 0.32);
 
   --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 180ms;

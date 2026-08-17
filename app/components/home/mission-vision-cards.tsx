@@ -32,7 +32,7 @@ export function MissionVisionCards() {
     <section className="bg-surface-blue py-16 sm:py-20">
       <Container>
         <Reveal className="text-center">
-          <h2 className="text-h2 font-bold tracking-tight text-leo-violet">
+          <h2 className="text-h2 font-bold tracking-tight text-leo-indigo">
             About us
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-balance text-muted">
@@ -45,7 +45,7 @@ export function MissionVisionCards() {
           {panels.map((panel, i) => (
             <Reveal key={panel.title} delay={stagger(i, 120)}>
               <article className="h-full bg-background p-8 shadow-soft-md sm:p-10">
-                <span className="flex h-11 w-11 items-center justify-center text-leo-violet">
+                <span className="flex h-11 w-11 items-center justify-center text-leo-indigo">
                   <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
                     {panel.icon}
                   </svg>

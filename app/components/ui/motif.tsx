@@ -1,6 +1,6 @@
 const toneGradients = {
   red: "from-leo-red/15 to-leo-blue/15",
-  violet: "from-leo-violet/12 to-leo-blue/18",
+  indigo: "from-leo-indigo/12 to-leo-blue/18",
   blue: "from-leo-blue/15 to-leo-cyan/15",
   green: "from-leo-green/15 to-leo-blue/15",
   navy: "",
@@ -8,7 +8,7 @@ const toneGradients = {
 
 const patternTone = {
   red: "text-leo-red",
-  violet: "text-leo-violet",
+  indigo: "text-leo-indigo",
   blue: "text-leo-blue",
   green: "text-leo-green",
   navy: "text-white",

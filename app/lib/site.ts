@@ -42,18 +42,9 @@ export type NavLink = {
 export const navLinks: readonly NavLink[] = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/resources", label: "Resources" },
-  {
-    href: "/events",
-    label: "Events & Calendar",
-    children: [
-      { href: "/events", label: "All Events" },
-      { href: "/events/calendar", label: "Calendar" },
-    ],
-  },
   { href: "/team", label: "Team" },
-  { href: "/clubs", label: "Clubs" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "/news", label: "News & Article" },
   { href: "/contact", label: "Contact" },
-  { href: "/join", label: "Join" },
+  { href: "/join", label: "Join Now" },
 ] as const;

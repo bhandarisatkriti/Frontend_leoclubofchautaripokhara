@@ -1,6 +1,6 @@
 const toneClasses = {
   blue: "text-leo-blue",
-  violet: "text-leo-violet",
+  indigo: "text-leo-indigo",
   cyan: "text-leo-cyan",
   navy: "text-on-navy-muted",
   red: "text-leo-red",

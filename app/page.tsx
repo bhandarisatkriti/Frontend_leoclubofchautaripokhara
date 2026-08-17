@@ -6,7 +6,8 @@ import { WhyJoinSection } from "@/app/components/home/why-join-section";
 import { type ClubStats } from "@/app/components/home/stats-grid";
 import { ArticleCard, type Article } from "@/app/components/news/article-card";
 import { EmptyState } from "@/app/components/page-header";
-import { TeamCard, type Member } from "@/app/components/team/team-card";
+import { TeamPreview } from "@/app/components/home/team-preview";
+import { type Member } from "@/app/components/team/team-card";
 import {
   CompactEventItem,
   FeaturedEventCard,
@@ -41,7 +42,7 @@ export default async function Home() {
   const events = [...(Array.isArray(eventsData) ? eventsData : eventsData.results)].sort(
     (a, b) => new Date(a.event_date).valueOf() - new Date(b.event_date).valueOf(),
   );
-  const team = (Array.isArray(teamData) ? teamData : teamData.results).slice(0, 4);
+  const team = (Array.isArray(teamData) ? teamData : teamData.results).slice(0, 3);
   const backendPhotos: ResolvedPhoto[] = (Array.isArray(photosData) ? photosData : photosData.results)
     .filter((photo) => photo.image)
     .map((photo) => ({ id: photo.id, src: mediaUrl(photo.image)!, caption: photo.description ?? photo.title }));
@@ -101,33 +102,7 @@ export default async function Home() {
         </Container>
       </section>
 
-      <section className="bg-background py-16 sm:py-20">
-        <Container>
-          <Reveal className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <SectionLabel>Meet the Team</SectionLabel>
-              <h2 className="mt-3 text-h2 font-bold tracking-tight">Our Leadership Team</h2>
-            </div>
-            <ButtonLink href="/team" variant="outline" withArrow>
-              View All Team
-            </ButtonLink>
-          </Reveal>
-
-          <div className="mt-10">
-            {team.length === 0 ? (
-              <EmptyState message="Team members will appear here once they are added in the Django admin." />
-            ) : (
-              <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {team.map((member, i) => (
-                  <Reveal key={member.id} as="li" delay={stagger(i)} className="list-none">
-                    <TeamCard member={member} />
-                  </Reveal>
-                ))}
-              </ul>
-            )}
-          </div>
-        </Container>
-      </section>
+      <TeamPreview team={team} />
 
       <GalleryStrip photos={photos} />
 
