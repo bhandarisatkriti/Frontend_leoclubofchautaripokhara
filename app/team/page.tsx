@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EmptyState, PageHeader } from "@/app/components/page-header";
+import { EmptyState } from "@/app/components/page-header";
 import { TeamCard, type Member } from "@/app/components/team/team-card";
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
@@ -20,12 +20,6 @@ export default async function TeamPage() {
 
   return (
     <>
-      <PageHeader
-        kicker="Meet our team"
-        title="The people behind the projects"
-        description="The office bearers and members leading the club this Leo year."
-      />
-
       <Container className="py-16 sm:py-20">
         {members.length === 0 ? (
           <EmptyState message="Team members will appear here once they are added in the Django admin." />
