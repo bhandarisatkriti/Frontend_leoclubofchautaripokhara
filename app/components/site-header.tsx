@@ -55,21 +55,20 @@ export function SiteHeader() {
     };
   }, [open]);
 
-  // On the homepage the hero runs up underneath, so the navigation rides the
-  // photograph until the page scrolls.
-  const overlay = pathname === "/" && !scrolled && !open;
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Backdrop only once scrolled — never a solid block over the hero. */}
+      {/* The bar is navy on every route. It used to go transparent over the
+          homepage hero, which meant the hero had to be pulled up underneath it
+          by exactly the header's height — and any mismatch showed as a strip of
+          white page background above the bar. A solid ground removes both the
+          coupling and that failure. */}
       <div
         aria-hidden
-        className={`absolute inset-0 border-b transition-[opacity,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] ${
-          overlay
-            ? "border-transparent bg-transparent opacity-0"
-            : "border-border bg-background/92 opacity-100 backdrop-blur-md"
+        className={`absolute inset-0 border-b border-white/10 bg-surface-navy transition-shadow duration-[var(--duration-base)] ${
+          scrolled ? "shadow-soft-lg" : ""
         }`}
       />
 
@@ -81,23 +80,17 @@ export function SiteHeader() {
             {/* Hairline ring that opens on hover — the mark's own accent. */}
             <span
               aria-hidden
-              className={`pointer-events-none absolute -inset-1.5 rounded-full border transition-[transform,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:scale-110 ${
-                overlay ? "border-white/25" : "border-leo-blue/25"
-              }`}
+              className="pointer-events-none absolute -inset-1.5 rounded-full border border-white/25 transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:scale-110"
             />
           </span>
           <span className="leading-[1.15]">
             <span
-              className={`block text-[13px] font-bold tracking-tight transition-colors duration-[var(--duration-base)] ${
-                overlay ? "text-white" : "text-foreground"
-              }`}
+              className="block text-[13px] font-bold tracking-tight text-white"
             >
               {site.shortName}
             </span>
             <span
-              className={`block text-[9px] font-semibold uppercase tracking-[0.22em] transition-colors duration-[var(--duration-base)] ${
-                overlay ? "text-leo-cyan" : "text-leo-blue"
-              }`}
+              className="block text-[9px] font-semibold uppercase tracking-[0.22em] text-leo-cyan"
             >
               Est. {site.established}
             </span>
@@ -114,22 +107,16 @@ export function SiteHeader() {
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 className={`group relative text-[12px] font-semibold uppercase tracking-[0.16em] transition-colors duration-[var(--duration-fast)] ${
-                  overlay
-                    ? active
-                      ? "text-leo-cyan"
-                      : "text-white/75 hover:text-white"
-                    : active
-                      ? "text-leo-blue"
-                      : "text-muted hover:text-foreground"
+                  active ? "text-leo-cyan" : "text-white/75 hover:text-white"
                 }`}
               >
                 {link.label}
                 {/* Rule grows from the left on hover. */}
                 <span
                   aria-hidden
-                  className={`absolute -bottom-1.5 left-0 h-px w-full origin-left transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] ${
-                    overlay ? "bg-leo-cyan" : "bg-leo-blue"
-                  } ${active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
+                  className={`absolute -bottom-1.5 left-0 h-px w-full origin-left bg-leo-cyan transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] ${
+                    active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  }`}
                 />
               </Link>
             );
@@ -138,11 +125,7 @@ export function SiteHeader() {
           {joinLink && (
             <Link
               href={joinLink.href}
-              className={`group relative ml-1 inline-flex items-center overflow-hidden border px-6 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-colors duration-[var(--duration-base)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan ${
-                overlay
-                  ? "border-white/30 text-white hover:border-leo-cyan"
-                  : "border-leo-blue/40 text-leo-blue hover:border-leo-blue"
-              }`}
+              className="group relative ml-1 inline-flex items-center overflow-hidden border border-white/30 px-6 py-3 text-[11px] font-bold uppercase tracking-[0.2em] text-white transition-colors duration-[var(--duration-base)] hover:border-leo-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan"
             >
               <span
                 aria-hidden
@@ -161,17 +144,13 @@ export function SiteHeader() {
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((value) => !value)}
-          className={`relative ml-auto flex h-11 w-11 flex-col items-center justify-center gap-[5px] border transition-colors duration-[var(--duration-base)] lg:hidden ${
-            open || !overlay ? "border-border" : "border-white/30"
-          }`}
+          className="relative ml-auto flex h-11 w-11 flex-col items-center justify-center gap-[5px] border border-white/30 transition-colors duration-[var(--duration-base)] lg:hidden"
         >
           {[0, 1].map((bar) => (
             <span
               key={bar}
               aria-hidden
-              className={`block h-px w-5 transition-[transform,background-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] ${
-                open || !overlay ? "bg-foreground" : "bg-white"
-              } ${
+              className={`block h-px w-5 bg-white transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] ${
                 open
                   ? bar === 0
                     ? "translate-y-[3px] rotate-45"

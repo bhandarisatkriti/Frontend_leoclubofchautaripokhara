@@ -18,11 +18,6 @@
   --on-navy: #f5f8ff;
   --on-navy-muted: #a9b6d6;
 
-  /* Height of the site header (logo 46px + 2 x 20px padding). The homepage
-     hero pulls itself up by exactly this so the photograph runs underneath
-     the transparent navigation. Keep the two in step: if they drift, the
-     header's white lettering lands on the white page body and vanishes. */
-  --header-h: 5.375rem;
 }
 
 @theme inline {

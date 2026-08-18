@@ -5,11 +5,6 @@ import { site } from "@/app/lib/site";
 /**
  * Homepage masthead.
  *
- * The section is pulled up by the header's height (`-mt-[var(--header-h)]`) so the
- * photograph runs underneath it. That is what makes the transparent
- * overlay navigation legible: without it the header's white lettering sits
- * on the white page body and disappears.
- *
  * The photograph is full-bleed behind a left-weighted scrim, so the copy always
  * has a dark field to sit on and never collides with faces in the picture. An
  * earlier version cut the photo on a slant beside the text; the two fought each
@@ -35,7 +30,7 @@ const masthead: [string, string][] = [
 
 export function Hero({ description }: { description?: string | null } = {}) {
   return (
-    <section className="relative isolate -mt-[5.5rem] flex min-h-[38rem] flex-col justify-end overflow-hidden bg-surface-navy pb-10 pt-40 sm:min-h-[44rem] sm:pt-44 lg:min-h-[calc(100svh-1rem)] lg:max-h-[56rem] lg:pb-12">
+    <section className="relative isolate flex min-h-[38rem] flex-col justify-end overflow-hidden bg-surface-navy pb-10 pt-24 sm:min-h-[44rem] sm:pt-28 lg:min-h-[calc(100svh-1rem)] lg:max-h-[56rem] lg:pb-12">
       {/* Photograph, full width behind everything. */}
       <div className="absolute inset-0 -z-10">
         <HeroBackground />
