@@ -40,28 +40,6 @@ export function whoWeAreParagraphs(description?: string | null): string[] {
   return paragraphs.length ? paragraphs : whoWeAre;
 }
 
-/**
- * Club history milestones. Only entries we can actually confirm — extend this
- * array as real milestones are documented, never with invented dates.
- */
-export const milestones = [
-  {
-    year: String(site.established),
-    title: "Club Chartered",
-    description: `${site.name} was officially chartered under ${site.district}, sponsored by the Lions Club of Pokhara Chautari.`,
-  },
-  {
-    year: "2010s",
-    title: "Growing Our Reach",
-    description: "Years of expanding community projects, leadership development, and collaboration across Pokhara and beyond.",
-  },
-  {
-    year: "Today",
-    title: "Continuing the Journey",
-    description: "Still serving Pokhara, one project and one member at a time.",
-  },
-] as const;
-
 export type NavLink = {
   href: string;
   label: string;
