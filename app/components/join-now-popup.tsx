@@ -158,7 +158,7 @@ export function JoinNowPopup({
         {/* Thin accent line across the top. */}
         <span
           aria-hidden
-          className="absolute inset-x-0 top-0 z-20 h-[3px] bg-linear-to-r from-leo-cyan via-leo-blue to-leo-indigo"
+          className="absolute inset-x-0 top-0 z-20 h-[3px] bg-leo-blue"
         />
 
         <button
@@ -187,7 +187,7 @@ export function JoinNowPopup({
               On mobile the CTA is lifted above the benefits (order-2) so the
               headline and the button are both reachable without scrolling.
           ------------------------------------------------------------- */}
-          <div className="flex flex-col gap-7 p-6 pt-8 sm:p-9 lg:col-span-7 lg:p-11">
+          <div className="flex flex-col gap-8 p-6 pt-9 sm:gap-9 sm:p-9 sm:pt-10 lg:col-span-7 lg:p-10 lg:pt-11">
             <div className="order-1">
               <div className="flex items-center gap-3">
                 <span className="relative flex h-11 w-11 shrink-0 overflow-hidden rounded-full bg-white shadow-soft-sm ring-1 ring-white/20">
@@ -206,11 +206,11 @@ export function JoinNowPopup({
 
               <h2
                 id="join-popup-title"
-                className="mt-6 font-display text-[clamp(1.9rem,4.4vw,2.85rem)] font-bold leading-[1.08] tracking-[-0.015em] text-white"
+                className="mt-7 font-display text-[clamp(1.9rem,4.4vw,2.85rem)] font-bold leading-[1.08] tracking-[-0.015em] text-white"
               >
                 {before}
                 {accent && (
-                  <span className="bg-linear-to-r from-leo-cyan to-leo-blue-light bg-clip-text text-transparent">
+                  <span className="text-leo-blue-light">
                     {accent}
                   </span>
                 )}
@@ -219,7 +219,7 @@ export function JoinNowPopup({
 
               <p
                 id="join-popup-description"
-                className="mt-4 max-w-md text-sm leading-relaxed text-on-navy-muted sm:text-base"
+                className="mt-5 max-w-md text-sm leading-relaxed text-on-navy-muted sm:text-base"
               >
                 {config.description}
               </p>
@@ -229,12 +229,12 @@ export function JoinNowPopup({
               <Link
                 href={config.ctaHref}
                 onClick={close}
-                className="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-linear-to-r from-leo-blue-dark via-leo-blue to-leo-blue-light py-4 pl-8 pr-4 text-sm font-bold uppercase tracking-[0.08em] text-white shadow-glow-blue transition-[transform,box-shadow] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-0.5 hover:shadow-soft-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-surface-navy sm:w-auto sm:min-w-[17rem] sm:text-base"
+                className="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-leo-blue py-4 pl-9 pr-3 text-sm font-bold uppercase tracking-[0.08em] text-white shadow-glow-blue transition-[transform,background-color,box-shadow] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-0.5 hover:bg-leo-blue-dark hover:shadow-soft-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-surface-navy sm:w-auto sm:min-w-[17rem] sm:text-base"
               >
                 {config.ctaLabel}
                 <span
                   aria-hidden
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-white/18 transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:translate-x-1"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:translate-x-1"
                 >
                   <svg
                     width="16"
@@ -265,7 +265,7 @@ export function JoinNowPopup({
               )}
             </div>
 
-            <ul className="order-3 space-y-3 lg:order-2">
+            <ul className="order-3 space-y-4 lg:order-2">
               {config.benefits.map((benefit) => (
                 <li
                   key={benefit}
@@ -297,19 +297,14 @@ export function JoinNowPopup({
           {/* -------------------------------------------------------------
               Right: the supporting membership panel.
           ------------------------------------------------------------- */}
-          <div className="relative flex flex-col gap-5 border-t border-white/10 bg-linear-to-b from-surface-navy-soft to-surface-navy-deep p-6 sm:p-9 lg:col-span-5 lg:border-l lg:border-t-0 lg:p-8">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-leo-cyan/15 blur-3xl"
-            />
-
+          <div className="relative flex flex-col gap-6 border-t border-white/10 bg-surface-navy-soft p-6 sm:p-9 lg:col-span-5 lg:border-l lg:border-t-0 lg:p-10 lg:pt-11">
             <div className="relative">
               <p className="section-label text-leo-cyan">{config.panelLabel}</p>
-              <p className="mt-3 text-sm text-on-navy-muted">{config.panelIntro}</p>
-              <h3 className="mt-4 text-h3 font-bold tracking-tight text-white">
+              <p className="mt-2.5 text-sm text-on-navy-muted">{config.panelIntro}</p>
+              <h3 className="mt-6 text-h3 font-bold tracking-tight text-white">
                 {config.panelHeadline}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-on-navy-muted">
+              <p className="mt-3.5 text-sm leading-relaxed text-on-navy-muted">
                 {config.panelBody}
               </p>
             </div>

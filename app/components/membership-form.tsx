@@ -361,7 +361,7 @@ export function MembershipForm() {
   }
 
   return (
-    <div className="w-full space-y-3">
+    <div className="mx-auto w-full max-w-3xl space-y-3">
       {/* Header card, with the accent bar a Google Form carries at the top. */}
       <div className="overflow-hidden rounded-lg border border-border bg-background shadow-soft-sm">
         <span aria-hidden className="block h-2.5 bg-linear-to-r from-leo-blue-dark via-leo-blue to-leo-cyan" />
