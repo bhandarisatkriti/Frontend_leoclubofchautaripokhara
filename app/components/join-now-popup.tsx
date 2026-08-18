@@ -35,8 +35,11 @@ type Phase = "idle" | "open" | "closing" | "done";
  */
 export function JoinNowPopup({
   config,
+  qrSvg,
 }: {
   config: JoinPopupConfig;
+  /** Pre-rendered SVG from `joinQrSvg()`; omitted when encoding failed. */
+  qrSvg?: string | null;
 }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -310,6 +313,26 @@ export function JoinNowPopup({
                 {config.panelBody}
               </p>
             </div>
+
+            {qrSvg && (
+              <div className="relative flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+                <div
+                  // The SVG is generated server-side by our own encoder, not
+                  // from user input, so there is nothing here to sanitise.
+                  dangerouslySetInnerHTML={{ __html: qrSvg }}
+                  className="h-24 w-24 shrink-0 rounded-lg bg-white p-2 [&>svg]:h-full [&>svg]:w-full"
+                  aria-hidden
+                />
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-white">
+                    Join from your phone
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed text-on-navy-muted">
+                    {config.qrCaption}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

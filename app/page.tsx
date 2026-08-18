@@ -3,6 +3,7 @@ import { GalleryStrip } from "@/app/components/home/gallery-strip";
 import { Hero } from "@/app/components/home/hero";
 import { JoinNowPopup } from "@/app/components/join-now-popup";
 import { joinPopupConfig } from "@/app/lib/join-popup";
+import { joinQrSvg } from "@/app/lib/join-qr";
 import { MissionVisionCards } from "@/app/components/home/mission-vision-cards";
 import { WhyJoinSection } from "@/app/components/home/why-join-section";
 import { type ClubStats } from "@/app/components/home/stats-grid";
@@ -73,13 +74,16 @@ export default async function Home() {
     })
     .slice(0, 4);
 
+  // Encoded on the server so the QR library never reaches the browser.
+  const qrSvg = await joinQrSvg();
+
   const [featuredEvent, ...secondaryEvents] = events;
   const compactEvents = secondaryEvents.slice(0, 2);
 
   return (
     <>
       {/* Membership conversion popup — homepage only. See app/lib/join-popup.ts. */}
-      <JoinNowPopup config={joinPopupConfig} />
+      <JoinNowPopup config={joinPopupConfig} qrSvg={qrSvg} />
 
       <Hero heading={club?.name} description={club?.short_description} />
       <AboutSection clubStats={club} club={club} counts={counts} />

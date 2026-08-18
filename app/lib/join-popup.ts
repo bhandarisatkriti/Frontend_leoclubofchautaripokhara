@@ -42,6 +42,9 @@ export type JoinPopupConfig = {
 
   logoSrc: string;
 
+  /** Caption under the QR code. */
+  qrCaption: string;
+
   panelLabel: string;
   panelHeadline: string;
   panelIntro: string;
@@ -92,6 +95,8 @@ export const joinPopupConfig: JoinPopupConfig = {
   signInLabel: "Sign in",
 
   logoSrc: "/logo.png",
+
+  qrCaption: "Scan to open the form on your phone",
 
   panelLabel: "Ready to join?",
   panelHeadline: "Join our community",
