@@ -12,12 +12,13 @@ export const metadata: Metadata = {
 };
 
 /**
- * Article index: a lead story, then the rest as full-width rows.
+ * Article index: one uniform row per story on a tinted ground.
  *
- * Rows rather than a grid because headlines here are long — a three-column
- * grid wraps most of them to four lines and truncates the excerpt to nothing,
- * whereas a row gives the title room to breathe and still shows enough of the
- * opening to decide on.
+ * An earlier version gave the newest story an oversized lead treatment. With
+ * every other story in a different, smaller format the page read as two
+ * unrelated halves — and a featured image that happened to be a crest rather
+ * than a photograph dominated the screen. Identical rows scan far better and
+ * stay predictable however many stories exist.
  */
 export default async function NewsPage() {
   const data = await apiFetchOr<Paginated<Article> | Article[]>(endpoints.news, []);
@@ -28,48 +29,30 @@ export default async function NewsPage() {
     return bTime - aTime;
   });
 
-  if (articles.length === 0) {
-    return (
-      <Container className="py-20 sm:py-24">
-        <EmptyState message="Articles will appear here once they are published from the backend." />
-      </Container>
-    );
-  }
-
-  const [lead, ...rest] = articles;
-
   return (
-    <Container className="py-14 sm:py-20">
-      <Reveal className="flex flex-wrap items-baseline justify-between gap-4 border-b border-border pb-5">
-        <h1 className="font-display text-[clamp(1.625rem,3vw,2.25rem)] font-bold leading-none tracking-tight">
-          Newsroom
-        </h1>
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted">
-          {articles.length} {articles.length === 1 ? "story" : "stories"}
-        </p>
-      </Reveal>
-
-      {/* Lead story keeps the larger treatment so the page has a clear entry. */}
-      <div className="mt-10">
-        <Reveal>
-          <ArticleCard article={lead} variant="lead" />
+    <section className="bg-surface-blue py-14 sm:py-20">
+      <Container>
+        <Reveal className="flex flex-wrap items-baseline justify-between gap-4 border-b border-border pb-5">
+          <h1 className="font-display text-[clamp(1.625rem,3vw,2.25rem)] font-bold leading-none tracking-tight">
+            Newsroom
+          </h1>
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted">
+            {articles.length} {articles.length === 1 ? "story" : "stories"}
+          </p>
         </Reveal>
-      </div>
 
-      {rest.length > 0 && (
-        <div className="mt-14 border-t border-border pt-10">
-          <Reveal>
-            <h2 className="section-label text-leo-blue">More stories</h2>
-          </Reveal>
-          <div className="mt-8 space-y-6">
-            {rest.map((article, i) => (
+        <div className="mt-8 space-y-5 sm:mt-10 sm:space-y-6">
+          {articles.length === 0 ? (
+            <EmptyState message="Articles will appear here once they are published from the backend." />
+          ) : (
+            articles.map((article, i) => (
               <Reveal key={article.id} delay={stagger(i, 70)}>
                 <ArticleCard article={article} variant="row" />
               </Reveal>
-            ))}
-          </div>
+            ))
+          )}
         </div>
-      )}
-    </Container>
+      </Container>
+    </section>
   );
 }

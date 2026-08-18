@@ -116,7 +116,7 @@ export function ArticleCard({
     return (
       <Link
         href={href}
-        className="group grid gap-0 overflow-hidden rounded-xl border border-border bg-background shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-0.5 hover:border-leo-blue/30 hover:shadow-soft-md sm:grid-cols-[minmax(0,17rem)_1fr]"
+        className="group grid gap-0 overflow-hidden rounded-xl border border-border bg-background shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-0.5 hover:border-leo-blue/30 hover:shadow-soft-md sm:grid-cols-[minmax(0,20rem)_1fr]"
       >
         <div className="relative aspect-16/10 overflow-hidden bg-surface sm:aspect-auto sm:h-full sm:min-h-[13rem]">
           {image ? (
@@ -124,7 +124,7 @@ export function ArticleCard({
               src={image}
               alt={article.title}
               fill
-              sizes="(max-width: 640px) 100vw, 17rem"
+              sizes="(max-width: 640px) 100vw, 20rem"
               className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.04]"
             />
           ) : (
@@ -133,14 +133,14 @@ export function ArticleCard({
         </div>
 
         <div className="flex flex-col justify-center p-5 sm:p-6">
-          <h3 className="text-[0.9375rem] font-bold leading-snug tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue sm:text-[1.0625rem]">
+          <h3 className="text-[1.0625rem] font-bold leading-snug tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue sm:text-[1.1875rem]">
             {article.title}
           </h3>
           <div className="mt-2.5">
             <Meta article={article} />
           </div>
           {(article.excerpt || article.content) && (
-            <p className="mt-2.5 line-clamp-2 text-[0.875rem] leading-relaxed text-muted">
+            <p className="mt-3 line-clamp-3 text-[0.875rem] leading-relaxed text-muted">
               {article.excerpt ?? article.content}
             </p>
           )}
