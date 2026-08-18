@@ -77,14 +77,14 @@ export function AboutSection({
               {collage.map((frame) => (
                 <div
                   key={frame.src}
-                  className={`${frame.className} overflow-hidden shadow-soft-md ring-4 ring-background`}
+                  className={`${frame.className} group overflow-hidden shadow-soft-md ring-4 ring-background transition-[translate,scale,box-shadow] duration-[var(--duration-slow)] ease-[var(--ease-premium)] hover:z-10 hover:scale-[1.03] hover:shadow-soft-lg`}
                 >
                   <Image
                     src={frame.src}
                     alt={frame.alt}
                     fill
                     sizes={frame.sizes}
-                    className="object-cover"
+                    className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-105"
                   />
                 </div>
               ))}

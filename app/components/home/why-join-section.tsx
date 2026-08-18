@@ -69,10 +69,10 @@ export function WhyJoinSection() {
                 <Reveal
                   key={benefit.title}
                   delay={stagger(i)}
-                  className="relative px-4 xl:border-r xl:border-white/10 xl:last:border-r-0"
+                  className="group relative px-4 xl:border-r xl:border-white/10 xl:last:border-r-0"
                 >
                   <span
-                    className={`flex h-12 w-12 items-center justify-center rounded-full bg-white/10 ${iconToneClasses[benefit.tone]}`}
+                    className={`flex h-12 w-12 items-center justify-center rounded-full bg-white/10 transition-[translate,background-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:-translate-y-1 group-hover:bg-white/20 ${iconToneClasses[benefit.tone]}`}
                   >
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                       {benefit.icon}

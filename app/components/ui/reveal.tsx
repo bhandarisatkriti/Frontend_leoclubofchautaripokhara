@@ -34,6 +34,16 @@ export function Reveal({
     const node = ref.current;
     if (!node) return;
 
+    // Anything already above the viewport will never intersect again once
+    // `once` unobserves, so it would stay at opacity 0 permanently. That
+    // happens whenever the browser restores a scroll position on reload, or
+    // when someone scrolls past a section before hydration attaches the
+    // observer. Reveal those immediately instead.
+    if (node.getBoundingClientRect().bottom <= 0) {
+      setVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

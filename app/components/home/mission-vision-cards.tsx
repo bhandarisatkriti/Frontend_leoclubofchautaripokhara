@@ -60,9 +60,13 @@ export function MissionVisionCards({
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 sm:gap-8">
           {panels.map((panel, i) => (
-            <Reveal key={panel.title} delay={stagger(i, 120)}>
-              <article className="h-full bg-background p-8 shadow-soft-md sm:p-10">
-                <span className="flex h-11 w-11 items-center justify-center text-leo-blue">
+            <Reveal
+              key={panel.title}
+              delay={stagger(i, 120)}
+              direction={i === 0 ? "right" : "left"}
+            >
+              <article className="group h-full border-t-2 border-transparent bg-background p-8 shadow-soft-md transition-[translate,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1.5 hover:border-leo-blue hover:shadow-soft-lg sm:p-10">
+                <span className="flex h-11 w-11 items-center justify-center text-leo-blue transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:-translate-y-0.5 group-hover:scale-110">
                   <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
                     {panel.icon}
                   </svg>
