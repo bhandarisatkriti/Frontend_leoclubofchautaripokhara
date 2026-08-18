@@ -1,4 +1,5 @@
 import { AboutSection, type ClubAbout } from "@/app/components/home/about-section";
+import { CreedBand } from "@/app/components/home/creed-band";
 import { Hero } from "@/app/components/home/hero";
 import { JoinNowPopup } from "@/app/components/join-now-popup";
 import { joinPopupConfig } from "@/app/lib/join-popup";
@@ -68,6 +69,7 @@ export default async function Home() {
       <JoinNowPopup config={joinPopupConfig} qrSvg={qrSvg} />
 
       <Hero heading={club?.name} description={club?.short_description} />
+      <CreedBand />
       <AboutSection clubStats={club} club={club} counts={counts} />
       <MissionVisionCards mission={club?.mission} vision={club?.vision} intro={club?.tagline} />
       <WhyJoinSection />
@@ -107,7 +109,7 @@ export default async function Home() {
 
       <section className="bg-background py-16 sm:py-20">
         <Container>
-          <Reveal className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(100deg,#06142F_0%,#1747C7_55%,#38BDF8_100%)] px-6 py-12 text-center text-white sm:px-12 sm:py-14 lg:flex lg:items-center lg:justify-between lg:text-left">
+          <Reveal className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(105deg,#06142F_0%,#1E3A8A_45%,#1E5EFF_100%)] px-6 py-12 text-center text-white sm:px-12 sm:py-14 lg:flex lg:items-center lg:justify-between lg:text-left">
             <div
               aria-hidden
               className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 animate-float-slow rounded-full bg-white/10 blur-3xl"

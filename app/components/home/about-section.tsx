@@ -70,7 +70,7 @@ export function AboutSection({
             />
             <div
               aria-hidden
-              className="pointer-events-none absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-leo-violet/15 blur-3xl"
+              className="pointer-events-none absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-leo-indigo/20 blur-3xl"
             />
 
             <div className="relative aspect-4/5 w-full sm:aspect-[5/4] lg:aspect-4/5">
@@ -101,7 +101,7 @@ export function AboutSection({
             {/* Short accent rule to anchor the heading to the copy. */}
             <div
               aria-hidden
-              className="mt-5 h-1 w-14 rounded-full bg-linear-to-r from-leo-blue to-leo-violet"
+              className="mt-5 h-1 w-14 rounded-full bg-linear-to-r from-leo-blue to-leo-indigo"
             />
 
             <div className="mt-6 max-w-[60ch] space-y-4">

@@ -113,6 +113,7 @@
   --animate-hero-zoom: hero-zoom 18s var(--ease-premium) forwards;
   --animate-float-slow: float 12s ease-in-out infinite;
   --animate-float-slower: float 16s ease-in-out infinite;
+  --animate-marquee: marquee 38s linear infinite;
   --animate-join-popup: join-popup var(--duration-base) var(--ease-premium) both;
 
   /* Membership popup — see app/components/join-now-popup.tsx. */
@@ -178,6 +179,17 @@
   }
   to {
     transform: scale(1.06);
+  }
+}
+
+/* Continuous horizontal scroll. The track holds the content twice, so
+   travelling exactly -50% lands on the copy and loops seamlessly. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 
