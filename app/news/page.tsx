@@ -41,7 +41,7 @@ export default async function NewsPage() {
   return (
     <Container className="py-14 sm:py-20">
       <Reveal className="flex flex-wrap items-baseline justify-between gap-4 border-b border-border pb-5">
-        <h1 className="font-display text-[clamp(2rem,4.5vw,3.25rem)] font-bold leading-none tracking-tight">
+        <h1 className="font-display text-[clamp(1.625rem,3vw,2.25rem)] font-bold leading-none tracking-tight">
           Newsroom
         </h1>
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted">
@@ -50,14 +50,14 @@ export default async function NewsPage() {
       </Reveal>
 
       {/* Lead story keeps the larger treatment so the page has a clear entry. */}
-      <div className="mt-12">
+      <div className="mt-10">
         <Reveal>
           <ArticleCard article={lead} variant="lead" />
         </Reveal>
       </div>
 
       {rest.length > 0 && (
-        <div className="mt-16 border-t border-border pt-12">
+        <div className="mt-14 border-t border-border pt-10">
           <Reveal>
             <h2 className="section-label text-leo-blue">More stories</h2>
           </Reveal>

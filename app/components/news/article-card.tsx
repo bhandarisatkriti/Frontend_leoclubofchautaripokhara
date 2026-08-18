@@ -57,7 +57,7 @@ function Meta({
   ].filter(Boolean);
 
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold uppercase tracking-[0.14em]">
+    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] font-semibold uppercase tracking-[0.12em]">
       {article.category && (
         <span className={accent}>{article.category.name}</span>
       )}
@@ -132,19 +132,19 @@ export function ArticleCard({
           )}
         </div>
 
-        <div className="flex flex-col justify-center p-6 sm:p-7">
-          <h3 className="text-[1.0625rem] font-bold leading-snug tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue sm:text-[1.1875rem]">
+        <div className="flex flex-col justify-center p-5 sm:p-6">
+          <h3 className="text-[0.9375rem] font-bold leading-snug tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue sm:text-[1.0625rem]">
             {article.title}
           </h3>
           <div className="mt-2.5">
             <Meta article={article} />
           </div>
           {(article.excerpt || article.content) && (
-            <p className="mt-3.5 line-clamp-3 text-[0.9375rem] leading-relaxed text-muted">
+            <p className="mt-2.5 line-clamp-2 text-[0.875rem] leading-relaxed text-muted">
               {article.excerpt ?? article.content}
             </p>
           )}
-          <span className="mt-5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-leo-blue">
+          <span className="mt-4 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-leo-blue">
             Read more
             <span
               aria-hidden
@@ -160,7 +160,7 @@ export function ArticleCard({
 
   if (variant === "lead") {
     return (
-      <Link href={href} className="group grid gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-10">
+      <Link href={href} className="group grid gap-7 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:gap-9">
         <div className="relative aspect-16/10 overflow-hidden rounded-xl bg-surface">
           {image ? (
             <Image
@@ -178,15 +178,15 @@ export function ArticleCard({
 
         <div>
           <Meta article={article} />
-          <h2 className="mt-3 font-display text-[clamp(1.375rem,2.1vw,1.875rem)] font-bold leading-[1.15] tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue">
+          <h2 className="mt-3 font-display text-[clamp(1.1875rem,1.5vw,1.5rem)] font-bold leading-[1.22] tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue">
             {article.title}
           </h2>
           {(article.excerpt || article.content) && (
-            <p className="mt-3 line-clamp-3 text-[0.9375rem] leading-relaxed text-muted">
+            <p className="mt-2.5 line-clamp-3 text-[0.875rem] leading-relaxed text-muted">
               {article.excerpt ?? article.content}
             </p>
           )}
-          <span className="mt-5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-leo-blue">
+          <span className="mt-4 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-leo-blue">
             Read the story
           </span>
         </div>
