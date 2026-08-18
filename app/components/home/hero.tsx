@@ -3,112 +3,96 @@ import { HeroBackground } from "@/app/components/home/hero-background";
 import { site } from "@/app/lib/site";
 
 /**
- * The masthead of the site: an editorial spread, not a centred hero stack.
+ * Homepage masthead.
  *
- * The composition is deliberately asymmetric — an oversized indented word
- * column on the left, the club photograph cut on a slant from the right, and
- * publication-style metadata pinned to the edges. The signature element is
- * that metadata: real coordinates, the charter year and the district, set the
- * way a printed masthead would carry them.
+ * The photograph is full-bleed behind a left-weighted scrim, so the copy always
+ * has a dark field to sit on and never collides with faces in the picture. An
+ * earlier version cut the photo on a slant beside the text; the two fought each
+ * other at most widths, which is what made the composition read as broken.
  *
- * The three words are what LEO actually stands for, so the headline states the
- * organisation's own identity rather than marketing copy. `description` stays
- * admin-editable through the club profile.
+ * The signature is the editorial metadata: real Pokhara coordinates, the
+ * charter year and the district, ruled off along the bottom the way a printed
+ * masthead carries them.
+ *
+ * The three words are what LEO stands for, so the headline states the club's
+ * own identity. `description` stays admin-editable through the club profile.
  */
 
-/** The Leo triad — the club's identity, and the spine of the composition. */
-const triad = [
-  { word: "Leadership", indent: "lg:ml-0" },
-  { word: "Experience", indent: "lg:ml-[7%]" },
-  { word: "Opportunity", indent: "lg:ml-[14%]" },
-];
+const triad = ["Leadership", "Experience", "Opportunity"];
 
-/** Pokhara, to the minute. Real coordinates, set like a printed masthead. */
-const coordinates = "28°13′N 83°59′E";
-
-/** Site index — the rows light up when the matching nav item is hovered. */
-const index = [
-  { href: "/about", label: "About" },
-  { href: "/team", label: "Team" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/news", label: "News" },
-  { href: "/contact", label: "Contact" },
+/** Pokhara, to the minute. */
+const masthead: [string, string][] = [
+  ["Location", "Pokhara, Nepal"],
+  ["Coordinates", "28°13′N 83°59′E"],
+  ["Chartered", String(site.established)],
+  ["District", "LDC 325 J"],
 ];
 
 export function Hero({ description }: { description?: string | null } = {}) {
   return (
-    <section className="relative isolate -mt-24 flex min-h-[42rem] flex-col justify-center overflow-hidden bg-surface-navy pb-16 pt-32 sm:min-h-[46rem] sm:pt-36 lg:min-h-[calc(100svh-1rem)] lg:max-h-[54rem] lg:pb-20">
-      {/* Photograph, cut on a slant and bled off the right edge. */}
-      <div
-        className="hero-cut hero-wipe absolute inset-y-0 right-0 w-full lg:w-[58%]"
-        style={{ ["--rise-delay" as string]: "620ms" }}
-      >
+    <section className="relative isolate flex min-h-[38rem] flex-col justify-end overflow-hidden bg-surface-navy pb-10 pt-40 sm:min-h-[44rem] sm:pt-44 lg:min-h-[calc(100svh-1rem)] lg:max-h-[56rem] lg:pb-12">
+      {/* Photograph, full width behind everything. */}
+      <div className="absolute inset-0 -z-10">
         <HeroBackground />
       </div>
 
-      {/* Vertical metadata rail, pinned to the left edge. */}
-      <div
-        className="hero-rise pointer-events-none absolute left-4 top-1/2 hidden -translate-y-1/2 lg:block"
-        style={{ ["--rise-delay" as string]: "300ms" }}
+      {/* District, set vertically down the outer edge. */}
+      <p
+        aria-hidden
+        className="hero-rail hero-rise pointer-events-none absolute left-5 top-1/2 hidden -translate-y-1/2 text-[10px] font-semibold uppercase tracking-[0.4em] text-white/35 xl:block"
+        style={{ ["--rise-delay" as string]: "700ms" }}
       >
-        <p className="hero-rail text-[11px] font-semibold uppercase tracking-[0.42em] text-on-navy-muted/70">
-          {site.district}
-        </p>
-      </div>
+        {site.district}
+      </p>
 
-      <div className="relative mx-auto w-full max-w-[92rem] px-6 sm:px-10 lg:px-16">
-        {/* --------------------------------------------------- word column -- */}
-        <div className="max-w-4xl">
+      <div className="mx-auto w-full max-w-[92rem] px-6 sm:px-10 lg:px-16">
+        {/* ------------------------------------------------------- copy ---- */}
+        <div className="max-w-3xl">
           <p
-            className="hero-rise flex items-center gap-4 text-[11px] font-bold uppercase tracking-[0.34em] text-leo-cyan"
-            style={{ ["--rise-delay" as string]: "160ms" }}
+            className="hero-rise flex items-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] text-leo-cyan"
+            style={{ ["--rise-delay" as string]: "120ms" }}
           >
-            <span aria-hidden className="h-px w-8 bg-leo-cyan/70" />
-            Leo Club · Chautari Pokhara
+            <span aria-hidden className="h-px w-10 bg-leo-cyan/70" />
+            Leo Club of Chautari Pokhara
           </p>
 
-          <h1 className="mt-7 font-display leading-[0.86] tracking-[-0.035em] text-white">
+          <h1 className="mt-6 font-display leading-[0.94] tracking-[-0.03em] text-white">
             <span className="sr-only">
               Leadership, Experience, Opportunity — {site.name}
             </span>
-            {triad.map((line, i) => (
+            {triad.map((word, i) => (
               <span
-                key={line.word}
+                key={word}
                 aria-hidden
-                className={`hero-rise block text-[clamp(3.1rem,11vw,9rem)] ${line.indent} ${
+                className={`hero-rise block text-[clamp(2.6rem,7.4vw,6rem)] ${
                   i === 2 ? "text-leo-blue-light" : ""
                 }`}
-                style={{ ["--rise-delay" as string]: `${260 + i * 110}ms` }}
+                style={{ ["--rise-delay" as string]: `${220 + i * 110}ms` }}
               >
-                {line.word}
+                {word}
+                {i < 2 && "."}
               </span>
             ))}
           </h1>
 
-          <span
-            aria-hidden
-            className="hero-rule mt-9 block h-px w-40 bg-linear-to-r from-leo-cyan to-transparent"
-            style={{ ["--rise-delay" as string]: "640ms" }}
-          />
+          {description && (
+            <p
+              className="hero-rise mt-7 max-w-xl text-[0.9375rem] leading-[1.85] text-white/75"
+              style={{ ["--rise-delay" as string]: "580ms" }}
+            >
+              {description}
+            </p>
+          )}
 
-          <p
-            className="hero-rise mt-7 max-w-md text-[0.9375rem] leading-[1.85] text-on-navy-muted"
-            style={{ ["--rise-delay" as string]: "700ms" }}
-          >
-            {description ||
-              `A youth service club in Pokhara, chartered ${site.established}. We plan and run the projects ourselves — health, education and the environment.`}
-          </p>
-
-          {/* CTA arrives last. */}
+          {/* Primary and secondary actions. */}
           <div
-            className="hero-rise mt-10"
-            style={{ ["--rise-delay" as string]: "880ms" }}
+            className="hero-rise mt-9 flex flex-wrap items-center gap-4"
+            style={{ ["--rise-delay" as string]: "700ms" }}
           >
             <Link
               href="/join"
-              className="group relative inline-flex items-center gap-5 overflow-hidden border border-white/25 py-4 pl-7 pr-5 text-[11px] font-bold uppercase tracking-[0.26em] text-white transition-colors duration-[var(--duration-base)] hover:border-leo-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-surface-navy"
+              className="group relative inline-flex items-center gap-5 overflow-hidden border border-white/30 py-4 pl-7 pr-5 text-[11px] font-bold uppercase tracking-[0.22em] text-white transition-colors duration-[var(--duration-base)] hover:border-leo-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-surface-navy"
             >
-              {/* Fill sweeps in from the left behind the label. */}
               <span
                 aria-hidden
                 className="absolute inset-0 origin-left scale-x-0 bg-leo-blue transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:scale-x-100"
@@ -119,54 +103,28 @@ export function Hero({ description }: { description?: string | null } = {}) {
                 className="relative h-px w-8 bg-current transition-[width] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:w-12"
               />
             </Link>
+
+            <Link
+              href="/about"
+              className="group inline-flex items-center gap-4 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-white/70 transition-colors duration-[var(--duration-base)] hover:text-white"
+            >
+              Explore our work
+              <span
+                aria-hidden
+                className="h-px w-7 bg-current transition-[width] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:w-11"
+              />
+            </Link>
           </div>
         </div>
 
-        {/* ------------------------------------------------------- index ---- */}
-        <nav
-          aria-label="Site sections"
-          className="hero-rise mt-14 hidden lg:absolute lg:bottom-0 lg:right-16 lg:mt-0 lg:block"
-          style={{ ["--rise-delay" as string]: "820ms" }}
+        {/* --------------------------------------------------- masthead ---- */}
+        <dl
+          className="hero-rise mt-14 flex flex-wrap items-baseline gap-x-10 gap-y-3 border-t border-white/15 pt-5 text-[10px] font-semibold uppercase tracking-[0.22em] sm:gap-x-16 lg:mt-20"
+          style={{ ["--rise-delay" as string]: "840ms" }}
         >
-          <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.3em] text-on-navy-muted/60">
-            Index
-          </p>
-          <ul className="space-y-1.5">
-            {index.map((entry, i) => (
-              <li key={entry.href} data-hero-index={entry.href}>
-                <Link
-                  href={entry.href}
-                  className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-on-navy-muted hover:text-white"
-                >
-                  <span className="tabular-nums opacity-60">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span
-                    aria-hidden
-                    className="hero-index-rule h-px w-8 bg-current"
-                  />
-                  {entry.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-
-      {/* ---------------------------------------------------- masthead ------ */}
-      <div
-        className="hero-rise relative mx-auto mt-16 w-full max-w-[92rem] px-6 sm:px-10 lg:px-16"
-        style={{ ["--rise-delay" as string]: "940ms" }}
-      >
-        <dl className="flex flex-wrap items-baseline gap-x-8 gap-y-3 border-t border-white/12 pt-5 text-[10px] font-semibold uppercase tracking-[0.24em] text-on-navy-muted/80 sm:gap-x-14">
-          {[
-            ["Location", "Pokhara, Nepal"],
-            ["Coordinates", coordinates],
-            ["Chartered", String(site.established)],
-            ["District", "LDC 325 J"],
-          ].map(([term, value]) => (
+          {masthead.map(([term, value]) => (
             <div key={term} className="flex items-baseline gap-2.5">
-              <dt className="text-on-navy-muted/45">{term}</dt>
+              <dt className="text-white/40">{term}</dt>
               <dd className="text-white/85">{value}</dd>
             </div>
           ))}

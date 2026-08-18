@@ -9,14 +9,10 @@ import { navLinks, site } from "@/app/lib/site";
 /**
  * Navigation composed into the page rather than sitting on it.
  *
- * There is no bar: the brand mark anchors the left, the links sit as a
- * numbered editorial list, and the CTA closes the right. Over the homepage
+ * There is no bar: the brand mark anchors the left, the links sit as plain
+ * lettering with a rule that grows on hover, and the CTA closes the right. Over the homepage
  * hero the whole thing is transparent so it reads as part of the composition;
  * elsewhere — and once scrolled — a light surface slides in behind it.
- *
- * Each link carries `data-nav="<href>"`, which is what lets the hero's index
- * respond to hover through CSS `:has()` alone (see globals.css). No shared
- * state, no JavaScript for that interaction.
  */
 export function SiteHeader() {
   const pathname = usePathname();
@@ -110,15 +106,14 @@ export function SiteHeader() {
 
         {/* -------------------------------------------------------- links --- */}
         <nav className="ml-auto hidden items-center gap-7 lg:flex xl:gap-9">
-          {primaryLinks.map((link, i) => {
+          {primaryLinks.map((link) => {
             const active = isActive(link.href);
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                data-nav={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`group relative flex items-baseline gap-1.5 text-[12px] font-semibold uppercase tracking-[0.16em] transition-colors duration-[var(--duration-fast)] ${
+                className={`group relative text-[12px] font-semibold uppercase tracking-[0.16em] transition-colors duration-[var(--duration-fast)] ${
                   overlay
                     ? active
                       ? "text-leo-cyan"
@@ -128,15 +123,6 @@ export function SiteHeader() {
                       : "text-muted hover:text-foreground"
                 }`}
               >
-                {/* Index number, the editorial tell. */}
-                <span
-                  aria-hidden
-                  className={`text-[9px] tabular-nums transition-opacity duration-[var(--duration-fast)] ${
-                    active ? "opacity-100" : "opacity-40 group-hover:opacity-80"
-                  }`}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
                 {link.label}
                 {/* Rule grows from the left on hover. */}
                 <span
@@ -152,7 +138,6 @@ export function SiteHeader() {
           {joinLink && (
             <Link
               href={joinLink.href}
-              data-nav={joinLink.href}
               className={`group relative ml-1 inline-flex items-center gap-4 overflow-hidden border px-6 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-colors duration-[var(--duration-base)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan ${
                 overlay
                   ? "border-white/30 text-white hover:border-leo-cyan"
@@ -217,14 +202,11 @@ export function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex items-baseline gap-4 border-b border-white/10 py-5 font-display text-[2rem] leading-none tracking-tight transition-[opacity,transform] ease-[var(--ease-premium)] ${
+              className={`block border-b border-white/10 py-5 font-display text-[2rem] leading-none tracking-tight transition-[opacity,transform] ease-[var(--ease-premium)] ${
                 isActive(link.href) ? "text-leo-cyan" : "text-white"
               } ${open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
               style={{ transitionDelay: open ? `${80 + i * 55}ms` : "0ms" }}
             >
-              <span aria-hidden className="text-[11px] tabular-nums text-on-navy-muted">
-                {String(i + 1).padStart(2, "0")}
-              </span>
               {link.label}
             </Link>
           ))}
