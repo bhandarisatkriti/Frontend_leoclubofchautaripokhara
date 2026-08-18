@@ -1,6 +1,7 @@
 import { AboutSection, type ClubAbout } from "@/app/components/home/about-section";
 import { GalleryStrip } from "@/app/components/home/gallery-strip";
 import { Hero } from "@/app/components/home/hero";
+import { JoinNowPopupMount } from "@/app/components/join-now-popup-mount";
 import { MissionVisionCards } from "@/app/components/home/mission-vision-cards";
 import { WhyJoinSection } from "@/app/components/home/why-join-section";
 import { type ClubStats } from "@/app/components/home/stats-grid";
@@ -76,6 +77,9 @@ export default async function Home() {
 
   return (
     <>
+      {/* Membership conversion popup — homepage only. See app/lib/join-popup.ts. */}
+      <JoinNowPopupMount counts={counts} />
+
       <Hero heading={club?.name} description={club?.short_description} />
       <AboutSection clubStats={club} club={club} counts={counts} />
       <MissionVisionCards mission={club?.mission} vision={club?.vision} intro={club?.tagline} />

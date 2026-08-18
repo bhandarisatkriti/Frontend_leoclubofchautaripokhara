@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/app/components/logo";
-import { solidBlueButton } from "@/app/components/ui/button-link";
+import { glassButton, solidBlueButton } from "@/app/components/ui/button-link";
 import { navLinks, site } from "@/app/lib/site";
 
 export function SiteHeader() {
@@ -63,10 +63,21 @@ export function SiteHeader() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  // The homepage hero is a full-bleed photo pulled up under this header, so at
+  // the top of that route the bar rides on the image instead of sitting in a
+  // white strip above it. It solidifies as soon as the page scrolls, and while
+  // the mobile sheet is open — a white panel hanging off a transparent bar
+  // reads as a rendering fault.
+  const overlay = pathname === "/" && !scrolled && !open;
+
   return (
     <header
-      className={`sticky top-0 z-50 border-b bg-background/90 backdrop-blur transition-[box-shadow,border-color,height] duration-[var(--duration-base)] ease-[var(--ease-premium)] ${
-        scrolled ? "border-border shadow-soft-md" : "border-transparent"
+      className={`sticky top-0 z-50 border-b transition-[background-color,box-shadow,border-color,height] duration-[var(--duration-base)] ease-[var(--ease-premium)] ${
+        overlay
+          ? "border-white/10 bg-transparent"
+          : `bg-background/90 backdrop-blur ${
+              scrolled ? "border-border shadow-soft-md" : "border-transparent"
+            }`
       }`}
     >
       <div
@@ -77,10 +88,20 @@ export function SiteHeader() {
         <Link href="/" className="flex items-center gap-2.5">
           <Logo size={scrolled ? 34 : 38} />
           <span className="leading-tight">
-            <span className="block text-[13px] font-bold tracking-tight sm:text-sm">
+            <span
+              className={`block text-[13px] font-bold tracking-tight transition-colors duration-[var(--duration-base)] sm:text-sm ${
+                overlay ? "text-white" : ""
+              }`}
+            >
               {site.name}
             </span>
-            <span className="block text-[10px] text-muted">{site.district}</span>
+            <span
+              className={`block text-[10px] transition-colors duration-[var(--duration-base)] ${
+                overlay ? "text-white/65" : "text-muted"
+              }`}
+            >
+              {site.district}
+            </span>
           </span>
         </Link>
 
@@ -94,7 +115,13 @@ export function SiteHeader() {
                   onMouseEnter={() => setEventsOpen(true)}
                   aria-expanded={eventsOpen}
                   className={`group relative flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-[var(--duration-fast)] ${
-                    isActive(link.href) ? "text-leo-blue" : "text-muted hover:text-foreground"
+                    isActive(link.href)
+                      ? overlay
+                        ? "text-leo-cyan"
+                        : "text-leo-blue"
+                      : overlay
+                        ? "text-white/80 hover:text-white"
+                        : "text-muted hover:text-foreground"
                   }`}
                 >
                   {link.label}
@@ -113,9 +140,9 @@ export function SiteHeader() {
                   </svg>
                   <span
                     aria-hidden
-                    className={`absolute -bottom-0.5 left-3 right-3 h-0.5 origin-left scale-x-0 bg-leo-blue transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] ${
-                      isActive(link.href) ? "scale-x-100" : "group-hover:scale-x-100"
-                    }`}
+                    className={`absolute -bottom-0.5 left-3 right-3 h-0.5 origin-left scale-x-0 transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] ${
+                      overlay ? "bg-leo-cyan" : "bg-leo-blue"
+                    } ${isActive(link.href) ? "scale-x-100" : "group-hover:scale-x-100"}`}
                   />
                 </button>
 
@@ -144,23 +171,30 @@ export function SiteHeader() {
                 href={link.href}
                 className={`group relative whitespace-nowrap rounded-md px-3 py-2 text-[15px] font-semibold transition-colors duration-[var(--duration-fast)] ${
                   isActive(link.href)
-                    ? "text-leo-blue"
-                    : "text-leo-indigo hover:text-leo-blue"
+                    ? overlay
+                      ? "text-leo-cyan"
+                      : "text-leo-blue"
+                    : overlay
+                      ? "text-white/85 hover:text-white"
+                      : "text-leo-indigo hover:text-leo-blue"
                 }`}
               >
                 {link.label}
                 <span
                   aria-hidden
-                  className={`absolute -bottom-0.5 left-3 right-3 h-0.5 origin-left scale-x-0 bg-leo-blue transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] ${
-                    isActive(link.href) ? "scale-x-100" : "group-hover:scale-x-100"
-                  }`}
+                  className={`absolute -bottom-0.5 left-3 right-3 h-0.5 origin-left scale-x-0 transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] ${
+                    overlay ? "bg-leo-cyan" : "bg-leo-blue"
+                  } ${isActive(link.href) ? "scale-x-100" : "group-hover:scale-x-100"}`}
                 />
               </Link>
             ),
           )}
 
           {joinLink && (
-            <Link href={joinLink.href} className={`ml-3 ${solidBlueButton}`}>
+            <Link
+              href={joinLink.href}
+              className={`ml-3 ${overlay ? glassButton : solidBlueButton}`}
+            >
               {joinLink.label}
             </Link>
           )}
@@ -171,23 +205,31 @@ export function SiteHeader() {
           aria-label="Toggle navigation menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="relative ml-auto flex h-10 w-10 items-center justify-center rounded-md border border-border lg:hidden"
+          className={`relative ml-auto flex h-10 w-10 items-center justify-center rounded-md border transition-colors duration-[var(--duration-base)] lg:hidden ${
+            overlay ? "border-white/30" : "border-border"
+          }`}
         >
           <span
             aria-hidden
-            className={`absolute block h-0.5 w-5 bg-foreground transition-transform duration-[var(--duration-fast)] ease-[var(--ease-premium)] ${
+            className={`absolute block h-0.5 w-5 transition-transform duration-[var(--duration-fast)] ease-[var(--ease-premium)] ${
+              overlay ? "bg-white" : "bg-foreground"
+            } ${
               open ? "translate-y-0 rotate-45" : "-translate-y-1.5"
             }`}
           />
           <span
             aria-hidden
-            className={`absolute block h-0.5 w-5 bg-foreground transition-opacity duration-[var(--duration-fast)] ${
+            className={`absolute block h-0.5 w-5 transition-opacity duration-[var(--duration-fast)] ${
+              overlay ? "bg-white" : "bg-foreground"
+            } ${
               open ? "opacity-0" : "opacity-100"
             }`}
           />
           <span
             aria-hidden
-            className={`absolute block h-0.5 w-5 bg-foreground transition-transform duration-[var(--duration-fast)] ease-[var(--ease-premium)] ${
+            className={`absolute block h-0.5 w-5 transition-transform duration-[var(--duration-fast)] ease-[var(--ease-premium)] ${
+              overlay ? "bg-white" : "bg-foreground"
+            } ${
               open ? "translate-y-0 -rotate-45" : "translate-y-1.5"
             }`}
           />
