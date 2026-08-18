@@ -32,16 +32,7 @@ export default async function NewsPage() {
   return (
     <section className="bg-surface-blue py-14 sm:py-20">
       <Container>
-        <Reveal className="flex flex-wrap items-baseline justify-between gap-4 border-b border-border pb-5">
-          <h1 className="font-display text-[clamp(1.625rem,3vw,2.25rem)] font-bold leading-none tracking-tight">
-            Newsroom
-          </h1>
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted">
-            {articles.length} {articles.length === 1 ? "story" : "stories"}
-          </p>
-        </Reveal>
-
-        <div className="mt-8 space-y-5 sm:mt-10 sm:space-y-6">
+        <div className="space-y-5 sm:space-y-6">
           {articles.length === 0 ? (
             <EmptyState message="Articles will appear here once they are published from the backend." />
           ) : (
