@@ -364,7 +364,7 @@ export function MembershipForm() {
     <div className="mx-auto w-full max-w-3xl space-y-3">
       {/* Header card, with the accent bar a Google Form carries at the top. */}
       <div className="overflow-hidden rounded-lg border border-border bg-background shadow-soft-sm">
-        <span aria-hidden className="block h-2.5 bg-linear-to-r from-leo-blue-dark via-leo-blue to-leo-cyan" />
+        <span aria-hidden className="block h-2.5 bg-linear-to-r from-leo-indigo via-leo-blue-dark to-leo-blue" />
         <div className="p-6 sm:p-8">
           <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             Membership Application
@@ -825,7 +825,7 @@ export function MembershipForm() {
         <div className="overflow-hidden rounded-lg border border-border bg-background shadow-soft-sm">
           <span
             aria-hidden
-            className="block h-2.5 bg-linear-to-r from-leo-blue-dark via-leo-blue to-leo-cyan"
+            className="block h-2.5 bg-linear-to-r from-leo-indigo via-leo-blue-dark to-leo-blue"
           />
           <div className="flex flex-wrap items-center justify-between gap-4 p-6 sm:p-8">
             <p className="text-xs text-muted">
