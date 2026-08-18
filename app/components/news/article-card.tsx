@@ -77,6 +77,7 @@ function Meta({
  * Article card.
  *
  *  - `lead`     the top story: oversized, image beside the text
+ *  - `row`      the archive row: image left, copy right
  *  - `default`  the grid card
  *  - `compact`  a text-only row for dense lists
  */
@@ -85,7 +86,7 @@ export function ArticleCard({
   variant = "default",
 }: {
   article: Article;
-  variant?: "lead" | "default" | "compact";
+  variant?: "lead" | "row" | "default" | "compact";
 }) {
   const image = mediaUrl(article.featured_image);
   const href = `/news/${article.slug}`;
@@ -107,6 +108,52 @@ export function ArticleCard({
             <Image src={image} alt="" fill sizes="80px" className="object-cover" />
           </span>
         )}
+      </Link>
+    );
+  }
+
+  if (variant === "row") {
+    return (
+      <Link
+        href={href}
+        className="group grid gap-0 overflow-hidden rounded-xl border border-border bg-background shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-0.5 hover:border-leo-blue/30 hover:shadow-soft-md sm:grid-cols-[minmax(0,17rem)_1fr]"
+      >
+        <div className="relative aspect-16/10 overflow-hidden bg-surface sm:aspect-auto sm:h-full sm:min-h-[13rem]">
+          {image ? (
+            <Image
+              src={image}
+              alt={article.title}
+              fill
+              sizes="(max-width: 640px) 100vw, 17rem"
+              className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.04]"
+            />
+          ) : (
+            <Motif variant="grid" tone="blue" />
+          )}
+        </div>
+
+        <div className="flex flex-col justify-center p-6 sm:p-7">
+          <h3 className="text-[1.1875rem] font-bold leading-snug tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue sm:text-[1.375rem]">
+            {article.title}
+          </h3>
+          <div className="mt-2.5">
+            <Meta article={article} />
+          </div>
+          {(article.excerpt || article.content) && (
+            <p className="mt-3.5 line-clamp-3 text-[0.9375rem] leading-relaxed text-muted">
+              {article.excerpt ?? article.content}
+            </p>
+          )}
+          <span className="mt-5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-leo-blue">
+            Read more
+            <span
+              aria-hidden
+              className="transition-transform duration-[var(--duration-fast)] group-hover:translate-x-1"
+            >
+              →
+            </span>
+          </span>
+        </div>
       </Link>
     );
   }
