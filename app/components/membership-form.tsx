@@ -361,7 +361,7 @@ export function MembershipForm() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-3">
+    <div className="w-full space-y-3">
       {/* Header card, with the accent bar a Google Form carries at the top. */}
       <div className="overflow-hidden rounded-lg border border-border bg-background shadow-soft-sm">
         <span aria-hidden className="block h-2.5 bg-linear-to-r from-leo-blue-dark via-leo-blue to-leo-cyan" />
@@ -822,10 +822,15 @@ export function MembershipForm() {
           <p className="mt-6 rounded-lg border border-leo-red/30 bg-leo-red/10 p-3 text-sm text-leo-red">{error}</p>
         )}
 
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
-          <p className="text-xs text-muted">
-            Never submit passwords through this form.
-          </p>
+        <div className="overflow-hidden rounded-lg border border-border bg-background shadow-soft-sm">
+          <span
+            aria-hidden
+            className="block h-2.5 bg-linear-to-r from-leo-blue-dark via-leo-blue to-leo-cyan"
+          />
+          <div className="flex flex-wrap items-center justify-between gap-4 p-6 sm:p-8">
+            <p className="text-xs text-muted">
+              Never submit passwords through this form.
+            </p>
 
           <button
             type="submit"
@@ -847,7 +852,8 @@ export function MembershipForm() {
             ) : (
               "Submit Application →"
             )}
-          </button>
+            </button>
+          </div>
         </div>
       </form>
     </div>
