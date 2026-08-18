@@ -166,17 +166,13 @@ export default async function Home() {
             </p>
             <a
               href="/join"
-              className="group relative mt-10 inline-flex items-center gap-5 overflow-hidden border border-white/35 py-4 pl-7 pr-5 text-[11px] font-bold uppercase tracking-[0.24em] text-white transition-colors duration-[var(--duration-base)] hover:border-white"
+              className="group relative mt-10 inline-flex items-center overflow-hidden border border-white/35 px-8 py-4 text-[11px] font-bold uppercase tracking-[0.24em] text-white transition-colors duration-[var(--duration-base)] hover:border-white"
             >
               <span
                 aria-hidden
                 className="absolute inset-0 origin-left scale-x-0 bg-white/15 transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:scale-x-100"
               />
               <span className="relative">Join now</span>
-              <span
-                aria-hidden
-                className="relative h-px w-8 bg-current transition-[width] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:w-12"
-              />
             </a>
           </Reveal>
         </Container>

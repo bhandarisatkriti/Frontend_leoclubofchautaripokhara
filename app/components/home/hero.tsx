@@ -96,28 +96,20 @@ export function Hero({ description }: { description?: string | null } = {}) {
           >
             <Link
               href="/join"
-              className="group relative inline-flex items-center gap-5 overflow-hidden border border-white/30 py-4 pl-7 pr-5 text-[11px] font-bold uppercase tracking-[0.22em] text-white transition-colors duration-[var(--duration-base)] hover:border-leo-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-surface-navy"
+              className="group relative inline-flex items-center overflow-hidden border border-white/30 px-8 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-white transition-colors duration-[var(--duration-base)] hover:border-leo-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-surface-navy"
             >
               <span
                 aria-hidden
                 className="absolute inset-0 origin-left scale-x-0 bg-leo-blue transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:scale-x-100"
               />
               <span className="relative">Join now</span>
-              <span
-                aria-hidden
-                className="relative h-px w-8 bg-current transition-[width] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:w-12"
-              />
             </Link>
 
             <Link
               href="/about"
-              className="group inline-flex items-center gap-4 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-white/70 transition-colors duration-[var(--duration-base)] hover:text-white"
+              className="group inline-flex items-center py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-white/70 transition-colors duration-[var(--duration-base)] hover:text-white"
             >
               Explore our work
-              <span
-                aria-hidden
-                className="h-px w-7 bg-current transition-[width] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:w-11"
-              />
             </Link>
           </div>
         </div>

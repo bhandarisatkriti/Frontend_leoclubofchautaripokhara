@@ -138,7 +138,7 @@ export function SiteHeader() {
           {joinLink && (
             <Link
               href={joinLink.href}
-              className={`group relative ml-1 inline-flex items-center gap-4 overflow-hidden border px-6 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-colors duration-[var(--duration-base)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan ${
+              className={`group relative ml-1 inline-flex items-center overflow-hidden border px-6 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-colors duration-[var(--duration-base)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan ${
                 overlay
                   ? "border-white/30 text-white hover:border-leo-cyan"
                   : "border-leo-blue/40 text-leo-blue hover:border-leo-blue"
@@ -151,10 +151,6 @@ export function SiteHeader() {
               <span className="relative transition-colors duration-[var(--duration-base)] group-hover:text-white">
                 {joinLink.label}
               </span>
-              <span
-                aria-hidden
-                className="relative h-px w-5 bg-current transition-[width] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:w-8"
-              />
             </Link>
           )}
         </nav>
@@ -220,7 +216,6 @@ export function SiteHeader() {
               style={{ transitionDelay: open ? "440ms" : "0ms" }}
             >
               {joinLink.label}
-              <span aria-hidden className="h-px w-8 bg-current" />
             </Link>
           )}
         </nav>

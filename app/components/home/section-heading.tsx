@@ -40,10 +40,6 @@ export function SectionHeading({
           className="group inline-flex items-center gap-3 pb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-leo-blue"
         >
           {action.label}
-          <span
-            aria-hidden
-            className="h-px w-8 bg-current transition-[width] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:w-12"
-          />
         </Link>
       )}
     </Reveal>
