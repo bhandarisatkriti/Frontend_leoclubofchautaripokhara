@@ -334,3 +334,126 @@ html {
     transform: none !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Hero + navbar design system
+   --------------------------------------------------------------------------- */
+
+/* Staggered entrance. Each piece declares its own delay through --rise-delay,
+   so the order reads: mark, navigation, headline lines, photo, index, CTA. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-wipe {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes rule-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.hero-rise {
+  animation: hero-rise 900ms var(--ease-premium) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+.hero-wipe {
+  animation: hero-wipe 1100ms var(--ease-premium) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+.hero-rule {
+  transform-origin: left;
+  animation: rule-draw 900ms var(--ease-premium) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+/* The photo is cut on a slant rather than framed in a rectangle, so it reads as
+   part of the composition instead of an inserted picture. */
+.hero-cut {
+  clip-path: polygon(18% 0, 100% 0, 100% 100%, 0 100%);
+}
+@media (max-width: 1023px) {
+  .hero-cut {
+    clip-path: polygon(0 12%, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Navigation hover -> hero response, with no JavaScript.
+
+   The header and the hero are separate components in separate parts of the
+   tree, so linking them would normally mean shared state and a client
+   component. `:has()` lets the document itself carry the relationship: hovering
+   a nav item lights the matching row of the hero index. If a browser lacks
+   `:has()` nothing breaks — the index simply stays static.
+   --------------------------------------------------------------------------- */
+[data-hero-index] {
+  transition:
+    color var(--duration-base) var(--ease-premium),
+    opacity var(--duration-base) var(--ease-premium);
+}
+
+[data-hero-index] .hero-index-rule {
+  transform: scaleX(0.28);
+  transform-origin: left;
+  transition: transform var(--duration-base) var(--ease-premium);
+}
+
+body:has([data-nav]:hover) [data-hero-index] {
+  opacity: 0.35;
+}
+
+body:has([data-nav="/about"]:hover) [data-hero-index="/about"],
+body:has([data-nav="/team"]:hover) [data-hero-index="/team"],
+body:has([data-nav="/gallery"]:hover) [data-hero-index="/gallery"],
+body:has([data-nav="/news"]:hover) [data-hero-index="/news"],
+body:has([data-nav="/contact"]:hover) [data-hero-index="/contact"] {
+  opacity: 1;
+  color: var(--color-leo-cyan);
+}
+
+body:has([data-nav="/about"]:hover) [data-hero-index="/about"] .hero-index-rule,
+body:has([data-nav="/team"]:hover) [data-hero-index="/team"] .hero-index-rule,
+body:has([data-nav="/gallery"]:hover) [data-hero-index="/gallery"] .hero-index-rule,
+body:has([data-nav="/news"]:hover) [data-hero-index="/news"] .hero-index-rule,
+body:has([data-nav="/contact"]:hover) [data-hero-index="/contact"] .hero-index-rule {
+  transform: scaleX(1);
+}
+
+/* Vertical metadata rail down the left edge of the hero. */
+.hero-rail {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise,
+  .hero-wipe,
+  .hero-rule {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}

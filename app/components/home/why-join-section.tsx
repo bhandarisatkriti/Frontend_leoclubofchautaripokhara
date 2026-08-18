@@ -58,9 +58,9 @@ export function WhyJoinSection() {
 
           <div className="relative">
             <Reveal className="text-center">
-              <SectionLabel tone="cyan">Why Join Us</SectionLabel>
+              <SectionLabel tone="cyan">Our Impact</SectionLabel>
               <h2 className="mt-3 text-h2 font-bold tracking-tight">
-                Benefits of being a Leo
+                What being a Leo means in practice
               </h2>
             </Reveal>
 

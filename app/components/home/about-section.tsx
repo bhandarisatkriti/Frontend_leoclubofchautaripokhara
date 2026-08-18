@@ -3,7 +3,7 @@ import { ButtonLink } from "@/app/components/ui/button-link";
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { SectionLabel } from "@/app/components/ui/section-label";
-import { site, whoWeAreParagraphs } from "@/app/lib/site";
+import { whoWeAreParagraphs } from "@/app/lib/site";
 import {
   StatsGrid,
   type ClubCounts,
@@ -93,7 +93,7 @@ export function AboutSection({
 
           {/* Copy -------------------------------------------------------- */}
           <Reveal className="lg:col-span-7">
-            <SectionLabel>{site.name}</SectionLabel>
+            <SectionLabel>Who we are</SectionLabel>
             <h2 className="mt-3 text-[clamp(2.25rem,4vw,3.5rem)] font-bold leading-[1.02] tracking-tight text-balance">
               Who We <span className="text-leo-blue">Are?</span>
             </h2>

@@ -28,7 +28,7 @@ export function TeamPreview({ team }: { team: Member[] }) {
       <Container>
         <Reveal className="text-center">
           <h2 className="text-h2 font-bold tracking-tight text-leo-indigo">
-            Our Team
+            Our People
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-balance text-muted">
             A dedicated group of young leaders committed to community service
@@ -80,7 +80,7 @@ export function TeamPreview({ team }: { team: Member[] }) {
 
         <Reveal className="mt-12 text-center">
           <Link href="/team" className={solidBlueButton}>
-            View More
+            Meet the full team
           </Link>
         </Reveal>
       </Container>
