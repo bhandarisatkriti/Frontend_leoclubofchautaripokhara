@@ -133,7 +133,7 @@ export function ArticleCard({
         </div>
 
         <div className="flex flex-col justify-center p-6 sm:p-7">
-          <h3 className="text-[1.1875rem] font-bold leading-snug tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue sm:text-[1.375rem]">
+          <h3 className="text-[1.0625rem] font-bold leading-snug tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue sm:text-[1.1875rem]">
             {article.title}
           </h3>
           <div className="mt-2.5">
@@ -160,7 +160,7 @@ export function ArticleCard({
 
   if (variant === "lead") {
     return (
-      <Link href={href} className="group grid gap-7 lg:grid-cols-[1.15fr_1fr] lg:items-center">
+      <Link href={href} className="group grid gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-10">
         <div className="relative aspect-16/10 overflow-hidden rounded-xl bg-surface">
           {image ? (
             <Image
@@ -168,7 +168,7 @@ export function ArticleCard({
               alt={article.title}
               fill
               priority
-              sizes="(max-width: 1024px) 100vw, 55vw"
+              sizes="(max-width: 1024px) 100vw, 38vw"
               className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.03]"
             />
           ) : (
@@ -178,15 +178,15 @@ export function ArticleCard({
 
         <div>
           <Meta article={article} />
-          <h2 className="mt-3 font-display text-[clamp(1.75rem,3.4vw,2.75rem)] font-bold leading-[1.08] tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue">
+          <h2 className="mt-3 font-display text-[clamp(1.375rem,2.1vw,1.875rem)] font-bold leading-[1.15] tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue">
             {article.title}
           </h2>
           {(article.excerpt || article.content) && (
-            <p className="mt-4 line-clamp-3 text-[0.9375rem] leading-relaxed text-muted">
+            <p className="mt-3 line-clamp-3 text-[0.9375rem] leading-relaxed text-muted">
               {article.excerpt ?? article.content}
             </p>
           )}
-          <span className="mt-6 inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-leo-blue">
+          <span className="mt-5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-leo-blue">
             Read the story
           </span>
         </div>
