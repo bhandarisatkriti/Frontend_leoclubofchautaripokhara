@@ -86,11 +86,7 @@ export default async function Home() {
 
       {/* 03 — OUR IDENTITY ------------------------------------------------ */}
       <AboutSection clubStats={club} club={club} counts={counts} />
-      <MissionVisionCards
-        mission={club?.mission}
-        vision={club?.vision}
-        intro={club?.tagline}
-      />
+      <MissionVisionCards mission={club?.mission} vision={club?.vision} />
 
       {/* 04 — WHAT WE DO -------------------------------------------------- */}
       <WhyJoinSection />
@@ -109,17 +105,23 @@ export default async function Home() {
             {!featuredEvent ? (
               <EmptyState message="Events will appear here once they are published from the backend." />
             ) : (
-              <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+              <div
+                className={`grid gap-6 ${
+                  compactEvents.length > 0 ? "lg:grid-cols-[1.4fr_1fr]" : ""
+                }`}
+              >
                 <Reveal>
                   <FeaturedEventCard event={featuredEvent} />
                 </Reveal>
-                <div className="flex flex-col gap-6">
-                  {compactEvents.map((event, i) => (
-                    <Reveal key={event.id} delay={stagger(i)}>
-                      <CompactEventItem event={event} />
-                    </Reveal>
-                  ))}
-                </div>
+                {compactEvents.length > 0 && (
+                  <div className="flex flex-col gap-6">
+                    {compactEvents.map((event, i) => (
+                      <Reveal key={event.id} delay={stagger(i)}>
+                        <CompactEventItem event={event} />
+                      </Reveal>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -138,10 +140,19 @@ export default async function Home() {
               action={{ href: "/news", label: "View all news" }}
             />
 
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div
+              className={
+                news.length >= 3
+                  ? "mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                  : "mt-12 space-y-6"
+              }
+            >
               {news.map((article, i) => (
                 <Reveal key={article.id} delay={stagger(i)}>
-                  <ArticleCard article={article} />
+                  <ArticleCard
+                    article={article}
+                    variant={news.length >= 3 ? "default" : "row"}
+                  />
                 </Reveal>
               ))}
             </div>

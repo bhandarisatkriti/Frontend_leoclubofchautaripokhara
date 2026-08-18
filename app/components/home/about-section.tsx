@@ -55,7 +55,7 @@ export function AboutSection({
   );
 
   return (
-    <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-background pb-20 pt-16 sm:-mt-14 sm:rounded-t-[3rem] sm:pb-24 sm:pt-20">
+    <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-background pb-20 pt-20 sm:-mt-14 sm:rounded-t-[3rem] sm:pb-24 sm:pt-20">
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
           {/* Media ------------------------------------------------------- */}
@@ -95,7 +95,7 @@ export function AboutSection({
           <Reveal className="lg:col-span-7">
             <SectionLabel>Who we are</SectionLabel>
             <h2 className="mt-3 text-[clamp(2.25rem,4vw,3.5rem)] font-bold leading-[1.02] tracking-tight text-balance">
-              Who We <span className="text-leo-blue">Are?</span>
+              Empowering youth, building leaders
             </h2>
 
             {/* Short accent rule to anchor the heading to the copy. */}

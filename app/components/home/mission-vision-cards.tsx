@@ -1,7 +1,6 @@
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { stagger } from "@/app/lib/motion";
-import { site } from "@/app/lib/site";
 
 const fallbackPanels = [
   {
@@ -35,11 +34,9 @@ const fallbackPanels = [
 export function MissionVisionCards({
   mission,
   vision,
-  intro,
 }: {
   mission?: string | null;
   vision?: string | null;
-  intro?: string | null;
 } = {}) {
   const panels = [
     { ...fallbackPanels[0], body: mission || fallbackPanels[0].body },
@@ -57,8 +54,7 @@ export function MissionVisionCards({
             Mission and vision
           </h2>
           <p className="mt-3 max-w-xl text-muted">
-            {intro ||
-              `The ${site.name} empowers youth through leadership, service, and global connections.`}
+            What the club is working towards, and how it gets there.
           </p>
         </Reveal>
 
