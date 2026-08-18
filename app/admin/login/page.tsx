@@ -27,7 +27,7 @@ export default async function AdminLoginPage({
   const { next, reason } = await searchParams;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-admin-bg px-4 py-12 text-admin-text">
+    <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(160deg,#0b2450_0%,#071a35_55%,#05132a_100%)] px-4 py-12 text-admin-nav-text">
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center text-center">
           <Image
@@ -41,23 +41,23 @@ export default async function AdminLoginPage({
           <h1 className="mt-5 text-2xl font-bold tracking-tight">
             Administrator sign-in
           </h1>
-          <p className="mt-2 text-sm text-admin-muted">
+          <p className="mt-2 text-sm text-admin-nav-muted">
             {site.name} website management
           </p>
         </div>
 
         {reason === "unauthorized" && (
-          <p className="mt-6 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+          <p className="mt-6 rounded-lg border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
             Please sign in with an administrator account to continue.
           </p>
         )}
 
-        <div className="mt-8 rounded-2xl border border-admin-border bg-admin-card p-6 shadow-soft-lg sm:p-8">
+        <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-soft-lg backdrop-blur-sm sm:p-8">
           <LoginForm next={safeNext(next)} />
         </div>
 
-        <p className="mt-6 text-center text-xs text-admin-muted">
-          <Link href="/" className="transition-colors hover:text-admin-text">
+        <p className="mt-6 text-center text-xs text-admin-nav-muted">
+          <Link href="/" className="transition-colors hover:text-white">
             ← Back to the public website
           </Link>
         </p>

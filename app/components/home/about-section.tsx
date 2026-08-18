@@ -3,7 +3,7 @@ import { ButtonLink } from "@/app/components/ui/button-link";
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { SectionLabel } from "@/app/components/ui/section-label";
-import { site, whoWeAreParagraphs } from "@/app/lib/site";
+import { whoWeAreParagraphs } from "@/app/lib/site";
 import {
   StatsGrid,
   type ClubCounts,
@@ -55,7 +55,7 @@ export function AboutSection({
   );
 
   return (
-    <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-background pb-16 pt-12 sm:-mt-14 sm:rounded-t-[3rem] sm:pb-20 sm:pt-16 lg:pb-24">
+    <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-background pb-20 pt-20 sm:-mt-14 sm:rounded-t-[3rem] sm:pb-24 sm:pt-20">
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
           {/* Media ------------------------------------------------------- */}
@@ -70,21 +70,21 @@ export function AboutSection({
             />
             <div
               aria-hidden
-              className="pointer-events-none absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-leo-violet/15 blur-3xl"
+              className="pointer-events-none absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-leo-indigo/20 blur-3xl"
             />
 
             <div className="relative aspect-4/5 w-full sm:aspect-[5/4] lg:aspect-4/5">
               {collage.map((frame) => (
                 <div
                   key={frame.src}
-                  className={`${frame.className} overflow-hidden shadow-soft-md ring-4 ring-background`}
+                  className={`${frame.className} group overflow-hidden shadow-soft-md ring-4 ring-background transition-[translate,scale,box-shadow] duration-[var(--duration-slow)] ease-[var(--ease-premium)] hover:z-10 hover:scale-[1.03] hover:shadow-soft-lg`}
                 >
                   <Image
                     src={frame.src}
                     alt={frame.alt}
                     fill
                     sizes={frame.sizes}
-                    className="object-cover"
+                    className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-105"
                   />
                 </div>
               ))}
@@ -93,15 +93,15 @@ export function AboutSection({
 
           {/* Copy -------------------------------------------------------- */}
           <Reveal className="lg:col-span-7">
-            <SectionLabel>{site.name}</SectionLabel>
+            <SectionLabel>Who we are</SectionLabel>
             <h2 className="mt-3 text-[clamp(2.25rem,4vw,3.5rem)] font-bold leading-[1.02] tracking-tight text-balance">
-              Who We <span className="text-leo-blue">Are?</span>
+              Empowering youth, building leaders
             </h2>
 
             {/* Short accent rule to anchor the heading to the copy. */}
             <div
               aria-hidden
-              className="mt-5 h-1 w-14 rounded-full bg-linear-to-r from-leo-blue to-leo-violet"
+              className="mt-5 h-1 w-14 rounded-full bg-linear-to-r from-leo-blue to-leo-indigo"
             />
 
             <div className="mt-6 max-w-[60ch] space-y-4">

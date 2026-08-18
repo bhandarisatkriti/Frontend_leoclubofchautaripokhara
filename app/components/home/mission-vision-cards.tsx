@@ -1,7 +1,6 @@
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { stagger } from "@/app/lib/motion";
-import { site } from "@/app/lib/site";
 
 const fallbackPanels = [
   {
@@ -35,11 +34,9 @@ const fallbackPanels = [
 export function MissionVisionCards({
   mission,
   vision,
-  intro,
 }: {
   mission?: string | null;
   vision?: string | null;
-  intro?: string | null;
 } = {}) {
   const panels = [
     { ...fallbackPanels[0], body: mission || fallbackPanels[0].body },
@@ -47,23 +44,29 @@ export function MissionVisionCards({
   ];
 
   return (
-    <section className="bg-surface-blue py-16 sm:py-20">
+    <section className="bg-surface-blue py-20 sm:py-24">
       <Container>
-        <Reveal className="text-center">
-          <h2 className="text-h2 font-bold tracking-tight text-leo-indigo">
-            About us
+        {/* Same shape as every other section heading: kicker, title, one
+            line of context, left-aligned. */}
+        <Reveal className="max-w-2xl">
+          <p className="section-label text-leo-blue">What drives us</p>
+          <h2 className="mt-3 text-h2 font-bold tracking-tight text-balance">
+            Mission and vision
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-balance text-muted">
-            {intro ||
-              `The ${site.name} empowers youth through leadership, service, and global connections.`}
+          <p className="mt-3 max-w-xl text-muted">
+            What the club is working towards, and how it gets there.
           </p>
         </Reveal>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 sm:gap-8">
           {panels.map((panel, i) => (
-            <Reveal key={panel.title} delay={stagger(i, 120)}>
-              <article className="h-full bg-background p-8 shadow-soft-md sm:p-10">
-                <span className="flex h-11 w-11 items-center justify-center text-leo-indigo">
+            <Reveal
+              key={panel.title}
+              delay={stagger(i, 120)}
+              direction={i === 0 ? "right" : "left"}
+            >
+              <article className="group h-full border-t-2 border-transparent bg-background p-8 shadow-soft-md transition-[translate,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1.5 hover:border-leo-blue hover:shadow-soft-lg sm:p-10">
+                <span className="flex h-11 w-11 items-center justify-center text-leo-blue transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:-translate-y-0.5 group-hover:scale-110">
                   <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
                     {panel.icon}
                   </svg>

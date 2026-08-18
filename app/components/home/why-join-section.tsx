@@ -51,16 +51,16 @@ const benefits = [
 
 export function WhyJoinSection() {
   return (
-    <section className="bg-background py-10 sm:py-14 lg:py-16">
+    <section className="bg-background py-20 sm:py-24">
       <Container>
         <div className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#06142F_0%,#0A1F44_100%)] px-6 py-12 text-on-navy sm:px-10 sm:py-14">
           <Motif variant="grid" tone="navy" className="opacity-30" />
 
           <div className="relative">
-            <Reveal className="text-center">
-              <SectionLabel tone="cyan">Why Join Us</SectionLabel>
-              <h2 className="mt-3 text-h2 font-bold tracking-tight">
-                Benefits of being a Leo
+            <Reveal className="max-w-2xl">
+              <SectionLabel tone="cyan">Our impact</SectionLabel>
+              <h2 className="mt-3 text-h2 font-bold tracking-tight text-balance">
+                What being a Leo means in practice
               </h2>
             </Reveal>
 
@@ -69,10 +69,10 @@ export function WhyJoinSection() {
                 <Reveal
                   key={benefit.title}
                   delay={stagger(i)}
-                  className="relative px-4 text-center xl:border-r xl:border-white/10 xl:last:border-r-0"
+                  className="group relative px-4 xl:border-r xl:border-white/10 xl:last:border-r-0"
                 >
                   <span
-                    className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/10 ${iconToneClasses[benefit.tone]}`}
+                    className={`flex h-12 w-12 items-center justify-center rounded-full bg-white/10 transition-[translate,background-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:-translate-y-1 group-hover:bg-white/20 ${iconToneClasses[benefit.tone]}`}
                   >
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                       {benefit.icon}

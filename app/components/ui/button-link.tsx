@@ -41,6 +41,19 @@ export const solidBlueButton =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-indigo focus-visible:ring-offset-2 " +
   "focus-visible:ring-offset-background";
 
+/**
+ * The same CTA rendered on top of the hero photo, where the solid indigo fill
+ * sits too close to the navy scrim to read. Frosted white over the image keeps
+ * the shape identical while staying legible.
+ */
+export const glassButton =
+  "inline-flex items-center justify-center rounded-lg border border-white/25 bg-white/10 px-6 py-2.5 text-sm font-bold " +
+  "uppercase tracking-wide text-white shadow-soft-sm backdrop-blur-sm " +
+  "transition-[transform,background-color,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] " +
+  "hover:-translate-y-0.5 hover:border-white/45 hover:bg-white/20 " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 " +
+  "focus-visible:ring-offset-surface-navy";
+
 /** Shared class recipe, exported so plain <button> elements (e.g. ApiForm's submit) match ButtonLink exactly. */
 export function buttonClasses(
   variant: ButtonVariant = "primary",

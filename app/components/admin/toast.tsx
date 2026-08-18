@@ -66,8 +66,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             role={toast.tone === "error" ? "alert" : "status"}
             className={`pointer-events-auto flex items-start gap-3 rounded-xl border px-4 py-3 text-sm shadow-soft-lg ${
               toast.tone === "success"
-                ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-100"
-                : "border-red-500/40 bg-red-500/15 text-red-100"
+                ? "border-emerald-300 bg-emerald-50 text-emerald-800"
+                : "border-red-300 bg-red-50 text-red-800"
             }`}
           >
             <span aria-hidden className="mt-0.5 shrink-0 font-bold">

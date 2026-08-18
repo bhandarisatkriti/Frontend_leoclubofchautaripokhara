@@ -17,6 +17,7 @@
   --surface-navy-deep: #123566;
   --on-navy: #f5f8ff;
   --on-navy-muted: #a9b6d6;
+
 }
 
 @theme inline {
@@ -44,18 +45,33 @@
   --color-leo-green: #3fa535;
   --color-leo-charcoal: #0a1f44;
 
-  /* Admin dashboard palette. The public site is light; the dashboard is a
-     dark navy workspace, so it gets its own scale rather than reusing the
-     public surface tokens. */
-  --color-admin-bg: #061426;
-  --color-admin-panel: #0b1f3a;
-  --color-admin-card: #0d223d;
-  --color-admin-raised: #123b66;
-  --color-admin-border: #1e3a5f;
-  --color-admin-text: #f8fafc;
-  --color-admin-muted: #94a3b8;
-  --color-admin-accent: #2563eb;
-  --color-admin-accent-bright: #3b82f6;
+  /* Admin dashboard palette — a two-tone scheme.
+
+     The navigation is deep navy and the workspace is white. Splitting them is
+     what makes long sessions readable: dense tables, forms and modals sit on
+     white where contrast is highest, while the chrome stays dark so it reads
+     as a frame rather than competing with the content.
+
+     `admin-*` therefore describes the WORKSPACE (light) and `admin-nav-*` the
+     CHROME (dark). Every admin screen already speaks in these tokens, so the
+     workspace flipped to light without touching the pages. */
+  --color-admin-bg: #f2f6fc;
+  --color-admin-panel: #ffffff;
+  --color-admin-card: #ffffff;
+  --color-admin-raised: #e8eff9;
+  --color-admin-border: #d7e2f2;
+  --color-admin-text: #0b1f3a;
+  --color-admin-muted: #56688a;
+  --color-admin-accent: #1e5eff;
+  --color-admin-accent-bright: #1747c7;
+
+  /* Chrome: sidebar, top bar and the sign-in screen. */
+  --color-admin-nav: #071a35;
+  --color-admin-nav-soft: #0d2a52;
+  --color-admin-nav-raised: #16356b;
+  --color-admin-nav-border: #1d3f77;
+  --color-admin-nav-text: #ffffff;
+  --color-admin-nav-muted: #9db2d6;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -98,6 +114,13 @@
   --animate-hero-zoom: hero-zoom 18s var(--ease-premium) forwards;
   --animate-float-slow: float 12s ease-in-out infinite;
   --animate-float-slower: float 16s ease-in-out infinite;
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-join-popup: join-popup var(--duration-base) var(--ease-premium) both;
+
+  /* Membership popup — see app/components/join-now-popup.tsx. */
+  --animate-modal-in: modal-in 420ms var(--ease-premium) both;
+  --animate-modal-out: modal-out 200ms ease-in both;
+  --animate-backdrop-out: fade-out 200ms ease-in both;
 }
 
 @keyframes fade-up {
@@ -120,12 +143,54 @@
   }
 }
 
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modal-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
 @keyframes hero-zoom {
   from {
     transform: scale(1);
   }
   to {
     transform: scale(1.06);
+  }
+}
+
+/* Continuous horizontal scroll. The track holds the content twice, so
+   travelling exactly -50% lands on the copy and loops seamlessly. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 
@@ -136,6 +201,18 @@
   }
   50% {
     transform: translate(12px, -18px);
+  }
+}
+
+/* Entrance for the membership popup: fade plus a small scale-up. */
+@keyframes join-popup {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
 
@@ -271,5 +348,43 @@ html {
   .reveal {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Hero + navbar design system
+   --------------------------------------------------------------------------- */
+
+/* Staggered entrance. Each piece declares its own delay through --rise-delay,
+   so the order reads: mark, navigation, headline lines, photo, index, CTA. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-rise {
+  animation: hero-rise 900ms var(--ease-premium) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+
+/* Vertical metadata rail down the left edge of the hero. */
+.hero-rail {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
   }
 }

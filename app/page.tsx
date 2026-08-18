@@ -1,41 +1,48 @@
+import Link from "next/link";
 import { AboutSection, type ClubAbout } from "@/app/components/home/about-section";
-import { GalleryStrip } from "@/app/components/home/gallery-strip";
+import { CreedBand } from "@/app/components/home/creed-band";
 import { Hero } from "@/app/components/home/hero";
 import { MissionVisionCards } from "@/app/components/home/mission-vision-cards";
+import { SectionHeading } from "@/app/components/home/section-heading";
 import { WhyJoinSection } from "@/app/components/home/why-join-section";
 import { type ClubStats } from "@/app/components/home/stats-grid";
 import { ArticleCard, type Article } from "@/app/components/news/article-card";
 import { EmptyState } from "@/app/components/page-header";
-import { TeamPreview } from "@/app/components/home/team-preview";
-import { type Member } from "@/app/components/team/team-card";
 import {
   CompactEventItem,
   FeaturedEventCard,
 } from "@/app/components/events/events-spotlight";
 import { type LeoEvent } from "@/app/components/events/event-card";
-import { ButtonLink } from "@/app/components/ui/button-link";
+import { JoinNowPopup } from "@/app/components/join-now-popup";
 import { Container } from "@/app/components/ui/container";
+import { Motif } from "@/app/components/ui/motif";
 import { Reveal } from "@/app/components/ui/reveal";
-import { SectionLabel } from "@/app/components/ui/section-label";
-import { apiFetchOr, endpoints, mediaUrl, type Paginated } from "@/app/lib/api";
-import type { ClubInformation } from "@/app/lib/types";
-import { localGalleryPhotos } from "@/app/lib/local-photos";
-import { type ResolvedPhoto } from "@/app/gallery/gallery-grid";
+import { apiFetchOr, endpoints, type Paginated } from "@/app/lib/api";
+import { joinPopupConfig } from "@/app/lib/join-popup";
+import { joinQrSvg } from "@/app/lib/join-qr";
 import { stagger } from "@/app/lib/motion";
+import type { ClubInformation } from "@/app/lib/types";
 
-/** Mirrors `GalleryImageSerializer`: the caption field is `description`. */
-type BackendPhoto = {
-  id: number;
-  title?: string | null;
-  description?: string | null;
-  image: string | null;
-};
+/** Only the totals are read from these, so the row shapes are irrelevant. */
+type CountedRow = { id: number };
 
+/**
+ * Homepage, ordered as one narrative rather than a stack of components:
+ *
+ *   hero (who we are) → about → impact (what we do) → events (what is
+ *   happening) → news → join
+ *
+ * Every band runs through `Container`, so the content column is identical the
+ * whole way down, and the grounds alternate light / tinted / navy so each step
+ * reads as its own chapter. Section headings all go through `SectionHeading`
+ * for the same reason: the page previously arranged each one differently,
+ * which is most of why it felt like unrelated blocks.
+ */
 export default async function Home() {
   const [eventsData, teamData, photosData, newsData, club] = await Promise.all([
     apiFetchOr<Paginated<LeoEvent> | LeoEvent[]>(endpoints.events, []),
-    apiFetchOr<Paginated<Member> | Member[]>(endpoints.team, []),
-    apiFetchOr<Paginated<BackendPhoto> | BackendPhoto[]>(endpoints.gallery, []),
+    apiFetchOr<Paginated<CountedRow> | CountedRow[]>(endpoints.team, []),
+    apiFetchOr<Paginated<CountedRow> | CountedRow[]>(endpoints.gallery, []),
     apiFetchOr<Paginated<Article> | Article[]>(endpoints.news, []),
     apiFetchOr<(ClubInformation & ClubStats & ClubAbout) | null>(endpoints.club, null),
   ]);
@@ -54,119 +61,150 @@ export default async function Home() {
   const events = [...(Array.isArray(eventsData) ? eventsData : eventsData.results)].sort(
     (a, b) => new Date(a.event_date).valueOf() - new Date(b.event_date).valueOf(),
   );
-  const team = (Array.isArray(teamData) ? teamData : teamData.results).slice(0, 3);
-  const backendPhotos: ResolvedPhoto[] = (Array.isArray(photosData) ? photosData : photosData.results)
-    .filter((photo) => photo.image)
-    .map((photo) => ({ id: photo.id, src: mediaUrl(photo.image)!, caption: photo.description ?? photo.title }));
-  // Backend photos are authoritative once the gallery is populated; the
-  // checked-in set is the fallback. See the note in app/gallery/page.tsx.
-  const photos: ResolvedPhoto[] = (
-    backendPhotos.length ? backendPhotos : localGalleryPhotos
-  ).slice(0, 6);
   const news = [...(Array.isArray(newsData) ? newsData : newsData.results)]
     .sort((a, b) => {
       const aTime = a.published_at ? new Date(a.published_at).valueOf() : 0;
       const bTime = b.published_at ? new Date(b.published_at).valueOf() : 0;
       return bTime - aTime;
     })
-    .slice(0, 4);
+    .slice(0, 3);
 
   const [featuredEvent, ...secondaryEvents] = events;
   const compactEvents = secondaryEvents.slice(0, 2);
 
+  // Encoded on the server so the QR library never reaches the browser.
+  const qrSvg = await joinQrSvg();
+
   return (
     <>
-      <Hero heading={club?.name} description={club?.short_description} />
+      {/* Membership conversion popup — homepage only. See app/lib/join-popup.ts. */}
+      <JoinNowPopup config={joinPopupConfig} qrSvg={qrSvg} />
+
+      {/* 02 — WHO ARE WE -------------------------------------------------- */}
+      <Hero description={club?.short_description} />
+      <CreedBand />
+
+      {/* 03 — OUR IDENTITY ------------------------------------------------ */}
       <AboutSection clubStats={club} club={club} counts={counts} />
-      <MissionVisionCards mission={club?.mission} vision={club?.vision} intro={club?.tagline} />
+      <MissionVisionCards mission={club?.mission} vision={club?.vision} />
+
+      {/* 04 — WHAT WE DO -------------------------------------------------- */}
       <WhyJoinSection />
 
-      <section className="bg-surface-blue py-16 sm:py-20">
+      {/* 05 — WHAT IS HAPPENING ------------------------------------------- */}
+      <section className="bg-surface-blue py-20 sm:py-24">
         <Container>
-          <Reveal className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <SectionLabel>Upcoming Activity</SectionLabel>
-              <h2 className="mt-3 text-h2 font-bold tracking-tight">Our Next Events</h2>
-            </div>
-            <ButtonLink href="/events" variant="outline" withArrow>
-              View All Events
-            </ButtonLink>
-          </Reveal>
+          <SectionHeading
+            label="What's happening"
+            title="Upcoming events"
+            description="Service projects, camps and club gatherings that are next on the calendar."
+            action={{ href: "/events", label: "View all events" }}
+          />
 
-          <div className="mt-10">
+          <div className="mt-12">
             {!featuredEvent ? (
               <EmptyState message="Events will appear here once they are published from the backend." />
             ) : (
-              <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+              <div
+                className={`grid gap-6 ${
+                  compactEvents.length > 0 ? "lg:grid-cols-[1.4fr_1fr]" : ""
+                }`}
+              >
                 <Reveal>
                   <FeaturedEventCard event={featuredEvent} />
                 </Reveal>
-                <div className="flex flex-col gap-6">
-                  {compactEvents.map((event, i) => (
-                    <Reveal key={event.id} delay={stagger(i)}>
-                      <CompactEventItem event={event} />
-                    </Reveal>
-                  ))}
-                </div>
+                {compactEvents.length > 0 && (
+                  <div className="flex flex-col gap-6">
+                    {compactEvents.map((event, i) => (
+                      <Reveal key={event.id} delay={stagger(i)}>
+                        <CompactEventItem event={event} />
+                      </Reveal>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
         </Container>
       </section>
 
-      <TeamPreview team={team} />
 
-      <GalleryStrip photos={photos} />
-
-      <section className="bg-background py-16 sm:py-20">
-        <Container>
-          <Reveal className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(100deg,#06142F_0%,#1747C7_55%,#38BDF8_100%)] px-6 py-12 text-center text-white sm:px-12 sm:py-14 lg:flex lg:items-center lg:justify-between lg:text-left">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 animate-float-slow rounded-full bg-white/10 blur-3xl"
-            />
-            <div className="relative lg:max-w-xl">
-              <h2 className="text-h2 font-bold tracking-tight text-balance">
-                Ready to Make a Difference?
-              </h2>
-              <p className="mx-auto mt-3 max-w-lg text-white/85 lg:mx-0">
-                Membership is open to young people aged 12–30 in and around
-                Pokhara. Tell us a little about yourself and we will get in
-                touch.
-              </p>
-            </div>
-            <div className="relative mt-8 flex justify-center lg:mt-0 lg:justify-end">
-              <ButtonLink href="/join" variant="dark" size="lg" withArrow>
-                Join Leo Club Today
-              </ButtonLink>
-            </div>
-          </Reveal>
-        </Container>
-      </section>
-
+      {/* 08 — WHAT IS NEW ------------------------------------------------- */}
       {news.length > 0 && (
-        <section className="bg-surface py-16 sm:py-20">
+        <section className="bg-background py-20 sm:py-24">
           <Container>
-            <Reveal className="flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <SectionLabel tone="blue">Latest News</SectionLabel>
-                <h2 className="mt-3 text-h2 font-bold tracking-tight">Stay Updated</h2>
-              </div>
-              <ButtonLink href="/news" variant="outline" withArrow>
-                View All News
-              </ButtonLink>
-            </Reveal>
+            <SectionHeading
+              label="Latest from us"
+              title="News and updates"
+              description="Project reports and announcements from the club."
+              action={{ href: "/news", label: "View all news" }}
+            />
 
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div
+              className={
+                news.length >= 3
+                  ? "mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                  : "mt-12 space-y-6"
+              }
+            >
               {news.map((article, i) => (
                 <Reveal key={article.id} delay={stagger(i)}>
-                  <ArticleCard article={article} />
+                  <ArticleCard
+                    article={article}
+                    variant={news.length >= 3 ? "default" : "row"}
+                  />
                 </Reveal>
               ))}
             </div>
           </Container>
         </section>
       )}
+
+      {/* 09 — HOW DO I TAKE PART ------------------------------------------ */}
+      {/* Deliberately the same navy field as the hero and the creed band, so
+          the page closes on the note it opened with. The previous bright
+          left-to-right sweep to #1E5EFF read as a different site. */}
+      <section className="relative overflow-hidden bg-surface-navy py-20 text-white sm:py-24">
+        <Motif variant="grid" tone="navy" className="opacity-25" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-leo-blue/20 blur-3xl"
+        />
+
+        <Container className="relative">
+          <div className="grid items-end gap-10 lg:grid-cols-[1.3fr_auto]">
+            <Reveal>
+              {/* Same kicker treatment as the hero: rule, then cyan lettering. */}
+              <p className="flex items-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] text-leo-cyan">
+                <span aria-hidden className="h-px w-10 bg-leo-cyan/70" />
+                Membership
+              </p>
+              <h2 className="mt-6 max-w-xl font-display text-[clamp(2rem,4.4vw,3.25rem)] font-bold leading-[1.04] tracking-[-0.02em] text-balance">
+                Ready to be part of it?
+              </h2>
+              <p className="mt-5 max-w-lg text-[0.9375rem] leading-[1.85] text-on-navy-muted">
+                Membership is open to young people aged 12–30 in and around
+                Pokhara. Tell us a little about yourself and the committee will
+                be in touch.
+              </p>
+            </Reveal>
+
+            <Reveal delay={140}>
+              <Link
+                href="/join"
+                className="group relative inline-flex items-center overflow-hidden border border-white/30 px-8 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-white transition-colors duration-[var(--duration-base)] hover:border-leo-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-surface-navy"
+              >
+                <span
+                  aria-hidden
+                  className="absolute inset-0 origin-left scale-x-0 bg-leo-blue transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:scale-x-100"
+                />
+                <span className="relative">Join now</span>
+              </Link>
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
     </>
   );
 }

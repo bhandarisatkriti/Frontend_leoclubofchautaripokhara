@@ -98,12 +98,12 @@ export function StatsGrid({
   // how much content exists, and empty grid columns leave an obvious dead gap.
   // Tiles keep a consistent size and simply wrap as more figures appear.
   return (
-    <div className="flex flex-wrap gap-3 sm:gap-4">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4">
       {stats.map((stat, i) => (
         <Reveal
           key={stat.label}
           delay={stagger(i)}
-          className="group min-w-[9.5rem] flex-1 basis-40 rounded-2xl border border-border bg-surface p-5 shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1 hover:border-leo-blue/30 hover:shadow-soft-md sm:max-w-[15rem]"
+          className="group rounded-2xl border border-border bg-surface p-5 shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1 hover:border-leo-blue/30 hover:shadow-soft-md"
         >
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-leo-blue/10 text-leo-blue transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:scale-110">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">

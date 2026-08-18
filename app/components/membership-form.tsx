@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { buttonClasses } from "@/app/components/ui/button-link";
 import { endpoints, submitForm } from "@/app/lib/api";
+import { site } from "@/app/lib/site";
 
 /**
  * Value/label pairs mirror `MembershipApplication.Occupation` /
@@ -71,25 +72,6 @@ const STEP_META = [
 
 const TOTAL_STEPS = STEP_META.length;
 
-const FIELD_STEP: Record<string, number> = {
-  full_name: 1,
-  email: 1,
-  membership_id: 1,
-  date_of_birth: 1,
-  current_address: 2,
-  permanent_address: 2,
-  phone: 2,
-  occupation_or_study: 3,
-  occupation_other: 3,
-  gender: 4,
-  gender_other: 4,
-  blood_group: 4,
-  heard_about_leo: 5,
-  heard_about_other: 5,
-  profile_image: 6,
-  message: 6,
-};
-
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 const ACCEPTED_PHOTO_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const MESSAGE_MAX = 1000;
@@ -136,10 +118,6 @@ type Status = "idle" | "submitting" | "success" | "error";
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
-}
-
-function labelFor(pairs: readonly (readonly [string, string])[], value: string) {
-  return pairs.find(([v]) => v === value)?.[1] ?? "—";
 }
 
 function validateStep(step: number, v: FormValues, photo: File | null): Record<string, string> {
@@ -198,7 +176,7 @@ function validateStep(step: number, v: FormValues, photo: File | null): Record<s
 
 function FieldLabel({ htmlFor, required, children }: { htmlFor?: string; required?: boolean; children: React.ReactNode }) {
   return (
-    <label htmlFor={htmlFor} className="text-sm font-medium text-white/90">
+    <label htmlFor={htmlFor} className="text-sm font-medium text-foreground">
       {children} {required && <span className="text-leo-red">*</span>}
     </label>
   );
@@ -214,10 +192,10 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 }
 
 function fieldClass(invalid?: boolean, extra = "") {
-  return `mt-1.5 w-full rounded-xl border bg-white/[0.06] px-4 py-3 text-sm text-white placeholder:text-on-navy-muted outline-none transition-[border-color,box-shadow] duration-[var(--duration-fast)] ${
+  return `mt-1.5 w-full rounded-lg border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted/70 outline-none transition-[border-color,box-shadow] duration-[var(--duration-fast)] ${
     invalid
-      ? "border-leo-red focus:border-leo-red"
-      : "border-white/10 focus:border-leo-blue focus:shadow-[0_0_0_3px_rgba(30,94,255,0.18)]"
+      ? "border-leo-red focus:border-leo-red focus:shadow-[0_0_0_3px_rgba(228,0,43,0.12)]"
+      : "border-border focus:border-leo-blue focus:shadow-[0_0_0_3px_rgba(30,94,255,0.14)]"
   } ${extra}`;
 }
 
@@ -233,85 +211,14 @@ function SelectArrow() {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-on-navy-muted"
+      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted"
     >
       <polyline points="6 9 12 15 18 9" />
     </svg>
   );
 }
 
-/** Desktop step rail + mobile "Step X of N" progress. */
-function Stepper({ current }: { current: number }) {
-  return (
-    <div className="mb-8">
-      <div className="hidden sm:block">
-        <div className="flex items-center">
-          {STEP_META.map((step, i) => {
-            const num = i + 1;
-            const state = num < current ? "done" : num === current ? "current" : "future";
-            return (
-              <div key={step.title} className="flex flex-1 items-center last:flex-none">
-                <span
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors duration-[var(--duration-base)] ${
-                    state === "done"
-                      ? "bg-leo-blue text-white"
-                      : state === "current"
-                        ? "bg-linear-to-br from-leo-blue to-leo-indigo text-white shadow-[0_0_0_5px_rgba(30,94,255,0.18)]"
-                        : "bg-white/8 text-on-navy-muted"
-                  }`}
-                >
-                  {state === "done" ? (
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  ) : (
-                    String(num).padStart(2, "0")
-                  )}
-                </span>
-                {i < STEP_META.length - 1 && (
-                  <span className={`mx-1.5 h-0.5 flex-1 rounded-full transition-colors duration-[var(--duration-base)] ${num < current ? "bg-leo-blue" : "bg-white/10"}`} />
-                )}
-              </div>
-            );
-          })}
-        </div>
-        <div className="mt-2 flex">
-          {STEP_META.map((step, i) => (
-            <div
-              key={step.title}
-              className={`flex-1 text-center text-[11px] font-semibold uppercase tracking-wide last:flex-none last:text-right ${
-                i + 1 === current ? "text-white" : "text-on-navy-muted"
-              }`}
-              style={i === 0 ? { textAlign: "left" } : undefined}
-            >
-              {step.short}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="sm:hidden">
-        <p className="text-xs font-bold uppercase tracking-widest text-leo-blue-light">
-          Step {String(current).padStart(2, "0")} of {String(TOTAL_STEPS).padStart(2, "0")}
-        </p>
-        <div className="mt-2.5 flex gap-1.5">
-          {STEP_META.map((step, i) => (
-            <span
-              key={step.title}
-              className={`h-1.5 flex-1 rounded-full transition-colors duration-[var(--duration-base)] ${
-                i + 1 <= current ? "bg-leo-blue" : "bg-white/10"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function MembershipForm() {
-  const [step, setStep] = useState(1);
-  const [direction, setDirection] = useState<"forward" | "back">("forward");
   const [values, setValues] = useState<FormValues>(INITIAL_VALUES);
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
 
@@ -334,6 +241,24 @@ export function MembershipForm() {
       delete next[key];
       return next;
     });
+  }
+
+  /**
+   * Bring a field into view and focus it.
+   *
+   * With every question on one page, a validation failure can be far off
+   * screen — without this the form would look like it simply ignored Submit.
+   */
+  function scrollToField(name: string) {
+    const el = document.getElementById(name);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    (el as HTMLElement).focus({ preventScroll: true });
+  }
+
+  function focusFirstError(errors: Record<string, string[]> | Record<string, string>) {
+    const first = Object.keys(errors)[0];
+    if (first) scrollToField(first);
   }
 
   function errorFor(name: string): string | undefined {
@@ -372,31 +297,21 @@ export function MembershipForm() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
-  function goToStep(target: number) {
-    setDirection(target >= step ? "forward" : "back");
-    setStep(target);
-  }
-
-  function handleBack() {
-    if (step === 1) return;
-    goToStep(step - 1);
-  }
-
   async function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const errors = validateStep(step, values, photo);
+    // Everything is on one page now, so every section is validated together.
+    const errors: Record<string, string> = {};
+    for (let section = 1; section <= TOTAL_STEPS; section += 1) {
+      Object.assign(errors, validateStep(section, values, photo));
+    }
     if (Object.keys(errors).length > 0) {
       setClientErrors(errors);
+      focusFirstError(errors);
       return;
     }
 
-    if (step < TOTAL_STEPS) {
-      goToStep(step + 1);
-      return;
-    }
-
-    // Final step — actually submit to the Django API.
+    // Send it to the Django API.
     setStatus("submitting");
     setError(null);
     setFieldErrors({});
@@ -415,7 +330,6 @@ export function MembershipForm() {
     if (result.ok) {
       setValues(INITIAL_VALUES);
       removePhoto();
-      setStep(1);
       setSuccessDetail(result.detail);
       setStatus("success");
       return;
@@ -425,42 +339,49 @@ export function MembershipForm() {
     setFieldErrors(result.fieldErrors);
     setStatus("error");
 
-    const erroredField = Object.keys(result.fieldErrors)[0];
-    const erroredStep = erroredField ? FIELD_STEP[erroredField] : undefined;
-    if (erroredStep) goToStep(erroredStep);
+    focusFirstError(result.fieldErrors);
   }
 
   if (status === "success") {
     return (
-      <div className="mx-auto max-w-[1000px] rounded-[28px] border border-white/8 bg-[linear-gradient(135deg,#06142F_0%,#0A1F44_100%)] p-8 text-center shadow-soft-lg sm:p-14">
+      <div className="mx-auto max-w-[760px] overflow-hidden rounded-lg border border-border bg-background p-8 text-center shadow-soft-sm sm:p-12">
         <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-leo-blue text-white shadow-glow-blue">
           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </span>
-        <h2 className="mt-6 text-2xl font-bold text-white">Application Submitted Successfully</h2>
-        <p className="mx-auto mt-3 max-w-sm text-sm text-on-navy-muted">
+        <h2 className="mt-6 text-2xl font-bold text-foreground">Application Submitted Successfully</h2>
+        <p className="mx-auto mt-3 max-w-sm text-sm text-muted">
           Thank you for your interest in joining Leo Club of Chautari Pokhara. Your
           membership application has been received.
         </p>
-        {successDetail && <p className="mt-3 text-sm text-on-navy-muted">{successDetail}</p>}
+        {successDetail && <p className="mt-3 text-sm text-muted">{successDetail}</p>}
       </div>
     );
   }
 
-  const meta = STEP_META[step - 1];
-
   return (
-    <div className="mx-auto max-w-[1000px] rounded-[28px] border border-white/8 bg-[linear-gradient(135deg,#06142F_0%,#0A1F44_100%)] p-6 shadow-soft-lg sm:p-10">
-      <form onSubmit={handleFormSubmit} noValidate>
-        <Stepper current={step} />
+    <div className="mx-auto w-full max-w-3xl space-y-3">
+      {/* Header card, with the accent bar a Google Form carries at the top. */}
+      <div className="overflow-hidden rounded-lg border border-border bg-background shadow-soft-sm">
+        <span aria-hidden className="block h-2.5 bg-linear-to-r from-leo-indigo via-leo-blue-dark to-leo-blue" />
+        <div className="p-6 sm:p-8">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            Membership Application
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            {site.name} — {site.district}. Your answers are sent only to the club
+            committee.
+          </p>
+          <p className="mt-4 border-t border-border pt-4 text-xs text-leo-red">
+            * Indicates required question
+          </p>
+        </div>
+      </div>
 
-        <div key={step} className={direction === "forward" ? "step-in-forward" : "step-in-back"}>
-          <p className="section-label text-leo-blue-light">Step {String(step).padStart(2, "0")} of {String(TOTAL_STEPS).padStart(2, "0")}</p>
-          <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">{meta.title}</h2>
-          <p className="mt-1.5 text-sm text-on-navy-muted">{meta.subtitle}</p>
-
-          <div className="mt-7">
+      <form onSubmit={handleFormSubmit} noValidate className="space-y-3">
+        <div className="space-y-3">
+          <div>
             {/* Honeypot — real applicants never see or fill this in. */}
             <div className="hidden" aria-hidden="true">
               <label htmlFor="website">Website</label>
@@ -474,10 +395,15 @@ export function MembershipForm() {
               />
             </div>
 
-            {step === 1 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[0].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[0].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <>
-                <div className="rounded-xl border border-leo-blue/25 bg-leo-blue/10 p-4 text-sm text-on-navy-muted">
-                  <span className="font-semibold text-white">Email *</span> — your email
+                <div className="rounded-xl border border-leo-blue/25 bg-leo-blue/5 p-4 text-sm text-muted">
+                  <span className="font-semibold text-foreground">Email *</span> — your email
                   address will be included with your membership application, so our team
                   can contact you about next steps.
                 </div>
@@ -522,7 +448,7 @@ export function MembershipForm() {
                       placeholder="Enter membership ID, if applicable"
                       className={fieldClass()}
                     />
-                    <p className="mt-1.5 text-xs text-on-navy-muted">Optional</p>
+                    <p className="mt-1.5 text-xs text-muted">Optional</p>
                   </div>
                   <div>
                     <FieldLabel htmlFor="date_of_birth" required>
@@ -534,7 +460,7 @@ export function MembershipForm() {
                       max={todayIso()}
                       value={values.date_of_birth}
                       onChange={(event) => set("date_of_birth", event.target.value)}
-                      className={fieldClass(Boolean(errorFor("date_of_birth")), "[color-scheme:dark]")}
+                      className={fieldClass(Boolean(errorFor("date_of_birth")), "")}
                       aria-invalid={Boolean(errorFor("date_of_birth")) || undefined}
                       aria-describedby="date_of_birth-error"
                     />
@@ -542,9 +468,15 @@ export function MembershipForm() {
                   </div>
                 </div>
               </>
-            )}
+              </div>
+            </section>
 
-            {step === 2 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[1].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[1].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
                   <FieldLabel htmlFor="current_address" required>
@@ -581,11 +513,11 @@ export function MembershipForm() {
                     Phone Number
                   </FieldLabel>
                   <div
-                    className={`mt-1.5 flex overflow-hidden rounded-xl border bg-white/[0.06] transition-[border-color,box-shadow] duration-[var(--duration-fast)] focus-within:shadow-[0_0_0_3px_rgba(30,94,255,0.18)] ${
-                      errorFor("phone") ? "border-leo-red" : "border-white/10 focus-within:border-leo-blue"
+                    className={`mt-1.5 flex overflow-hidden rounded-lg border bg-background transition-[border-color,box-shadow] duration-[var(--duration-fast)] focus-within:shadow-[0_0_0_3px_rgba(30,94,255,0.14)] ${
+                      errorFor("phone") ? "border-leo-red" : "border-border focus-within:border-leo-blue"
                     }`}
                   >
-                    <span className="flex items-center gap-1.5 border-r border-white/10 bg-white/5 px-3.5 text-sm font-semibold text-on-navy-muted">
+                    <span className="flex items-center gap-1.5 border-r border-border bg-surface px-3.5 text-sm font-semibold text-muted">
                       <span aria-hidden>🇳🇵</span>+977
                     </span>
                     <input
@@ -595,7 +527,7 @@ export function MembershipForm() {
                       value={values.phone}
                       onChange={(event) => set("phone", event.target.value.replace(/[^\d]/g, ""))}
                       placeholder="98XXXXXXXX"
-                      className="w-full min-w-0 bg-transparent px-3.5 py-3 text-sm text-white outline-none placeholder:text-on-navy-muted"
+                      className="w-full min-w-0 bg-transparent px-3.5 py-2.5 text-sm text-foreground outline-none placeholder:text-muted/70"
                       aria-invalid={Boolean(errorFor("phone")) || undefined}
                       aria-describedby="phone-error"
                     />
@@ -603,9 +535,15 @@ export function MembershipForm() {
                   <FieldError id="phone-error" message={errorFor("phone")} />
                 </div>
               </div>
-            )}
+              </div>
+            </section>
 
-            {step === 3 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[2].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[2].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <div>
                 <FieldLabel htmlFor="occupation_or_study" required>
                   Occupation / Profession / Field of Study
@@ -618,11 +556,11 @@ export function MembershipForm() {
                     className={fieldClass(Boolean(errorFor("occupation_or_study")), "appearance-none pr-10")}
                     aria-invalid={Boolean(errorFor("occupation_or_study")) || undefined}
                   >
-                    <option value="" disabled className="bg-surface-navy">
+                    <option value="" disabled className="bg-background">
                       Select your profession or field of study
                     </option>
                     {OCCUPATIONS.map(([value, label]) => (
-                      <option key={value} value={value} className="bg-surface-navy text-white">
+                      <option key={value} value={value} className="bg-background text-foreground">
                         {label}
                       </option>
                     ))}
@@ -646,9 +584,15 @@ export function MembershipForm() {
                   </div>
                 )}
               </div>
-            )}
+              </div>
+            </section>
 
-            {step === 4 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[3].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[3].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <div className="grid gap-7 sm:grid-cols-2">
                 <div>
                   <FieldLabel required>Gender</FieldLabel>
@@ -663,7 +607,7 @@ export function MembershipForm() {
                           onChange={(event) => set("gender", event.target.value)}
                           className="peer sr-only"
                         />
-                        <span className="flex h-12 min-w-[92px] cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/[0.06] px-5 text-sm font-medium text-on-navy-muted transition-colors duration-[var(--duration-fast)] peer-checked:border-leo-blue peer-checked:bg-leo-blue peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-leo-blue">
+                        <span className="flex h-11 min-w-[84px] cursor-pointer items-center justify-center rounded-lg border border-border bg-background px-5 text-sm font-medium text-muted transition-colors duration-[var(--duration-fast)] peer-checked:border-leo-blue peer-checked:bg-leo-blue peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-leo-blue">
                           {label}
                         </span>
                       </label>
@@ -696,11 +640,11 @@ export function MembershipForm() {
                       className={fieldClass(Boolean(errorFor("blood_group")), "appearance-none pr-10")}
                       aria-invalid={Boolean(errorFor("blood_group")) || undefined}
                     >
-                      <option value="" disabled className="bg-surface-navy">
+                      <option value="" disabled className="bg-background">
                         Select your blood group
                       </option>
                       {BLOOD_GROUPS.map(([value, label]) => (
-                        <option key={value} value={value} className="bg-surface-navy text-white">
+                        <option key={value} value={value} className="bg-background text-foreground">
                           {label}
                         </option>
                       ))}
@@ -710,9 +654,15 @@ export function MembershipForm() {
                   <FieldError id="blood_group-error" message={errorFor("blood_group")} />
                 </div>
               </div>
-            )}
+              </div>
+            </section>
 
-            {step === 5 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[4].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[4].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <div>
                 <FieldLabel htmlFor="heard_about_leo" required>
                   How do you know about Leo?
@@ -725,11 +675,11 @@ export function MembershipForm() {
                     className={fieldClass(Boolean(errorFor("heard_about_leo")), "appearance-none pr-10")}
                     aria-invalid={Boolean(errorFor("heard_about_leo")) || undefined}
                   >
-                    <option value="" disabled className="bg-surface-navy">
+                    <option value="" disabled className="bg-background">
                       Select an option
                     </option>
                     {HEARD_ABOUT.map(([value, label]) => (
-                      <option key={value} value={value} className="bg-surface-navy text-white">
+                      <option key={value} value={value} className="bg-background text-foreground">
                         {label}
                       </option>
                     ))}
@@ -753,9 +703,15 @@ export function MembershipForm() {
                   </div>
                 )}
               </div>
-            )}
+              </div>
+            </section>
 
-            {step === 6 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[5].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[5].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <div className="space-y-7">
                 <div>
                   <FieldLabel required>Passport Photo</FieldLabel>
@@ -768,19 +724,19 @@ export function MembershipForm() {
                   />
 
                   {photo ? (
-                    <div className="step-in-forward mt-2 flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.06] p-3">
+                    <div className="step-in-forward mt-2 flex items-center gap-4 rounded-lg border border-border bg-surface p-3">
                       {photoPreview && (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={photoPreview} alt="Selected photo preview" className="h-16 w-16 shrink-0 rounded-lg object-cover" />
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-white">{photo.name}</p>
-                        <p className="text-xs text-on-navy-muted">{(photo.size / (1024 * 1024)).toFixed(1)} MB</p>
+                        <p className="truncate text-sm font-medium text-foreground">{photo.name}</p>
+                        <p className="text-xs text-muted">{(photo.size / (1024 * 1024)).toFixed(1)} MB</p>
                       </div>
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-on-navy-muted transition-colors duration-[var(--duration-fast)] hover:border-leo-blue hover:text-white"
+                        className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted transition-colors duration-[var(--duration-fast)] hover:border-leo-blue hover:text-leo-blue"
                       >
                         Change Photo
                       </button>
@@ -788,7 +744,7 @@ export function MembershipForm() {
                         type="button"
                         onClick={removePhoto}
                         aria-label="Remove photo"
-                        className="rounded-full border border-white/15 p-1.5 text-on-navy-muted transition-colors duration-[var(--duration-fast)] hover:border-leo-red hover:text-leo-red"
+                        className="rounded-full border border-border p-1.5 text-muted transition-colors duration-[var(--duration-fast)] hover:border-leo-red hover:text-leo-red"
                       >
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                           <line x1="6" y1="6" x2="18" y2="18" />
@@ -815,19 +771,19 @@ export function MembershipForm() {
                           ? "border-leo-blue bg-leo-blue/10"
                           : errorFor("profile_image") || photoError
                             ? "border-leo-red"
-                            : "border-white/15 hover:border-leo-blue"
+                            : "border-border hover:border-leo-blue"
                       }`}
                     >
-                      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/8 text-on-navy-muted">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-blue text-leo-blue">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M12 3v12" />
                           <path d="m7 8 5-5 5 5" />
                           <path d="M5 21h14" />
                         </svg>
                       </span>
-                      <span className="text-sm font-semibold text-white">Upload a passport-size photo</span>
-                      <span className="text-xs text-on-navy-muted">Click to browse or drag and drop</span>
-                      <span className="text-xs text-on-navy-muted">JPG, PNG or WEBP • Max 10 MB</span>
+                      <span className="text-sm font-semibold text-foreground">Upload a passport-size photo</span>
+                      <span className="text-xs text-muted">Click to browse or drag and drop</span>
+                      <span className="text-xs text-muted">JPG, PNG or WEBP • Max 10 MB</span>
                     </button>
                   )}
                   <FieldError id="profile_image-error" message={photoError ?? errorFor("profile_image")} />
@@ -835,7 +791,7 @@ export function MembershipForm() {
 
                 <div>
                   <div className="flex items-baseline justify-between">
-                    <label htmlFor="message" className="text-sm font-medium text-white/90">
+                    <label htmlFor="message" className="text-sm font-medium text-foreground">
                       Message
                     </label>
                   </div>
@@ -849,48 +805,16 @@ export function MembershipForm() {
                       placeholder="Tell us why you'd like to join or anything else you'd like us to know..."
                       className={fieldClass(Boolean(errorFor("message")), "pb-7")}
                     />
-                    <span className="pointer-events-none absolute bottom-2.5 right-3.5 text-[11px] text-on-navy-muted">
+                    <span className="pointer-events-none absolute bottom-2.5 right-3.5 text-[11px] text-muted">
                       {values.message.length}/{MESSAGE_MAX}
                     </span>
                   </div>
                   <FieldError id="message-error" message={errorFor("message")} />
                 </div>
 
-                <div className="rounded-xl border border-white/10 bg-white/[0.04] p-5">
-                  <p className="section-label text-leo-blue-light">Application Summary</p>
-                  <dl className="mt-3 space-y-2.5 text-sm">
-                    {[
-                      { label: "Name", value: values.full_name || "—", step: 1 },
-                      { label: "Email", value: values.email || "—", step: 1 },
-                      { label: "Phone", value: values.phone ? `+977 ${values.phone}` : "—", step: 2 },
-                      {
-                        label: "Occupation",
-                        value:
-                          values.occupation_or_study === "OTHER"
-                            ? values.occupation_other || "Other"
-                            : labelFor(OCCUPATIONS, values.occupation_or_study),
-                        step: 3,
-                      },
-                      { label: "Blood Group", value: labelFor(BLOOD_GROUPS, values.blood_group), step: 4 },
-                    ].map((row) => (
-                      <div key={row.label} className="flex items-center justify-between gap-4 border-b border-white/8 pb-2.5 last:border-0 last:pb-0">
-                        <dt className="text-on-navy-muted">{row.label}</dt>
-                        <div className="flex items-center gap-3">
-                          <dd className="max-w-[14rem] truncate text-right font-medium text-white">{row.value}</dd>
-                          <button
-                            type="button"
-                            onClick={() => goToStep(row.step)}
-                            className="text-xs font-semibold text-leo-blue-light transition-colors hover:text-white"
-                          >
-                            Edit
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
               </div>
-            )}
+              </div>
+            </section>
           </div>
         </div>
 
@@ -898,18 +822,15 @@ export function MembershipForm() {
           <p className="mt-6 rounded-lg border border-leo-red/30 bg-leo-red/10 p-3 text-sm text-leo-red">{error}</p>
         )}
 
-        <div className="mt-8 flex items-center justify-between border-t border-white/8 pt-6">
-          {step > 1 ? (
-            <button
-              type="button"
-              onClick={handleBack}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-[var(--duration-fast)] hover:border-white/40"
-            >
-              ← Back
-            </button>
-          ) : (
-            <span />
-          )}
+        <div className="overflow-hidden rounded-lg border border-border bg-background shadow-soft-sm">
+          <span
+            aria-hidden
+            className="block h-2.5 bg-linear-to-r from-leo-indigo via-leo-blue-dark to-leo-blue"
+          />
+          <div className="flex flex-wrap items-center justify-between gap-4 p-6 sm:p-8">
+            <p className="text-xs text-muted">
+              Never submit passwords through this form.
+            </p>
 
           <button
             type="submit"
@@ -928,12 +849,11 @@ export function MembershipForm() {
                 </svg>
                 Submitting…
               </span>
-            ) : step === TOTAL_STEPS ? (
-              "Submit Application →"
             ) : (
-              "Continue →"
+              "Submit Application →"
             )}
-          </button>
+            </button>
+          </div>
         </div>
       </form>
     </div>

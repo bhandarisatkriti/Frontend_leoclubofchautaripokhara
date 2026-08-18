@@ -157,7 +157,7 @@ export function SingletonForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {!existing && (
-        <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           {emptyMessage}
         </p>
       )}
@@ -165,7 +165,7 @@ export function SingletonForm({
       {formError && (
         <p
           role="alert"
-          className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
           {formError}
         </p>
