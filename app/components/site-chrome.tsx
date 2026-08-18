@@ -16,13 +16,16 @@ import { TopBar } from "@/app/components/top-bar";
  * component.
  */
 export function SiteChrome({ children }: { children: React.ReactNode }) {
-  const isAdmin = usePathname().startsWith("/admin");
+  const pathname = usePathname();
 
-  if (isAdmin) return <>{children}</>;
+  if (pathname.startsWith("/admin")) return <>{children}</>;
 
   return (
     <>
-      <TopBar />
+      {/* The contact strip is a homepage-only greeting: on inner pages it
+          repeats what the footer already carries and pushes the content
+          down for no gain. */}
+      {pathname === "/" && <TopBar />}
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <SiteFooter />
