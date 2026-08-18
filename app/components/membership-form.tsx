@@ -72,25 +72,6 @@ const STEP_META = [
 
 const TOTAL_STEPS = STEP_META.length;
 
-const FIELD_STEP: Record<string, number> = {
-  full_name: 1,
-  email: 1,
-  membership_id: 1,
-  date_of_birth: 1,
-  current_address: 2,
-  permanent_address: 2,
-  phone: 2,
-  occupation_or_study: 3,
-  occupation_other: 3,
-  gender: 4,
-  gender_other: 4,
-  blood_group: 4,
-  heard_about_leo: 5,
-  heard_about_other: 5,
-  profile_image: 6,
-  message: 6,
-};
-
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 const ACCEPTED_PHOTO_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const MESSAGE_MAX = 1000;
@@ -241,78 +222,7 @@ function SelectArrow() {
   );
 }
 
-/** Desktop step rail + mobile "Step X of N" progress. */
-function Stepper({ current }: { current: number }) {
-  return (
-    <div>
-      <div className="hidden sm:block">
-        <div className="flex items-center">
-          {STEP_META.map((step, i) => {
-            const num = i + 1;
-            const state = num < current ? "done" : num === current ? "current" : "future";
-            return (
-              <div key={step.title} className="flex flex-1 items-center last:flex-none">
-                <span
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors duration-[var(--duration-base)] ${
-                    state === "done"
-                      ? "bg-leo-blue text-white"
-                      : state === "current"
-                        ? "bg-linear-to-br from-leo-blue to-leo-indigo text-white shadow-[0_0_0_5px_rgba(30,94,255,0.18)]"
-                        : "bg-surface-blue text-muted"
-                  }`}
-                >
-                  {state === "done" ? (
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  ) : (
-                    String(num).padStart(2, "0")
-                  )}
-                </span>
-                {i < STEP_META.length - 1 && (
-                  <span className={`mx-1.5 h-0.5 flex-1 rounded-full transition-colors duration-[var(--duration-base)] ${num < current ? "bg-leo-blue" : "bg-border"}`} />
-                )}
-              </div>
-            );
-          })}
-        </div>
-        <div className="mt-2 flex">
-          {STEP_META.map((step, i) => (
-            <div
-              key={step.title}
-              className={`flex-1 text-center text-[11px] font-semibold uppercase tracking-wide last:flex-none last:text-right ${
-                i + 1 === current ? "text-leo-blue" : "text-muted"
-              }`}
-              style={i === 0 ? { textAlign: "left" } : undefined}
-            >
-              {step.short}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="sm:hidden">
-        <p className="text-xs font-bold uppercase tracking-widest text-leo-blue-light">
-          Step {String(current).padStart(2, "0")} of {String(TOTAL_STEPS).padStart(2, "0")}
-        </p>
-        <div className="mt-2.5 flex gap-1.5">
-          {STEP_META.map((step, i) => (
-            <span
-              key={step.title}
-              className={`h-1.5 flex-1 rounded-full transition-colors duration-[var(--duration-base)] ${
-                i + 1 <= current ? "bg-leo-blue" : "bg-border"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function MembershipForm() {
-  const [step, setStep] = useState(1);
-  const [direction, setDirection] = useState<"forward" | "back">("forward");
   const [values, setValues] = useState<FormValues>(INITIAL_VALUES);
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
 
@@ -335,6 +245,24 @@ export function MembershipForm() {
       delete next[key];
       return next;
     });
+  }
+
+  /**
+   * Bring a field into view and focus it.
+   *
+   * With every question on one page, a validation failure can be far off
+   * screen — without this the form would look like it simply ignored Submit.
+   */
+  function scrollToField(name: string) {
+    const el = document.getElementById(name);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    (el as HTMLElement).focus({ preventScroll: true });
+  }
+
+  function focusFirstError(errors: Record<string, string[]> | Record<string, string>) {
+    const first = Object.keys(errors)[0];
+    if (first) scrollToField(first);
   }
 
   function errorFor(name: string): string | undefined {
@@ -373,31 +301,21 @@ export function MembershipForm() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
-  function goToStep(target: number) {
-    setDirection(target >= step ? "forward" : "back");
-    setStep(target);
-  }
-
-  function handleBack() {
-    if (step === 1) return;
-    goToStep(step - 1);
-  }
-
   async function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const errors = validateStep(step, values, photo);
+    // Everything is on one page now, so every section is validated together.
+    const errors: Record<string, string> = {};
+    for (let section = 1; section <= TOTAL_STEPS; section += 1) {
+      Object.assign(errors, validateStep(section, values, photo));
+    }
     if (Object.keys(errors).length > 0) {
       setClientErrors(errors);
+      focusFirstError(errors);
       return;
     }
 
-    if (step < TOTAL_STEPS) {
-      goToStep(step + 1);
-      return;
-    }
-
-    // Final step — actually submit to the Django API.
+    // Send it to the Django API.
     setStatus("submitting");
     setError(null);
     setFieldErrors({});
@@ -416,7 +334,6 @@ export function MembershipForm() {
     if (result.ok) {
       setValues(INITIAL_VALUES);
       removePhoto();
-      setStep(1);
       setSuccessDetail(result.detail);
       setStatus("success");
       return;
@@ -426,9 +343,7 @@ export function MembershipForm() {
     setFieldErrors(result.fieldErrors);
     setStatus("error");
 
-    const erroredField = Object.keys(result.fieldErrors)[0];
-    const erroredStep = erroredField ? FIELD_STEP[erroredField] : undefined;
-    if (erroredStep) goToStep(erroredStep);
+    focusFirstError(result.fieldErrors);
   }
 
   if (status === "success") {
@@ -449,10 +364,8 @@ export function MembershipForm() {
     );
   }
 
-  const meta = STEP_META[step - 1];
-
   return (
-    <div className="mx-auto max-w-[760px] space-y-3">
+    <div className="mx-auto w-full max-w-4xl space-y-3">
       {/* Header card, with the accent bar a Google Form carries at the top. */}
       <div className="overflow-hidden rounded-lg border border-border bg-background shadow-soft-sm">
         <span aria-hidden className="block h-2.5 bg-linear-to-r from-leo-blue-dark via-leo-blue to-leo-cyan" />
@@ -471,24 +384,8 @@ export function MembershipForm() {
       </div>
 
       <form onSubmit={handleFormSubmit} noValidate className="space-y-3">
-        {/* Progress card */}
-        <div className="rounded-lg border border-border bg-background p-5 shadow-soft-sm sm:p-6">
-          <Stepper current={step} />
-        </div>
-
-        <div
-          key={step}
-          className={`rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8 ${
-            direction === "forward" ? "step-in-forward" : "step-in-back"
-          }`}
-        >
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-leo-blue">
-            Step {String(step).padStart(2, "0")} of {String(TOTAL_STEPS).padStart(2, "0")}
-          </p>
-          <h3 className="mt-2 text-xl font-bold text-foreground sm:text-2xl">{meta.title}</h3>
-          <p className="mt-1.5 text-sm text-muted">{meta.subtitle}</p>
-
-          <div className="mt-7 border-t border-border pt-7">
+        <div className="space-y-3">
+          <div>
             {/* Honeypot — real applicants never see or fill this in. */}
             <div className="hidden" aria-hidden="true">
               <label htmlFor="website">Website</label>
@@ -502,7 +399,12 @@ export function MembershipForm() {
               />
             </div>
 
-            {step === 1 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[0].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[0].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <>
                 <div className="rounded-xl border border-leo-blue/25 bg-leo-blue/5 p-4 text-sm text-muted">
                   <span className="font-semibold text-foreground">Email *</span> — your email
@@ -570,9 +472,15 @@ export function MembershipForm() {
                   </div>
                 </div>
               </>
-            )}
+              </div>
+            </section>
 
-            {step === 2 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[1].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[1].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
                   <FieldLabel htmlFor="current_address" required>
@@ -631,9 +539,15 @@ export function MembershipForm() {
                   <FieldError id="phone-error" message={errorFor("phone")} />
                 </div>
               </div>
-            )}
+              </div>
+            </section>
 
-            {step === 3 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[2].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[2].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <div>
                 <FieldLabel htmlFor="occupation_or_study" required>
                   Occupation / Profession / Field of Study
@@ -674,9 +588,15 @@ export function MembershipForm() {
                   </div>
                 )}
               </div>
-            )}
+              </div>
+            </section>
 
-            {step === 4 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[3].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[3].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <div className="grid gap-7 sm:grid-cols-2">
                 <div>
                   <FieldLabel required>Gender</FieldLabel>
@@ -738,9 +658,15 @@ export function MembershipForm() {
                   <FieldError id="blood_group-error" message={errorFor("blood_group")} />
                 </div>
               </div>
-            )}
+              </div>
+            </section>
 
-            {step === 5 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[4].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[4].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <div>
                 <FieldLabel htmlFor="heard_about_leo" required>
                   How do you know about Leo?
@@ -781,9 +707,15 @@ export function MembershipForm() {
                   </div>
                 )}
               </div>
-            )}
+              </div>
+            </section>
 
-            {step === 6 && (
+            <section className="rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+              <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                {STEP_META[5].title}
+              </h3>
+              <p className="mt-1 text-sm text-muted">{STEP_META[5].subtitle}</p>
+              <div className="mt-6 border-t border-border pt-6">
               <div className="space-y-7">
                 <div>
                   <FieldLabel required>Passport Photo</FieldLabel>
@@ -888,18 +820,18 @@ export function MembershipForm() {
                   <p className="section-label text-leo-blue-light">Application Summary</p>
                   <dl className="mt-3 space-y-2.5 text-sm">
                     {[
-                      { label: "Name", value: values.full_name || "—", step: 1 },
-                      { label: "Email", value: values.email || "—", step: 1 },
-                      { label: "Phone", value: values.phone ? `+977 ${values.phone}` : "—", step: 2 },
+                      { label: "Name", value: values.full_name || "—", field: "full_name" },
+                      { label: "Email", value: values.email || "—", field: "email" },
+                      { label: "Phone", value: values.phone ? `+977 ${values.phone}` : "—", field: "phone" },
                       {
                         label: "Occupation",
                         value:
                           values.occupation_or_study === "OTHER"
                             ? values.occupation_other || "Other"
                             : labelFor(OCCUPATIONS, values.occupation_or_study),
-                        step: 3,
+                        field: "occupation_or_study",
                       },
-                      { label: "Blood Group", value: labelFor(BLOOD_GROUPS, values.blood_group), step: 4 },
+                      { label: "Blood Group", value: labelFor(BLOOD_GROUPS, values.blood_group), field: "blood_group" },
                     ].map((row) => (
                       <div key={row.label} className="flex items-center justify-between gap-4 border-b border-border pb-2.5 last:border-0 last:pb-0">
                         <dt className="text-muted">{row.label}</dt>
@@ -907,7 +839,7 @@ export function MembershipForm() {
                           <dd className="max-w-[14rem] truncate text-right font-medium text-foreground">{row.value}</dd>
                           <button
                             type="button"
-                            onClick={() => goToStep(row.step)}
+                            onClick={() => scrollToField(row.field)}
                             className="text-xs font-semibold text-leo-blue transition-colors hover:text-leo-blue-dark"
                           >
                             Edit
@@ -918,7 +850,8 @@ export function MembershipForm() {
                   </dl>
                 </div>
               </div>
-            )}
+              </div>
+            </section>
           </div>
         </div>
 
@@ -926,18 +859,10 @@ export function MembershipForm() {
           <p className="mt-6 rounded-lg border border-leo-red/30 bg-leo-red/10 p-3 text-sm text-leo-red">{error}</p>
         )}
 
-        <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
-          {step > 1 ? (
-            <button
-              type="button"
-              onClick={handleBack}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-muted transition-colors duration-[var(--duration-fast)] hover:border-leo-blue hover:text-leo-blue"
-            >
-              ← Back
-            </button>
-          ) : (
-            <span />
-          )}
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-background p-6 shadow-soft-sm sm:p-8">
+          <p className="text-xs text-muted">
+            Never submit passwords through this form.
+          </p>
 
           <button
             type="submit"
@@ -956,10 +881,8 @@ export function MembershipForm() {
                 </svg>
                 Submitting…
               </span>
-            ) : step === TOTAL_STEPS ? (
-              "Submit Application →"
             ) : (
-              "Continue →"
+              "Submit Application →"
             )}
           </button>
         </div>

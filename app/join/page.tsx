@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { MembershipForm } from "@/app/components/membership-form";
-import { PageHeader } from "@/app/components/page-header";
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { stagger } from "@/app/lib/motion";
@@ -20,20 +19,12 @@ const benefits = [
 export default function JoinPage() {
   return (
     <>
-      <PageHeader
-        kicker="Become a Leo"
-        title="Join Leo Club of Chautari Pokhara"
-        description="Take the first step toward leadership, service, and meaningful community impact. Complete the membership application below."
-      />
-
       {/* Soft ground behind the form cards, the way a Google Form sits on a
           tinted page rather than plain white. */}
-      <section className="bg-surface-blue py-12 sm:py-16">
-        <Container>
-          <Reveal delay={stagger(0)}>
-            <MembershipForm />
-          </Reveal>
-        </Container>
+      <section className="min-h-screen bg-surface-blue px-4 py-10 sm:px-6 sm:py-14">
+        <Reveal delay={stagger(0)}>
+          <MembershipForm />
+        </Reveal>
       </section>
 
       <Container className="py-16 sm:py-20">
