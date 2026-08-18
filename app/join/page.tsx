@@ -26,19 +26,12 @@ export default function JoinPage() {
         description="Take the first step toward leadership, service, and meaningful community impact. Complete the membership application below."
       />
 
-      <section className="bg-surface-navy py-16 sm:py-20">
+      {/* Soft ground behind the form cards, the way a Google Form sits on a
+          tinted page rather than plain white. */}
+      <section className="bg-surface-blue py-12 sm:py-16">
         <Container>
           <Reveal delay={stagger(0)}>
-            <div className="mx-auto max-w-[1000px] text-center">
-              <h2 className="text-h3 font-bold tracking-tight text-white">Membership Application</h2>
-              <p className="mt-2 text-sm text-on-navy-muted">
-                Fields marked <span className="text-leo-red">*</span> are required. Complete each
-                step to submit your application.
-              </p>
-            </div>
-            <div className="mt-10">
-              <MembershipForm />
-            </div>
+            <MembershipForm />
           </Reveal>
         </Container>
       </section>
