@@ -1,13 +1,12 @@
 import { Container } from "@/app/components/ui/container";
-import { Motif } from "@/app/components/ui/motif";
 import { Reveal } from "@/app/components/ui/reveal";
 import { SectionLabel } from "@/app/components/ui/section-label";
 import { stagger } from "@/app/lib/motion";
 
 const toneClasses = {
-  blue: "text-leo-blue-light border-leo-blue/40",
-  navy: "text-white border-white/30",
-  cyan: "text-leo-cyan border-leo-cyan/40",
+  blue: "text-leo-blue bg-leo-blue/10",
+  navy: "text-leo-indigo bg-leo-indigo/10",
+  cyan: "text-leo-cyan bg-leo-cyan/10",
 } as const;
 
 const activities = [
@@ -51,13 +50,11 @@ const activities = [
 
 export function WhatWeDo() {
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(135deg,#06142F_0%,#123566_100%)] py-16 text-on-navy sm:py-24">
-      <Motif variant="dots" tone="navy" className="opacity-20" />
-
-      <Container className="relative">
+    <section className="bg-surface py-16 sm:py-24">
+      <Container>
         <Reveal className="text-center">
-          <SectionLabel tone="cyan">What We Do</SectionLabel>
-          <h2 className="mt-3 text-h2 font-bold tracking-tight text-white">
+          <SectionLabel>What We Do</SectionLabel>
+          <h2 className="mt-3 text-h2 font-bold tracking-tight">
             Where We Put Our Energy
           </h2>
         </Reveal>
@@ -67,17 +64,29 @@ export function WhatWeDo() {
             <Reveal
               key={activity.title}
               delay={stagger(i, 90)}
-              className={`rounded-xl border-t-2 bg-white/5 p-6 backdrop-blur-sm transition-[transform,background-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1 hover:bg-white/10 ${
-                i % 3 === 1 ? "sm:translate-y-4" : ""
-              } ${toneClasses[activity.tone]}`}
+              className="group rounded-xl border border-border bg-background p-6 shadow-soft-sm transition-[transform,box-shadow] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1 hover:shadow-soft-md"
             >
-              <span className={toneClasses[activity.tone].split(" ")[0]}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  {activity.icon}
+              <div className="flex items-start justify-between">
+                <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${toneClasses[activity.tone]}`}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    {activity.icon}
+                  </svg>
+                </span>
+                <span className="text-xs font-bold text-border">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </div>
+              <h3 className="mt-4 font-semibold">{activity.title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted">{activity.body}</p>
+              <span
+                aria-hidden
+                className="mt-4 flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted transition-[transform,border-color,color] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:translate-x-1 group-hover:border-leo-blue group-hover:text-leo-blue"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
                 </svg>
               </span>
-              <h3 className="mt-3 font-semibold text-white">{activity.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-on-navy-muted">{activity.body}</p>
             </Reveal>
           ))}
         </div>

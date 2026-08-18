@@ -51,6 +51,11 @@ export const milestones = [
     description: `${site.name} was officially chartered under ${site.district}, sponsored by the Lions Club of Pokhara Chautari.`,
   },
   {
+    year: "2010s",
+    title: "Growing Our Reach",
+    description: "Years of expanding community projects, leadership development, and collaboration across Pokhara and beyond.",
+  },
+  {
     year: "Today",
     title: "Continuing the Journey",
     description: "Still serving Pokhara, one project and one member at a time.",
