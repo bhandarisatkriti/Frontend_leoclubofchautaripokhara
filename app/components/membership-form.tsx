@@ -120,10 +120,6 @@ function todayIso() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function labelFor(pairs: readonly (readonly [string, string])[], value: string) {
-  return pairs.find(([v]) => v === value)?.[1] ?? "—";
-}
-
 function validateStep(step: number, v: FormValues, photo: File | null): Record<string, string> {
   const errors: Record<string, string> = {};
 
@@ -816,39 +812,6 @@ export function MembershipForm() {
                   <FieldError id="message-error" message={errorFor("message")} />
                 </div>
 
-                <div className="rounded-lg border border-border bg-surface p-5">
-                  <p className="section-label text-leo-blue-light">Application Summary</p>
-                  <dl className="mt-3 space-y-2.5 text-sm">
-                    {[
-                      { label: "Name", value: values.full_name || "—", field: "full_name" },
-                      { label: "Email", value: values.email || "—", field: "email" },
-                      { label: "Phone", value: values.phone ? `+977 ${values.phone}` : "—", field: "phone" },
-                      {
-                        label: "Occupation",
-                        value:
-                          values.occupation_or_study === "OTHER"
-                            ? values.occupation_other || "Other"
-                            : labelFor(OCCUPATIONS, values.occupation_or_study),
-                        field: "occupation_or_study",
-                      },
-                      { label: "Blood Group", value: labelFor(BLOOD_GROUPS, values.blood_group), field: "blood_group" },
-                    ].map((row) => (
-                      <div key={row.label} className="flex items-center justify-between gap-4 border-b border-border pb-2.5 last:border-0 last:pb-0">
-                        <dt className="text-muted">{row.label}</dt>
-                        <div className="flex items-center gap-3">
-                          <dd className="max-w-[14rem] truncate text-right font-medium text-foreground">{row.value}</dd>
-                          <button
-                            type="button"
-                            onClick={() => scrollToField(row.field)}
-                            className="text-xs font-semibold text-leo-blue transition-colors hover:text-leo-blue-dark"
-                          >
-                            Edit
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
               </div>
               </div>
             </section>
