@@ -1,5 +1,4 @@
 import { AboutSection, type ClubAbout } from "@/app/components/home/about-section";
-import { ContactStrip } from "@/app/components/home/contact-strip";
 import { CreedBand } from "@/app/components/home/creed-band";
 import { Hero } from "@/app/components/home/hero";
 import { MissionVisionCards } from "@/app/components/home/mission-vision-cards";
@@ -31,7 +30,7 @@ type BackendPhoto = { id: number };
  * Homepage, ordered as one narrative rather than a stack of components:
  *
  *   hero (who we are) → about → impact (what we do) → events (what is
- *   happening) → people → news → join → contact
+ *   happening) → people → news → join
  *
  * Every band runs through `Container`, so the content column is identical the
  * whole way down, and the grounds alternate light / tinted / navy so each step
@@ -190,8 +189,6 @@ export default async function Home() {
         </Container>
       </section>
 
-      {/* 10 — CONTACT ----------------------------------------------------- */}
-      <ContactStrip club={club} />
     </>
   );
 }
