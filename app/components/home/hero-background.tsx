@@ -30,6 +30,9 @@ export async function HeroBackground() {
         aria-hidden
         className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,20,47,0.96)_0%,rgba(10,31,68,0.82)_40%,rgba(18,53,102,0.35)_70%,rgba(18,53,102,0.08)_100%)]"
       />
+      {/* Below sm, the copy column spans most of the width, so the gradient's lighter
+          right side sits behind text — add a flat tint so it stays readable there too. */}
+      <div aria-hidden className="absolute inset-0 bg-surface-navy/55 sm:hidden" />
       {/* Gentle bottom fade so the curved section below reads cleanly against the photo. */}
       <div
         aria-hidden

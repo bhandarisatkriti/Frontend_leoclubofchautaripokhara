@@ -3,9 +3,11 @@ import { AboutCta } from "@/app/components/about/about-cta";
 import { AboutHero } from "@/app/components/about/about-hero";
 import { CommunityImpact } from "@/app/components/about/community-impact";
 import { CoreValues } from "@/app/components/about/core-values";
+import { EmblemMeaning } from "@/app/components/about/emblem-meaning";
 import { LeadershipPreview } from "@/app/components/about/leadership-preview";
 import { MissionVision } from "@/app/components/about/mission-vision";
 import { PhotoStory } from "@/app/components/about/photo-story";
+import { QuoteBand } from "@/app/components/about/quote-band";
 import { Timeline } from "@/app/components/about/timeline";
 import { WhatWeDo } from "@/app/components/about/what-we-do";
 import { WhoWeAre } from "@/app/components/about/who-we-are";
@@ -30,9 +32,11 @@ export default async function AboutPage() {
     <>
       <AboutHero />
       <WhoWeAre />
+      <EmblemMeaning />
       <MissionVision />
       <Timeline />
       <WhatWeDo />
+      <QuoteBand />
       <CoreValues />
       <CommunityImpact clubStats={clubStats} />
       <LeadershipPreview team={team} />

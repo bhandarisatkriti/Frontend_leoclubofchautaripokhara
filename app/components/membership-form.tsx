@@ -256,7 +256,7 @@ function Stepper({ current }: { current: number }) {
                     state === "done"
                       ? "bg-leo-blue text-white"
                       : state === "current"
-                        ? "bg-linear-to-br from-leo-blue to-leo-violet text-white shadow-[0_0_0_5px_rgba(30,94,255,0.18)]"
+                        ? "bg-linear-to-br from-leo-blue to-leo-indigo text-white shadow-[0_0_0_5px_rgba(30,94,255,0.18)]"
                         : "bg-white/8 text-on-navy-muted"
                   }`}
                 >

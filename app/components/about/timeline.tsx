@@ -1,71 +1,63 @@
+import Image from "next/image";
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { SectionLabel } from "@/app/components/ui/section-label";
-import { milestones } from "@/app/lib/site";
+import { stagger } from "@/app/lib/motion";
+import { milestones, site } from "@/app/lib/site";
+
+const timelinePhotos = [
+  "/images/gallery/leo-gathering.jpg",
+  "/images/about/youth-camp.jpg",
+  "/images/gallery/club-activities.jpg",
+];
 
 export function Timeline() {
   return (
-    <section className="bg-background py-16 sm:py-24">
-      <Container size="narrow">
-        <Reveal className="text-center">
-          <SectionLabel>Our Story</SectionLabel>
-          <h2 className="mt-3 text-h2 font-bold tracking-tight">The Journey So Far</h2>
-        </Reveal>
+    <section id="story" className="bg-background py-16 sm:py-24">
+      <Container>
+        <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+          <Reveal>
+            <SectionLabel>Our Story</SectionLabel>
+            <h2 className="mt-3 text-h2 font-bold tracking-tight text-balance">
+              More Than Two Decades of Service
+            </h2>
+            <p className="mt-4 max-w-md text-base leading-relaxed text-muted">
+              From a small beginning in {site.established} to the impact we create
+              today, our journey is built on passion, teamwork, and the desire to
+              serve Pokhara.
+            </p>
+          </Reveal>
 
-        <div className="relative mt-14">
-          <span
-            aria-hidden
-            className="absolute left-4 top-0 h-full w-px bg-border sm:left-1/2 sm:-translate-x-1/2"
-          />
-
-          <div className="space-y-10 sm:space-y-14">
-            {milestones.map((milestone, i) => (
-              <Reveal
-                key={milestone.year}
-                direction={i % 2 === 0 ? "right" : "left"}
-                className="relative sm:grid sm:grid-cols-2 sm:gap-10"
-              >
-                <span
-                  aria-hidden
-                  className="absolute left-4 top-1.5 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-leo-blue shadow-[0_0_0_5px_rgba(30,94,255,0.15),0_0_20px_rgba(30,94,255,0.6)] sm:left-1/2"
-                />
-
-                {i % 2 === 0 ? (
-                  <>
-                    <div className="pl-12 sm:col-start-1 sm:pl-0 sm:pr-12 sm:text-right">
-                      <TimelineCard milestone={milestone} />
-                    </div>
-                    <div />
-                  </>
-                ) : (
-                  <>
-                    <div className="hidden sm:col-start-1 sm:block" />
-                    <div className="pl-12 sm:col-start-2 sm:pl-12">
-                      <TimelineCard milestone={milestone} />
-                    </div>
-                  </>
-                )}
-              </Reveal>
-            ))}
+          <div className="relative">
+            <span
+              aria-hidden
+              className="absolute left-[16.5%] right-[16.5%] top-12 hidden h-px bg-border sm:block sm:top-14"
+            />
+            <div className="grid grid-cols-3 gap-3 sm:gap-6">
+              {milestones.map((milestone, i) => (
+                <Reveal key={milestone.year} delay={stagger(i)} className="text-center">
+                  <div className="relative mx-auto h-20 w-20 overflow-hidden rounded-full shadow-soft-md sm:h-28 sm:w-28">
+                    <Image
+                      src={timelinePhotos[i]}
+                      alt={milestone.title}
+                      fill
+                      sizes="112px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <span className="relative z-10 -mt-3.5 mb-3 inline-flex h-8 min-w-8 items-center justify-center whitespace-nowrap rounded-full border-4 border-background bg-leo-blue px-1.5 text-[10px] font-bold text-white sm:h-9 sm:min-w-9">
+                    {milestone.year}
+                  </span>
+                  <p className="text-sm font-semibold">{milestone.title}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted">
+                    {milestone.description}
+                  </p>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </div>
       </Container>
     </section>
-  );
-}
-
-function TimelineCard({
-  milestone,
-}: {
-  milestone: (typeof milestones)[number];
-}) {
-  return (
-    <div className="inline-block rounded-xl border border-border bg-surface p-5 shadow-soft-sm">
-      <p className="text-xs font-bold uppercase tracking-widest text-leo-blue">
-        {milestone.year}
-      </p>
-      <h3 className="mt-1.5 font-semibold">{milestone.title}</h3>
-      <p className="mt-1.5 text-sm text-muted">{milestone.description}</p>
-    </div>
   );
 }

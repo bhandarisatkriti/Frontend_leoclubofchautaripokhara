@@ -59,6 +59,7 @@
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-playfair);
 
   /* Premium radius scale — a touch more generous than Tailwind's defaults. */
   --radius-sm: 0.5rem;
