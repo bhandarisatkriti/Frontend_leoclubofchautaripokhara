@@ -3,12 +3,10 @@ import { CreedBand } from "@/app/components/home/creed-band";
 import { Hero } from "@/app/components/home/hero";
 import { MissionVisionCards } from "@/app/components/home/mission-vision-cards";
 import { SectionHeading } from "@/app/components/home/section-heading";
-import { TeamPreview } from "@/app/components/home/team-preview";
 import { WhyJoinSection } from "@/app/components/home/why-join-section";
 import { type ClubStats } from "@/app/components/home/stats-grid";
 import { ArticleCard, type Article } from "@/app/components/news/article-card";
 import { EmptyState } from "@/app/components/page-header";
-import { type Member } from "@/app/components/team/team-card";
 import {
   CompactEventItem,
   FeaturedEventCard,
@@ -23,14 +21,14 @@ import { joinQrSvg } from "@/app/lib/join-qr";
 import { stagger } from "@/app/lib/motion";
 import type { ClubInformation } from "@/app/lib/types";
 
-/** Only the total is used here, so the row shape is irrelevant. */
-type BackendPhoto = { id: number };
+/** Only the totals are read from these, so the row shapes are irrelevant. */
+type CountedRow = { id: number };
 
 /**
  * Homepage, ordered as one narrative rather than a stack of components:
  *
  *   hero (who we are) → about → impact (what we do) → events (what is
- *   happening) → people → news → join
+ *   happening) → news → join
  *
  * Every band runs through `Container`, so the content column is identical the
  * whole way down, and the grounds alternate light / tinted / navy so each step
@@ -41,8 +39,8 @@ type BackendPhoto = { id: number };
 export default async function Home() {
   const [eventsData, teamData, photosData, newsData, club] = await Promise.all([
     apiFetchOr<Paginated<LeoEvent> | LeoEvent[]>(endpoints.events, []),
-    apiFetchOr<Paginated<Member> | Member[]>(endpoints.team, []),
-    apiFetchOr<Paginated<BackendPhoto> | BackendPhoto[]>(endpoints.gallery, []),
+    apiFetchOr<Paginated<CountedRow> | CountedRow[]>(endpoints.team, []),
+    apiFetchOr<Paginated<CountedRow> | CountedRow[]>(endpoints.gallery, []),
     apiFetchOr<Paginated<Article> | Article[]>(endpoints.news, []),
     apiFetchOr<(ClubInformation & ClubStats & ClubAbout) | null>(endpoints.club, null),
   ]);
@@ -61,7 +59,6 @@ export default async function Home() {
   const events = [...(Array.isArray(eventsData) ? eventsData : eventsData.results)].sort(
     (a, b) => new Date(a.event_date).valueOf() - new Date(b.event_date).valueOf(),
   );
-  const team = (Array.isArray(teamData) ? teamData : teamData.results).slice(0, 3);
   const news = [...(Array.isArray(newsData) ? newsData : newsData.results)]
     .sort((a, b) => {
       const aTime = a.published_at ? new Date(a.published_at).valueOf() : 0;
@@ -127,10 +124,6 @@ export default async function Home() {
         </Container>
       </section>
 
-      {/* 07 — WHO MAKES IT HAPPEN ----------------------------------------- */}
-      {/* 06, a featured project, is deliberately absent: the backend has no
-          projects model, and the brief says to skip it rather than invent one. */}
-      <TeamPreview team={team} />
 
       {/* 08 — WHAT IS NEW ------------------------------------------------- */}
       {news.length > 0 && (
