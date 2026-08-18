@@ -41,21 +41,11 @@ export type JoinPopupConfig = {
   signInLabel: string;
 
   logoSrc: string;
-  /** Fallback photo for the invitation panel when no JOIN image is placed. */
-  imageSrc: string;
-  imageAlt: string;
 
   panelLabel: string;
   panelHeadline: string;
   panelIntro: string;
   panelBody: string;
-};
-
-/** A headline figure for the invitation panel. `one` is the singular label. */
-export type JoinPopupStat = {
-  value: number;
-  label: string;
-  one?: string;
 };
 
 /**
@@ -102,8 +92,6 @@ export const joinPopupConfig: JoinPopupConfig = {
   signInLabel: "Sign in",
 
   logoSrc: "/logo.png",
-  imageSrc: "/images/about/members-uniform.jpg",
-  imageAlt: `Members of the ${site.name}`,
 
   panelLabel: "Ready to join?",
   panelHeadline: "Join our community",

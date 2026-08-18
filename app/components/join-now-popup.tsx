@@ -4,11 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import {
-  splitHeadline,
-  type JoinPopupConfig,
-  type JoinPopupStat,
-} from "@/app/lib/join-popup";
+import { splitHeadline, type JoinPopupConfig } from "@/app/lib/join-popup";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -39,14 +35,8 @@ type Phase = "idle" | "open" | "closing" | "done";
  */
 export function JoinNowPopup({
   config,
-  imageSrc,
-  imageAlt,
-  stats = [],
 }: {
   config: JoinPopupConfig;
-  imageSrc: string;
-  imageAlt: string;
-  stats?: JoinPopupStat[];
 }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -144,7 +134,7 @@ export function JoinNowPopup({
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-100 flex items-center justify-center overflow-y-auto overscroll-contain bg-[rgba(3,10,26,0.78)] p-3 backdrop-blur-md sm:p-6 ${
+      className={`fixed inset-0 z-100 flex items-center justify-center overflow-y-auto overflow-x-hidden overscroll-contain bg-[rgba(3,10,26,0.78)] p-3 backdrop-blur-md sm:p-6 ${
         closing ? "animate-backdrop-out" : "animate-fade-in"
       }`}
       onMouseDown={(event) => {
@@ -188,7 +178,7 @@ export function JoinNowPopup({
           </svg>
         </button>
 
-        <div className="grid min-h-0 flex-1 overflow-y-auto overscroll-contain lg:grid-cols-12">
+        <div className="grid min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain lg:grid-cols-12">
           {/* -------------------------------------------------------------
               Left: the pitch and the primary action.
               On mobile the CTA is lifted above the benefits (order-2) so the
@@ -320,40 +310,6 @@ export function JoinNowPopup({
                 {config.panelBody}
               </p>
             </div>
-
-            <div className="relative mt-auto overflow-hidden rounded-2xl ring-1 ring-white/15">
-              <div className="relative aspect-16/10">
-                <Image
-                  src={imageSrc}
-                  alt={imageAlt}
-                  fill
-                  sizes="(max-width: 1024px) 90vw, 24rem"
-                  className="object-cover"
-                />
-                <span
-                  aria-hidden
-                  className="absolute inset-0 bg-linear-to-t from-surface-navy/70 via-surface-navy/10 to-transparent"
-                />
-              </div>
-            </div>
-
-            {stats.length > 0 && (
-              <dl className="relative flex flex-wrap gap-2">
-                {stats.map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="flex-1 basis-24 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5"
-                  >
-                    <dt className="text-[11px] leading-tight text-on-navy-muted">
-                      {stat.value === 1 && stat.one ? stat.one : stat.label}
-                    </dt>
-                    <dd className="mt-0.5 text-xl font-bold leading-none text-white">
-                      {stat.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            )}
           </div>
         </div>
       </div>
