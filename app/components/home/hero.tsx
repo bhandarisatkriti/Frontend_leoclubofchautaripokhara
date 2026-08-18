@@ -10,9 +10,9 @@ import { site } from "@/app/lib/site";
  * earlier version cut the photo on a slant beside the text; the two fought each
  * other at most widths, which is what made the composition read as broken.
  *
- * The signature is the editorial metadata: real Pokhara coordinates, the
- * charter year and the district, ruled off along the bottom the way a printed
- * masthead carries them.
+ * The signature is the editorial metadata ruled off along the bottom — the
+ * location, charter year and district, set the way a printed masthead
+ * carries them.
  *
  * The three words are what LEO stands for, so the headline states the club's
  * own identity. `description` stays admin-editable through the club profile.
@@ -20,10 +20,8 @@ import { site } from "@/app/lib/site";
 
 const triad = ["Leadership", "Experience", "Opportunity"];
 
-/** Pokhara, to the minute. */
 const masthead: [string, string][] = [
   ["Location", "Pokhara, Nepal"],
-  ["Coordinates", "28°13′N 83°59′E"],
   ["Chartered", String(site.established)],
   ["District", "LDC 325 J"],
 ];
