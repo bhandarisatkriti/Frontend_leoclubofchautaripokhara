@@ -1,5 +1,4 @@
 import { AboutSection, type ClubAbout } from "@/app/components/home/about-section";
-import { GalleryStrip } from "@/app/components/home/gallery-strip";
 import { Hero } from "@/app/components/home/hero";
 import { JoinNowPopup } from "@/app/components/join-now-popup";
 import { joinPopupConfig } from "@/app/lib/join-popup";
@@ -9,7 +8,6 @@ import { WhyJoinSection } from "@/app/components/home/why-join-section";
 import { type ClubStats } from "@/app/components/home/stats-grid";
 import { ArticleCard, type Article } from "@/app/components/news/article-card";
 import { EmptyState } from "@/app/components/page-header";
-import { TeamPreview } from "@/app/components/home/team-preview";
 import { type Member } from "@/app/components/team/team-card";
 import {
   CompactEventItem,
@@ -20,19 +18,12 @@ import { ButtonLink } from "@/app/components/ui/button-link";
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { SectionLabel } from "@/app/components/ui/section-label";
-import { apiFetchOr, endpoints, mediaUrl, type Paginated } from "@/app/lib/api";
+import { apiFetchOr, endpoints, type Paginated } from "@/app/lib/api";
 import type { ClubInformation } from "@/app/lib/types";
-import { localGalleryPhotos } from "@/app/lib/local-photos";
-import { type ResolvedPhoto } from "@/app/gallery/gallery-grid";
 import { stagger } from "@/app/lib/motion";
 
-/** Mirrors `GalleryImageSerializer`: the caption field is `description`. */
-type BackendPhoto = {
-  id: number;
-  title?: string | null;
-  description?: string | null;
-  image: string | null;
-};
+/** Only the total is used now, so the row shape is irrelevant here. */
+type BackendPhoto = { id: number };
 
 export default async function Home() {
   const [eventsData, teamData, photosData, newsData, club] = await Promise.all([
@@ -57,15 +48,6 @@ export default async function Home() {
   const events = [...(Array.isArray(eventsData) ? eventsData : eventsData.results)].sort(
     (a, b) => new Date(a.event_date).valueOf() - new Date(b.event_date).valueOf(),
   );
-  const team = (Array.isArray(teamData) ? teamData : teamData.results).slice(0, 3);
-  const backendPhotos: ResolvedPhoto[] = (Array.isArray(photosData) ? photosData : photosData.results)
-    .filter((photo) => photo.image)
-    .map((photo) => ({ id: photo.id, src: mediaUrl(photo.image)!, caption: photo.description ?? photo.title }));
-  // Backend photos are authoritative once the gallery is populated; the
-  // checked-in set is the fallback. See the note in app/gallery/page.tsx.
-  const photos: ResolvedPhoto[] = (
-    backendPhotos.length ? backendPhotos : localGalleryPhotos
-  ).slice(0, 6);
   const news = [...(Array.isArray(newsData) ? newsData : newsData.results)]
     .sort((a, b) => {
       const aTime = a.published_at ? new Date(a.published_at).valueOf() : 0;
@@ -122,10 +104,6 @@ export default async function Home() {
           </div>
         </Container>
       </section>
-
-      <TeamPreview team={team} />
-
-      <GalleryStrip photos={photos} />
 
       <section className="bg-background py-16 sm:py-20">
         <Container>
