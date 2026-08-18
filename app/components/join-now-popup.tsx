@@ -315,15 +315,23 @@ export function JoinNowPopup({
             </div>
 
             {qrSvg && (
-              <div className="relative flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.06] p-4">
-                <div
-                  // The SVG is generated server-side by our own encoder, not
-                  // from user input, so there is nothing here to sanitise.
-                  dangerouslySetInnerHTML={{ __html: qrSvg }}
-                  className="h-24 w-24 shrink-0 rounded-lg bg-white p-2 [&>svg]:h-full [&>svg]:w-full"
-                  aria-hidden
-                />
-                <div className="min-w-0">
+              <div className="relative flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-5 text-center">
+                <a
+                  href={config.ctaHref}
+                  onClick={close}
+                  aria-label={`${config.ctaLabel} — opens the membership form`}
+                  className="rounded-xl bg-white p-3 shadow-soft-md transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-surface-navy"
+                >
+                  {/* Server-generated SVG from our own encoder — no user input,
+                      so there is nothing here to sanitise. Sized in rem so it
+                      scales with the viewport rather than staying thumbnail-small. */}
+                  <span
+                    dangerouslySetInnerHTML={{ __html: qrSvg }}
+                    aria-hidden
+                    className="block h-[11rem] w-[11rem] sm:h-[12.5rem] sm:w-[12.5rem] [&>svg]:h-full [&>svg]:w-full"
+                  />
+                </a>
+                <div>
                   <p className="text-sm font-semibold text-white">
                     Join from your phone
                   </p>

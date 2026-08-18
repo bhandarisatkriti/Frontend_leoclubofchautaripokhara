@@ -30,10 +30,14 @@ export async function joinQrSvg(): Promise<string | null> {
   try {
     return await QRCode.toString(joinUrl(), {
       type: "svg",
-      margin: 0,
-      // High correction keeps it scannable even when printed small or partly
-      // obscured; the payload is short enough that the density stays low.
-      errorCorrectionLevel: "H",
+      // A quiet zone is part of the spec — readers need clear space around
+      // the code, and without it scanning gets noticeably less reliable.
+      margin: 1,
+      // "M" rather than "H": the same URL needs 29x29 modules at M against
+      // 37x37 at H, so every module is ~27% larger at the same physical size,
+      // which is what decides how far away a phone can read it. The extra
+      // damage tolerance H buys is meaningless on a clean screen.
+      errorCorrectionLevel: "M",
       color: { dark: "#06142f", light: "#ffffff" },
     });
   } catch {
