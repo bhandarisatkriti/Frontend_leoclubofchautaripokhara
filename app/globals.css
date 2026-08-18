@@ -44,24 +44,33 @@
   --color-leo-green: #3fa535;
   --color-leo-charcoal: #0a1f44;
 
-  /* Admin dashboard palette. The public site is light; the dashboard is a
-     dark blue workspace, so it gets its own scale rather than reusing the
-     public surface tokens.
+  /* Admin dashboard palette — a two-tone scheme.
 
-     The grounds are deliberately blue rather than near-black — the previous
-     #061426 read as charcoal once a screen was full of dark panels. Each step
-     lifts by a visible amount so cards separate from the page without needing
-     a border to do all the work, and the foreground is pure white with a
-     lighter muted tone, which is what carries contrast on a blue ground. */
-  --color-admin-bg: #0a1a33;
-  --color-admin-panel: #0e2547;
-  --color-admin-card: #102a52;
-  --color-admin-raised: #17376b;
-  --color-admin-border: #24457a;
-  --color-admin-text: #ffffff;
-  --color-admin-muted: #b4c6e2;
-  --color-admin-accent: #2563eb;
-  --color-admin-accent-bright: #60a5fa;
+     The navigation is deep navy and the workspace is white. Splitting them is
+     what makes long sessions readable: dense tables, forms and modals sit on
+     white where contrast is highest, while the chrome stays dark so it reads
+     as a frame rather than competing with the content.
+
+     `admin-*` therefore describes the WORKSPACE (light) and `admin-nav-*` the
+     CHROME (dark). Every admin screen already speaks in these tokens, so the
+     workspace flipped to light without touching the pages. */
+  --color-admin-bg: #f2f6fc;
+  --color-admin-panel: #ffffff;
+  --color-admin-card: #ffffff;
+  --color-admin-raised: #e8eff9;
+  --color-admin-border: #d7e2f2;
+  --color-admin-text: #0b1f3a;
+  --color-admin-muted: #56688a;
+  --color-admin-accent: #1e5eff;
+  --color-admin-accent-bright: #1747c7;
+
+  /* Chrome: sidebar, top bar and the sign-in screen. */
+  --color-admin-nav: #071a35;
+  --color-admin-nav-soft: #0d2a52;
+  --color-admin-nav-raised: #16356b;
+  --color-admin-nav-border: #1d3f77;
+  --color-admin-nav-text: #ffffff;
+  --color-admin-nav-muted: #9db2d6;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

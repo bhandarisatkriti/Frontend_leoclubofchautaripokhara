@@ -239,7 +239,7 @@ export function TeamManager() {
                       title="Toggle whether this member appears on the public website"
                       className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors ${
                         member.is_active
-                          ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20"
+                          ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
                           : "border-admin-border text-admin-muted hover:bg-admin-raised/50"
                       }`}
                     >
@@ -429,7 +429,7 @@ function TeamMemberForm({
         {formError && (
           <p
             role="alert"
-            className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+            className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
           >
             {formError}
           </p>
@@ -464,7 +464,7 @@ function TeamMemberForm({
               JPEG, PNG or WebP. The server rejects anything over its upload limit.
             </p>
             {errors.profile_image?.map((message) => (
-              <p key={message} className="mt-1 text-xs text-red-300">
+              <p key={message} className="mt-1 text-xs text-red-600">
                 {message}
               </p>
             ))}

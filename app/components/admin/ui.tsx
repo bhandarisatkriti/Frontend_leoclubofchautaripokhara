@@ -58,8 +58,8 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-6 text-center">
-      <p className="text-sm text-red-200">{message}</p>
+    <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+      <p className="text-sm text-red-700">{message}</p>
       {onRetry && (
         <AdminButton tone="ghost" className="mt-4" onClick={onRetry}>
           Try again
@@ -103,16 +103,16 @@ export function Field({
 }) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="text-sm font-medium text-admin-text">
+      <label htmlFor={htmlFor} className="text-sm font-medium">
         {label}
-        {required && <span className="text-red-400"> *</span>}
+        {required && <span className="text-red-500"> *</span>}
       </label>
       {children}
       {hint && !errors?.length && (
         <p className="mt-1 text-xs text-admin-muted">{hint}</p>
       )}
       {errors?.map((error) => (
-        <p key={error} className="mt-1 text-xs text-red-300">
+        <p key={error} className="mt-1 text-xs text-red-600">
           {error}
         </p>
       ))}

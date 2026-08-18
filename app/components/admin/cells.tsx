@@ -33,11 +33,11 @@ export function dateTime(value: unknown): string {
 type PillTone = "green" | "blue" | "amber" | "red" | "grey";
 
 const pillTones: Record<PillTone, string> = {
-  green: "border-emerald-500/40 bg-emerald-500/10 text-emerald-200",
-  blue: "border-sky-500/40 bg-sky-500/10 text-sky-200",
-  amber: "border-amber-500/40 bg-amber-500/10 text-amber-200",
-  red: "border-red-500/40 bg-red-500/10 text-red-200",
-  grey: "border-admin-border text-admin-muted",
+  green: "border-emerald-300 bg-emerald-50 text-emerald-700",
+  blue: "border-sky-300 bg-sky-50 text-sky-700",
+  amber: "border-amber-300 bg-amber-50 text-amber-700",
+  red: "border-red-300 bg-red-50 text-red-700",
+  grey: "border-admin-border bg-admin-raised text-admin-muted",
 };
 
 export function Pill({

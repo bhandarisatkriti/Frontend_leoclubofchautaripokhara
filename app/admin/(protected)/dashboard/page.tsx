@@ -15,10 +15,10 @@ const dateTime = new Intl.DateTimeFormat("en-GB", {
 });
 
 const statusTone: Record<string, string> = {
-  PENDING: "border-amber-500/40 bg-amber-500/10 text-amber-200",
-  REVIEWING: "border-sky-500/40 bg-sky-500/10 text-sky-200",
-  APPROVED: "border-emerald-500/40 bg-emerald-500/10 text-emerald-200",
-  REJECTED: "border-red-500/40 bg-red-500/10 text-red-200",
+  PENDING: "border-amber-300 bg-amber-50 text-amber-700",
+  REVIEWING: "border-sky-300 bg-sky-50 text-sky-700",
+  APPROVED: "border-emerald-300 bg-emerald-50 text-emerald-700",
+  REJECTED: "border-red-300 bg-red-50 text-red-700",
 };
 
 const actionTone: Record<string, string> = {
@@ -48,9 +48,9 @@ export default async function AdminDashboardPage() {
 
   if (!summary) {
     return (
-      <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-6">
-        <h2 className="font-semibold text-red-100">Could not load the dashboard</h2>
-        <p className="mt-2 text-sm text-red-200">
+      <div className="rounded-xl border border-red-200 bg-red-50 p-6">
+        <h2 className="font-semibold text-red-800">Could not load the dashboard</h2>
+        <p className="mt-2 text-sm text-red-700">
           The API did not respond. Check that the Django server is running at{" "}
           <code className="font-mono">{API_URL}</code>, then reload this page.
         </p>
