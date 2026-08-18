@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AboutSection, type ClubAbout } from "@/app/components/home/about-section";
 import { CreedBand } from "@/app/components/home/creed-band";
 import { Hero } from "@/app/components/home/hero";
@@ -14,6 +15,7 @@ import {
 import { type LeoEvent } from "@/app/components/events/event-card";
 import { JoinNowPopup } from "@/app/components/join-now-popup";
 import { Container } from "@/app/components/ui/container";
+import { Motif } from "@/app/components/ui/motif";
 import { Reveal } from "@/app/components/ui/reveal";
 import { apiFetchOr, endpoints, type Paginated } from "@/app/lib/api";
 import { joinPopupConfig } from "@/app/lib/join-popup";
@@ -148,33 +150,47 @@ export default async function Home() {
       )}
 
       {/* 09 — HOW DO I TAKE PART ------------------------------------------ */}
-      <section className="relative overflow-hidden bg-[linear-gradient(105deg,#06142F_0%,#1E3A8A_55%,#1E5EFF_100%)] py-24 text-white sm:py-28">
+      {/* Deliberately the same navy field as the hero and the creed band, so
+          the page closes on the note it opened with. The previous bright
+          left-to-right sweep to #1E5EFF read as a different site. */}
+      <section className="relative overflow-hidden bg-surface-navy py-20 text-white sm:py-24">
+        <Motif variant="grid" tone="navy" className="opacity-25" />
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 animate-float-slow rounded-full bg-white/10 blur-3xl"
+          className="pointer-events-none absolute -right-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-leo-blue/20 blur-3xl"
         />
+
         <Container className="relative">
-          <Reveal className="max-w-2xl">
-            <p className="section-label text-leo-cyan">Membership</p>
-            <h2 className="mt-4 font-display text-[clamp(2.25rem,5vw,3.75rem)] font-bold leading-[1.02] tracking-tight text-balance">
-              Ready to be part of it?
-            </h2>
-            <p className="mt-5 max-w-lg text-white/80">
-              Membership is open to young people aged 12–30 in and around
-              Pokhara. Tell us a little about yourself and the committee will be
-              in touch.
-            </p>
-            <a
-              href="/join"
-              className="group relative mt-10 inline-flex items-center overflow-hidden border border-white/35 px-8 py-4 text-[11px] font-bold uppercase tracking-[0.24em] text-white transition-colors duration-[var(--duration-base)] hover:border-white"
-            >
-              <span
-                aria-hidden
-                className="absolute inset-0 origin-left scale-x-0 bg-white/15 transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:scale-x-100"
-              />
-              <span className="relative">Join now</span>
-            </a>
-          </Reveal>
+          <div className="grid items-end gap-10 lg:grid-cols-[1.3fr_auto]">
+            <Reveal>
+              {/* Same kicker treatment as the hero: rule, then cyan lettering. */}
+              <p className="flex items-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] text-leo-cyan">
+                <span aria-hidden className="h-px w-10 bg-leo-cyan/70" />
+                Membership
+              </p>
+              <h2 className="mt-6 max-w-xl font-display text-[clamp(2rem,4.4vw,3.25rem)] font-bold leading-[1.04] tracking-[-0.02em] text-balance">
+                Ready to be part of it?
+              </h2>
+              <p className="mt-5 max-w-lg text-[0.9375rem] leading-[1.85] text-on-navy-muted">
+                Membership is open to young people aged 12–30 in and around
+                Pokhara. Tell us a little about yourself and the committee will
+                be in touch.
+              </p>
+            </Reveal>
+
+            <Reveal delay={140}>
+              <Link
+                href="/join"
+                className="group relative inline-flex items-center overflow-hidden border border-white/30 px-8 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-white transition-colors duration-[var(--duration-base)] hover:border-leo-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leo-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-surface-navy"
+              >
+                <span
+                  aria-hidden
+                  className="absolute inset-0 origin-left scale-x-0 bg-leo-blue transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:scale-x-100"
+                />
+                <span className="relative">Join now</span>
+              </Link>
+            </Reveal>
+          </div>
         </Container>
       </section>
 
