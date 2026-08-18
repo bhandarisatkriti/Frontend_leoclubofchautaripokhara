@@ -62,7 +62,7 @@ export function Hero({ description }: { description?: string | null } = {}) {
               <span
                 key={word}
                 aria-hidden
-                className={`hero-rise block text-[clamp(2.25rem,6.1vw,4.75rem)] ${
+                className={`hero-rise block text-[clamp(2rem,5.2vw,4rem)] ${
                   i === 2 ? "text-leo-blue-light" : ""
                 }`}
                 style={{ ["--rise-delay" as string]: `${220 + i * 110}ms` }}
