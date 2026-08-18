@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { ApiForm, type Field } from "@/app/components/api-form";
-import { ContactHero } from "@/app/components/contact/contact-hero";
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { SectionLabel } from "@/app/components/ui/section-label";
@@ -74,8 +73,6 @@ const socials = [
 export default function ContactPage() {
   return (
     <>
-      <ContactHero />
-
       <Container className="py-16 sm:py-20">
         <div className="grid gap-8 lg:grid-cols-3 lg:gap-10">
           <Reveal className="lg:col-span-2">
