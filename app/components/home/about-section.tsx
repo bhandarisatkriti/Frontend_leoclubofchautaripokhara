@@ -55,7 +55,7 @@ export function AboutSection({
   );
 
   return (
-    <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-background pb-16 pt-12 sm:-mt-14 sm:rounded-t-[3rem] sm:pb-20 sm:pt-16 lg:pb-24">
+    <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-background pb-20 pt-16 sm:-mt-14 sm:rounded-t-[3rem] sm:pb-24 sm:pt-20">
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
           {/* Media ------------------------------------------------------- */}

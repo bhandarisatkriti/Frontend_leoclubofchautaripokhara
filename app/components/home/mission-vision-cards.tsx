@@ -47,13 +47,16 @@ export function MissionVisionCards({
   ];
 
   return (
-    <section className="bg-surface-blue py-16 sm:py-20">
+    <section className="bg-surface-blue py-20 sm:py-24">
       <Container>
-        <Reveal className="text-center">
-          <h2 className="text-h2 font-bold tracking-tight text-leo-indigo">
-            About us
+        {/* Same shape as every other section heading: kicker, title, one
+            line of context, left-aligned. */}
+        <Reveal className="max-w-2xl">
+          <p className="section-label text-leo-blue">What drives us</p>
+          <h2 className="mt-3 text-h2 font-bold tracking-tight text-balance">
+            Mission and vision
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-balance text-muted">
+          <p className="mt-3 max-w-xl text-muted">
             {intro ||
               `The ${site.name} empowers youth through leadership, service, and global connections.`}
           </p>
@@ -63,7 +66,7 @@ export function MissionVisionCards({
           {panels.map((panel, i) => (
             <Reveal key={panel.title} delay={stagger(i, 120)}>
               <article className="h-full bg-background p-8 shadow-soft-md sm:p-10">
-                <span className="flex h-11 w-11 items-center justify-center text-leo-indigo">
+                <span className="flex h-11 w-11 items-center justify-center text-leo-blue">
                   <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
                     {panel.icon}
                   </svg>
