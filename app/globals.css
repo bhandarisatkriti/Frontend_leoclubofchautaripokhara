@@ -248,6 +248,10 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  /* .reveal[data-direction="left/right"] translates content off-screen before
+     it scrolls into view, which can extend past the viewport edge and make
+     the page horizontally scrollable even though nothing is visibly clipped. */
+  overflow-x: hidden;
 }
 
 /* The header is sticky, so anchor targets need breathing room. */
@@ -255,31 +259,42 @@ html {
   scroll-padding-top: 5rem;
 }
 
-/* Scroll-entrance primitive toggled by the Reveal component via data-visible. */
-.reveal {
-  opacity: 0;
-  transform: translateY(var(--reveal-distance, 24px));
-  transition:
-    opacity var(--duration-slow) var(--ease-premium),
-    transform var(--duration-slow) var(--ease-premium);
-  transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
-}
-.reveal[data-direction="down"] {
-  transform: translateY(calc(-1 * var(--reveal-distance, 24px)));
-}
-.reveal[data-direction="left"] {
-  transform: translateX(var(--reveal-distance, 24px));
-}
-.reveal[data-direction="right"] {
-  transform: translateX(calc(-1 * var(--reveal-distance, 24px)));
-}
-.reveal[data-direction="none"] {
-  transform: none;
-}
-.reveal[data-visible="true"] {
-  opacity: 1;
-  transform: translate(0, 0);
+/*
+ * Scroll-entrance primitive toggled by the Reveal component via data-visible.
+ * Wrapped in `@layer base` (a layer `@import "tailwindcss"` already declares,
+ * ordered before `utilities`) so Tailwind utility classes on the same element
+ * — e.g. `hover:-translate-y-1` — always win over these rules regardless of
+ * selector specificity or source order. Cascade layers decide the winner
+ * before specificity is even consulted, so plain specificity tricks (e.g.
+ * :where()) can't fix a losing battle against a *layered* utility; putting
+ * these rules in an earlier layer is what actually does it.
+ */
+@layer base {
+  .reveal {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance, 24px));
+    transition:
+      opacity var(--duration-slow) var(--ease-premium),
+      transform var(--duration-slow) var(--ease-premium);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .reveal[data-direction="down"] {
+    transform: translateY(calc(-1 * var(--reveal-distance, 24px)));
+  }
+  .reveal[data-direction="left"] {
+    transform: translateX(var(--reveal-distance, 24px));
+  }
+  .reveal[data-direction="right"] {
+    transform: translateX(calc(-1 * var(--reveal-distance, 24px)));
+  }
+  .reveal[data-direction="none"] {
+    transform: none;
+  }
+  .reveal[data-visible="true"] {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
 }
 
 /* Small premium section kicker, e.g. "OUR MISSION". */

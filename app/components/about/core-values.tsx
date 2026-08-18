@@ -38,11 +38,11 @@ const values = [
 
 export function CoreValues() {
   return (
-    <section className="bg-surface-navy py-16 sm:py-20">
+    <section className="bg-background py-16 sm:py-20">
       <Container size="narrow">
         <Reveal className="text-center">
-          <SectionLabel tone="cyan">Our Values</SectionLabel>
-          <h2 className="mt-3 text-h2 font-bold tracking-tight text-white">The Values That Guide Us</h2>
+          <SectionLabel>Our Values</SectionLabel>
+          <h2 className="mt-3 text-h2 font-bold tracking-tight">The Values That Guide Us</h2>
         </Reveal>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-3">
@@ -50,18 +50,18 @@ export function CoreValues() {
             <Reveal
               key={value.word}
               delay={stagger(i, 90)}
-              className="rounded-xl border border-white/12 p-5 transition-colors duration-[var(--duration-base)] hover:border-leo-blue/40"
+              className="rounded-xl border border-border bg-surface p-5 shadow-soft-sm transition-[transform,box-shadow] duration-[var(--duration-base)] hover:-translate-y-1 hover:shadow-soft-md"
             >
               <div className="flex items-start justify-between">
-                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-leo-blue/15 text-leo-blue-light">
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-leo-blue/10 text-leo-blue">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     {value.icon}
                   </svg>
                 </span>
-                <span className="text-xs font-bold text-white/25">{String(i + 1).padStart(2, "0")}</span>
+                <span className="text-xs font-bold text-border">{String(i + 1).padStart(2, "0")}</span>
               </div>
-              <p className="mt-4 text-base font-bold tracking-tight text-white">{value.word}</p>
-              <p className="mt-1 text-xs leading-relaxed text-on-navy-muted">{value.body}</p>
+              <p className="mt-4 text-base font-bold tracking-tight">{value.word}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted">{value.body}</p>
             </Reveal>
           ))}
         </div>

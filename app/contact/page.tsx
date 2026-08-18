@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { ApiForm, type Field } from "@/app/components/api-form";
+import { ContactHero } from "@/app/components/contact/contact-hero";
 import { Container } from "@/app/components/ui/container";
-import { Motif } from "@/app/components/ui/motif";
 import { Reveal } from "@/app/components/ui/reveal";
+import { SectionLabel } from "@/app/components/ui/section-label";
 import { endpoints } from "@/app/lib/api";
 import { stagger } from "@/app/lib/motion";
 import { site } from "@/app/lib/site";
@@ -49,54 +50,120 @@ const contactMethods = [
   },
 ];
 
+const socials = [
+  {
+    label: "Facebook",
+    href: site.socials.facebook,
+    icon: (
+      <path d="M13 22v-8h2.7l.4-3H13V9.1c0-.9.2-1.5 1.5-1.5H16V5.1C15.7 5 14.7 5 13.6 5c-2.3 0-3.9 1.4-3.9 4v2H7v3h2.7v8h3.3Z" />
+    ),
+  },
+  {
+    label: "Instagram",
+    href: site.socials.instagram,
+    icon: (
+      <>
+        <rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="17.3" cy="6.7" r="1.1" />
+      </>
+    ),
+  },
+];
+
 export default function ContactPage() {
   return (
     <>
+      <ContactHero />
+
       <Container className="py-16 sm:py-20">
-        <div className="grid gap-12 lg:grid-cols-3">
+        <div className="grid gap-8 lg:grid-cols-3 lg:gap-10">
           <Reveal className="lg:col-span-2">
-            <ApiForm
-              endpoint={endpoints.contact}
-              fields={fields}
-              submitLabel="Send message"
-              successMessage="Thank you — your message has been sent. We will reply soon."
-            />
+            <div className="rounded-2xl border border-border bg-surface p-6 shadow-soft-sm sm:p-8">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-leo-blue/10 text-leo-blue">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 2 11 13" />
+                  <path d="M22 2 15 22l-4-9-9-4 20-7Z" />
+                </svg>
+              </span>
+              <h2 className="mt-4 text-h3 font-bold tracking-tight">Send Us a Message</h2>
+              <p className="mt-1.5 text-sm text-muted">
+                Fill out the form below and our team will get back to you as
+                soon as possible.
+              </p>
+
+              <div className="mt-7">
+                <ApiForm
+                  endpoint={endpoints.contact}
+                  fields={fields}
+                  submitLabel="Send message"
+                  successMessage="Thank you — your message has been sent. We will reply soon."
+                />
+              </div>
+            </div>
           </Reveal>
 
           <aside className="space-y-6">
             <Reveal direction="left">
-              <div className="rounded-xl border border-border bg-surface p-6 shadow-soft-sm">
-                <h2 className="section-label text-muted">Reach us directly</h2>
-                <ul className="mt-5 space-y-4 text-sm">
-                  {contactMethods.map((method, i) => (
-                    <Reveal key={method.label} delay={stagger(i)} as="li" className="flex items-start gap-3">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-leo-blue/10 text-leo-blue">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                          {method.icon}
-                        </svg>
-                      </span>
-                      <span>
-                        <span className="block text-muted">{method.label}</span>
-                        {method.href ? (
-                          <a
-                            href={method.href}
-                            className="font-medium transition-colors duration-[var(--duration-fast)] hover:text-leo-blue"
-                          >
+              <div className="rounded-2xl border border-border bg-surface p-6 shadow-soft-sm">
+                <SectionLabel>Contact Information</SectionLabel>
+                <ul className="mt-5 space-y-1">
+                  {contactMethods.map((method, i) => {
+                    const row = (
+                      <div className="flex items-start gap-3 rounded-xl p-2 -m-2 transition-colors duration-[var(--duration-fast)] group-hover:bg-leo-blue/5">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-leo-blue/10 text-leo-blue">
+                          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                            {method.icon}
+                          </svg>
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block text-[11px] font-semibold uppercase tracking-wide text-muted">
+                            {method.label}
+                          </span>
+                          <span className="mt-0.5 block text-sm font-medium text-foreground transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue">
                             {method.value}
+                          </span>
+                        </span>
+                      </div>
+                    );
+                    return (
+                      <Reveal key={method.label} delay={stagger(i)} as="li" className="group">
+                        {method.href ? (
+                          <a href={method.href} className="block">
+                            {row}
                           </a>
                         ) : (
-                          <span className="font-medium">{method.value}</span>
+                          row
                         )}
-                      </span>
-                    </Reveal>
-                  ))}
+                      </Reveal>
+                    );
+                  })}
                 </ul>
               </div>
             </Reveal>
 
             <Reveal direction="left" delay={stagger(1)}>
-              <div className="relative aspect-4/3 overflow-hidden rounded-xl border border-border">
-                <Motif variant="rings" tone="blue" />
+              <div className="rounded-2xl border border-white/10 bg-surface-navy p-6 text-white shadow-soft-sm">
+                <p className="section-label text-leo-cyan">Follow Us</p>
+                <p className="mt-3 text-sm text-on-navy-muted">
+                  Stay updated with our latest projects and events.
+                </p>
+                <div className="mt-5 flex gap-3">
+                  {socials.map((social) => (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={social.label}
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white shadow-soft-sm transition-[transform,background-color] duration-[var(--duration-fast)] hover:-translate-y-0.5 hover:bg-leo-blue"
+                    >
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                        {social.icon}
+                      </svg>
+                    </a>
+                  ))}
+                </div>
               </div>
             </Reveal>
           </aside>
