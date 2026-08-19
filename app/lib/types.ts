@@ -222,6 +222,7 @@ export type SiteImagePlacement =
   | "ABOUT_PRIMARY"
   | "ABOUT_SECONDARY"
   | "ABOUT_TERTIARY"
+  | "WELCOME_PORTRAIT"
   | "JOIN"
   | "OTHER";
 

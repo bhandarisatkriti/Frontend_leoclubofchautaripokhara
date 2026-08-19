@@ -2,6 +2,7 @@ import Image from "next/image";
 import { SectionHeading } from "@/app/components/home/section-heading";
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
+import { getSiteImage, mediaUrl } from "@/app/lib/api";
 import { site, welcomeMessage } from "@/app/lib/site";
 
 function initials(name: string) {
@@ -22,11 +23,17 @@ function initials(name: string) {
  * dropped into the middle of this one — the quotation is still marked as a
  * quotation, but by the rule and the display face, not by breaking the grid.
  *
- * The portrait falls back to initials so a missing photograph reads as
- * deliberate rather than broken — see `welcomeMessage.photo` in site.ts.
+ * The portrait comes from the "welcome message portrait" slot under Website
+ * Images, so it can be changed without a redeploy. It falls back to the file
+ * named in site.ts, and then to the speaker's initials — a missing photograph
+ * should read as deliberate rather than broken.
  */
-export function WelcomeMessage() {
-  const { quote, body, name, role, photo } = welcomeMessage;
+export async function WelcomeMessage() {
+  const { quote, body, name, role } = welcomeMessage;
+
+  const uploaded = await getSiteImage("WELCOME_PORTRAIT");
+  const photo = mediaUrl(uploaded?.image) ?? welcomeMessage.photo;
+  const alt = uploaded?.alt_text?.trim() || name;
 
   return (
     <section className="bg-surface-blue py-20 sm:py-24">
@@ -42,7 +49,7 @@ export function WelcomeMessage() {
               {photo ? (
                 <Image
                   src={photo}
-                  alt={name}
+                  alt={alt}
                   fill
                   sizes="(max-width: 640px) 10rem, 12rem"
                   className="object-cover"
