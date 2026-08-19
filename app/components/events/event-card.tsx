@@ -37,68 +37,84 @@ export function formatEventDate(value: string) {
   return Number.isNaN(parsed.valueOf()) ? value : dateFormat.format(parsed);
 }
 
-export function EventCard({
-  event,
-  featured = false,
-}: {
-  event: LeoEvent;
-  featured?: boolean;
-}) {
+/**
+ * One event, as a card in the index grid.
+ *
+ * Shaped to match the article card so the two indexes read as the same site:
+ * same proportions, same type scale, same hover. What is specific to an event
+ * stays — the date tile on the photograph, and the badge marking one that is
+ * still ahead.
+ */
+export function EventCard({ event }: { event: LeoEvent }) {
   const image = mediaUrl(event.featured_image);
   const parsed = new Date(event.event_date);
   const hasDate = !Number.isNaN(parsed.valueOf());
+  // The backend honours an editor's override, so prefer it over the date.
+  const upcoming = event.is_upcoming ?? (hasDate && parsed.valueOf() >= Date.now());
 
   return (
     <Link
       href={`/events/${event.slug}`}
-      className={`group flex flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1 hover:border-leo-blue/30 hover:shadow-soft-md ${
-        featured ? "lg:col-span-2 lg:flex-row" : ""
-      }`}
+      className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-background shadow-soft-sm transition-[translate,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-0.5 hover:border-leo-blue/30 hover:shadow-soft-md"
     >
-      <div
-        className={`relative overflow-hidden ${featured ? "aspect-16/9 lg:aspect-auto lg:w-1/2" : "aspect-16/9"}`}
-      >
+      <div className="relative aspect-16/10 shrink-0 overflow-hidden bg-surface">
         {image ? (
           <Image
             src={image}
             alt={event.title}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            className="object-cover transition-[scale] duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.04]"
           />
         ) : (
           <Motif variant="waves" tone="blue" />
         )}
-        {featured && (
-          <span className="absolute left-4 top-4 rounded-full bg-leo-blue-dark px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-soft-sm">
+
+        {upcoming && (
+          <span className="absolute left-3 top-3 rounded-full bg-leo-blue px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white shadow-soft-sm">
             Upcoming
           </span>
         )}
+
         {hasDate && (
-          <div className="absolute bottom-4 left-4 flex flex-col items-center rounded-lg bg-background/95 px-3 py-1.5 shadow-soft-sm transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:-translate-y-1">
-            <span className="text-lg font-bold leading-none text-leo-blue">
+          <div className="absolute bottom-3 left-3 flex flex-col items-center rounded-lg bg-background/95 px-2.5 py-1 shadow-soft-sm">
+            <span className="text-base font-bold leading-none text-leo-blue">
               {dayFormat.format(parsed)}
             </span>
-            <span className="text-[10px] font-semibold uppercase tracking-wide text-muted">
+            <span className="text-[9px] font-semibold uppercase tracking-wide text-muted">
               {monthFormat.format(parsed)}
             </span>
           </div>
         )}
       </div>
+
       <div className="flex flex-1 flex-col p-5">
-        <p className="text-xs font-semibold uppercase tracking-widest text-leo-blue">
-          {formatEventDate(event.event_date)}
-        </p>
-        <h3 className="mt-2 text-lg font-semibold">{event.title}</h3>
-        {event.location && <p className="mt-1 text-sm text-muted">{event.location}</p>}
-        <p className="mt-3 line-clamp-3 text-sm text-muted">
-          {event.short_description || event.description}
-        </p>
-        <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-semibold text-leo-blue">
+        <h3 className="text-[1rem] font-bold leading-snug tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue">
+          {event.title}
+        </h3>
+
+        <div className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] font-semibold uppercase tracking-[0.12em]">
+          <span className="text-leo-blue">{formatEventDate(event.event_date)}</span>
+          {event.location && (
+            <span className="flex items-center gap-3 text-muted">
+              <span aria-hidden className="h-3 w-px bg-current opacity-30" />
+              {event.location}
+            </span>
+          )}
+        </div>
+
+        {(event.short_description || event.description) && (
+          <p className="mt-2.5 line-clamp-3 text-[0.8125rem] leading-relaxed text-muted">
+            {event.short_description || event.description}
+          </p>
+        )}
+
+        {/* Pushed to the foot so every card in a row shares one baseline. */}
+        <span className="mt-auto inline-flex items-center gap-2 pt-4 text-[10px] font-bold uppercase tracking-[0.16em] text-leo-blue">
           View details
           <span
             aria-hidden
-            className="inline-block transition-transform duration-[var(--duration-fast)] group-hover:translate-x-1"
+            className="transition-[translate] duration-[var(--duration-fast)] group-hover:translate-x-1"
           >
             →
           </span>
