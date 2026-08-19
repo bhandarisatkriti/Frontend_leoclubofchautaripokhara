@@ -47,6 +47,23 @@ const nextConfig: NextConfig = {
     dangerouslyAllowLocalIP: isDev,
     remotePatterns: isDev ? [backendPattern, ...localPatterns] : [backendPattern],
   },
+  /**
+   * Public API calls made from the browser are proxied through this origin
+   * rather than sent straight to Django.
+   *
+   * Same-origin removes CORS from the picture entirely, and it means only one
+   * port has to be reachable: over the LAN, or through a tunnel, the backend
+   * can stay on loopback and still be reached. Server components keep calling
+   * Django directly — they are already on the same machine.
+   */
+  async rewrites() {
+    // The trailing slash is re-added because Next strips it from the incoming
+    // path before matching, while Django's APPEND_SLASH expects it.
+    return [
+      { source: "/api/backend/:path*", destination: `${apiUrl}/:path*/` },
+    ];
+  },
+
   async redirects() {
     return [{ source: "/membership", destination: "/join", permanent: true }];
   },

@@ -11,28 +11,25 @@ export const API_URL =
 
 export type { Paginated } from "@/app/lib/types";
 
-/** Hostnames that only ever mean "this machine". */
-const LOOPBACK = new Set(["localhost", "127.0.0.1", "0.0.0.0", "::1", "[::1]"]);
+/**
+ * Same-origin prefix the browser uses instead of the backend's own address.
+ * `next.config.ts` rewrites it to NEXT_PUBLIC_API_URL on the server.
+ */
+const BROWSER_API_PREFIX = "/api/backend";
 
 /**
- * The API origin as seen from wherever this code is running.
+ * The API base to use from wherever this code is running.
  *
- * On the server the configured value is always correct. In the browser it is
- * correct only when the page was opened on the same machine: a phone on the
- * same Wi-Fi resolves `127.0.0.1` to the phone itself, so every form post
- * would fail to reach Django. Borrowing the host the page was actually served
- * from keeps the site usable from any device without re-pointing the env var
- * each time the router hands out a different address.
+ * On the server that is the configured backend address. In the browser it is
+ * a path on this same origin, because the configured address is only reachable
+ * from this machine: a phone on the same Wi-Fi resolves `127.0.0.1` to the
+ * phone itself, and a visitor coming through a tunnel cannot reach it at all.
+ * Going through this origin means form posts work from any device, no CORS is
+ * involved, and only the frontend's port ever has to be exposed.
  */
 export function resolveApiUrl(): string {
   if (typeof window === "undefined") return API_URL;
-
-  const configured = new URL(API_URL);
-  if (!LOOPBACK.has(configured.hostname)) return API_URL;
-  if (LOOPBACK.has(window.location.hostname)) return API_URL;
-
-  configured.hostname = window.location.hostname;
-  return configured.toString();
+  return BROWSER_API_PREFIX;
 }
 
 
