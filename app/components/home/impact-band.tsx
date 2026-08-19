@@ -3,7 +3,7 @@ import { Motif } from "@/app/components/ui/motif";
 import { Reveal } from "@/app/components/ui/reveal";
 import { StatCounter } from "@/app/components/ui/stat-counter";
 import { stagger } from "@/app/lib/motion";
-import { impactFigures } from "@/app/lib/site";
+import { impactFigures, site } from "@/app/lib/site";
 
 /**
  * Icons for the club's declared figures, in the order `impactFigures` lists
@@ -43,6 +43,10 @@ const icons = [
  * different places.
  */
 export function ImpactBand() {
+  // Derived rather than written down, so the heading cannot drift from the
+  // charter year the rest of the site quotes.
+  const years = new Date().getFullYear() - site.established;
+
   return (
     <section className="relative overflow-hidden bg-surface-navy py-16 text-white sm:py-20">
       <Motif variant="grid" tone="navy" className="opacity-25" />
@@ -52,6 +56,15 @@ export function ImpactBand() {
       />
 
       <Container className="relative">
+        {/* Introduced like every other band. Without a line of its own the
+            figures arrived out of nowhere between two titled sections. */}
+        <Reveal className="mb-12 max-w-xl">
+          <p className="section-label text-leo-cyan">Where it adds up</p>
+          <h2 className="mt-3 font-display text-[clamp(1.5rem,2.6vw,2rem)] font-bold leading-[1.15] tracking-tight text-balance">
+            {years} years of service, in figures
+          </h2>
+        </Reveal>
+
         <ul className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
           {impactFigures.map((figure, i) => (
             <Reveal
