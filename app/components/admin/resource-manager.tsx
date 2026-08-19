@@ -107,6 +107,12 @@ export type ResourceConfig<T> = {
   canDelete?: boolean;
   /** Extra note under the heading. */
   note?: string;
+  /**
+   * An extra control beside Edit, for work that does not fit a form field —
+   * managing an event's photographs, for instance. Kept as a render prop so
+   * this component stays ignorant of what any particular resource needs.
+   */
+  rowAction?: (row: T) => React.ReactNode;
 };
 
 type RowLike = Record<string, unknown>;
@@ -306,6 +312,7 @@ export function ResourceManager<T extends RowLike>({
                   ))}
                   <td className="px-5 py-3">
                     <div className="flex justify-end gap-2">
+                      {config.rowAction?.(row)}
                       <AdminButton
                         tone="ghost"
                         className="px-3 py-1.5 text-xs"

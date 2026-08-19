@@ -5,6 +5,7 @@ import {
   type ResourceConfig,
 } from "@/app/components/admin/resource-manager";
 import { Pill, dateOnly } from "@/app/components/admin/cells";
+import { EventPhotosButton } from "@/app/admin/(protected)/events/event-photos";
 
 type AdminEvent = Record<string, unknown> & {
   id: number;
@@ -23,6 +24,12 @@ const config: ResourceConfig<AdminEvent> = {
   singular: "event",
   ordering: "-event_date",
   labelOf: (row) => row.title,
+  // Photographs are separate records pointing at the event, so they get their
+  // own panel rather than a field on the form — and the event has to exist
+  // before anything can point at it.
+  rowAction: (row) => (
+    <EventPhotosButton eventId={row.id} eventTitle={row.title} />
+  ),
   filters: [
     {
       param: "is_published",
@@ -64,7 +71,12 @@ const config: ResourceConfig<AdminEvent> = {
       hint: "One or two lines, shown on event cards.",
     },
     { name: "description", label: "Full description", type: "textarea" },
-    { name: "featured_image", label: "Featured image", type: "image" },
+    {
+      name: "featured_image",
+      label: "Featured image",
+      type: "image",
+      hint: "The single photo used on cards and at the top of the event page. For a set of photographs, save the event and use its Photos button.",
+    },
     {
       name: "registration_url",
       label: "Registration link",
