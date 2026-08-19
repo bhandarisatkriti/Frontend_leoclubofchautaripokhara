@@ -188,7 +188,7 @@ export default async function EventDetailPage({
       <EventNav items={navItems} />
 
       {blocks.length > 0 && (
-        <section id="story" className="scroll-mt-32 bg-background py-16 sm:py-24">
+        <section id="story" className="scroll-mt-16 bg-background py-16 sm:py-24">
           <div className="mx-auto max-w-[72rem] px-4">
             <Reveal className="mb-12 sm:mb-16">
               <SectionLabel>The story</SectionLabel>
@@ -203,7 +203,7 @@ export default async function EventDetailPage({
       )}
 
       {galleryPhotos.length > 0 && (
-        <section id="gallery" className="scroll-mt-32 bg-surface-blue py-16 sm:py-24">
+        <section id="gallery" className="scroll-mt-16 bg-surface-blue py-16 sm:py-24">
           <div className="mx-auto max-w-[72rem] px-4">
             <Reveal className="mb-10">
               <SectionLabel>Gallery</SectionLabel>
@@ -213,7 +213,7 @@ export default async function EventDetailPage({
         </section>
       )}
 
-      <section id="details" className="scroll-mt-32 bg-background py-16 sm:py-24">
+      <section id="details" className="scroll-mt-16 bg-background py-16 sm:py-24">
         <div className="mx-auto max-w-[72rem] px-4">
           <Reveal className="mb-10">
             <SectionLabel>Event information</SectionLabel>

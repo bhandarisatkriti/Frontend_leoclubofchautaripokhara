@@ -94,9 +94,13 @@ export function EventHero({
 
       <div className="mx-auto w-full max-w-[72rem] px-4 pb-14 pt-32 sm:pb-20">
         <div className="hero-rise flex flex-wrap items-center gap-3" style={{ ["--rise-delay" as string]: "60ms" }}>
-          <span className="rounded-full bg-leo-blue px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
-            {upcoming ? "Upcoming" : "Past event"}
-          </span>
+          {/* Only marked when it is still ahead. Labelling everything else
+              "past" dates the page against itself — the date is right there. */}
+          {upcoming && (
+            <span className="rounded-full bg-leo-blue px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
+              Upcoming
+            </span>
+          )}
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/85">
             {date}
           </span>

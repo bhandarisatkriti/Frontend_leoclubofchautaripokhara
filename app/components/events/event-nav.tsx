@@ -20,6 +20,27 @@ export type EventNavItem = { id: string; label: string };
  */
 export function EventNav({ items }: { items: EventNavItem[] }) {
   const [active, setActive] = useState<string | null>(items[0]?.id ?? null);
+  const [headerHeight, setHeaderHeight] = useState<number | null>(null);
+
+  /**
+   * Where to stick, measured from the site header rather than assumed.
+   *
+   * A guessed offset left this bar sliding a fifth of its height under the
+   * header. Measuring means it stays put if the header is ever restyled, and
+   * covers any breakpoint where its height differs.
+   */
+  useEffect(() => {
+    const header = document.querySelector("header");
+    if (!header) return;
+
+    const measure = () =>
+      setHeaderHeight(Math.round(header.getBoundingClientRect().height));
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (items.length < 2) return;
@@ -72,9 +93,8 @@ export function EventNav({ items }: { items: EventNavItem[] }) {
   return (
     <nav
       aria-label="On this page"
-      /* Sits directly under the site header, which is why the offset matches
-         the scroll-padding set on <html>. */
-      className="sticky top-[var(--header-h,4.5rem)] z-30 border-y border-border bg-background/85 backdrop-blur"
+      className="sticky z-30 border-y border-border bg-background/85 backdrop-blur"
+      style={{ top: headerHeight ?? 0 }}
     >
       <div className="mx-auto flex max-w-[72rem] gap-1 overflow-x-auto px-4 py-2.5">
         {items.map((item) => (
