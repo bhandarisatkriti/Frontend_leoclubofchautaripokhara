@@ -25,6 +25,20 @@ const localPatterns = [
 ] as const;
 
 const nextConfig: NextConfig = {
+  /**
+   * Hosts allowed to request dev-only assets. Next blocks cross-origin requests
+   * to them by default, which stops the site loading from another device on the
+   * LAN. Wildcards keep this working when DHCP hands out a different address.
+   *
+   * Development only — `next start` ignores it.
+   */
+  allowedDevOrigins: [
+    "192.168.*.*",
+    "10.*.*.*",
+    "172.16.*.*",
+    "*.local",
+  ],
+
   images: {
     // Next.js 16 refuses to optimize images served from local IP addresses as
     // an SSRF guard, which blocks the Django dev server on 127.0.0.1 even

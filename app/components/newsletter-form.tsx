@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { API_URL, endpoints } from "@/app/lib/api";
+import { endpoints, resolveApiUrl } from "@/app/lib/api";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -16,7 +16,7 @@ export function NewsletterForm() {
     const email = new FormData(form).get("email");
 
     try {
-      const res = await fetch(`${API_URL}${endpoints.newsletter}`, {
+      const res = await fetch(`${resolveApiUrl()}${endpoints.newsletter}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

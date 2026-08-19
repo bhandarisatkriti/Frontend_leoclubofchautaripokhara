@@ -11,6 +11,31 @@ export const API_URL =
 
 export type { Paginated } from "@/app/lib/types";
 
+/** Hostnames that only ever mean "this machine". */
+const LOOPBACK = new Set(["localhost", "127.0.0.1", "0.0.0.0", "::1", "[::1]"]);
+
+/**
+ * The API origin as seen from wherever this code is running.
+ *
+ * On the server the configured value is always correct. In the browser it is
+ * correct only when the page was opened on the same machine: a phone on the
+ * same Wi-Fi resolves `127.0.0.1` to the phone itself, so every form post
+ * would fail to reach Django. Borrowing the host the page was actually served
+ * from keeps the site usable from any device without re-pointing the env var
+ * each time the router hands out a different address.
+ */
+export function resolveApiUrl(): string {
+  if (typeof window === "undefined") return API_URL;
+
+  const configured = new URL(API_URL);
+  if (!LOOPBACK.has(configured.hostname)) return API_URL;
+  if (LOOPBACK.has(window.location.hostname)) return API_URL;
+
+  configured.hostname = window.location.hostname;
+  return configured.toString();
+}
+
+
 type ApiOptions = RequestInit & {
   /** Seconds before the cached response is refetched. Defaults to 5 minutes. */
   revalidate?: number | false;
@@ -149,7 +174,7 @@ export async function submitForm(
 
   let res: Response;
   try {
-    res = await fetch(`${API_URL}${path}`, {
+    res = await fetch(`${resolveApiUrl()}${path}`, {
       method: "POST",
       headers: isFormData ? undefined : { "Content-Type": "application/json" },
       body: isFormData ? payload : JSON.stringify(payload),

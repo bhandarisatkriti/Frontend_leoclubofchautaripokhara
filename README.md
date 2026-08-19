@@ -23,6 +23,30 @@ Content is entered through the Django admin at <http://127.0.0.1:8000/admin/>.
 Pages render with empty states until it exists, so nothing breaks on a fresh
 database.
 
+### On your local network
+
+To open the site on a phone or another laptop on the same Wi-Fi, bind the
+backend to every interface — the frontend already does:
+
+```bash
+# terminal 1 — backend, reachable from other devices
+uv run python manage.py runserver 0.0.0.0:8000
+
+# terminal 2 — frontend
+npm run dev
+```
+
+Then browse to `http://<this-machine's-LAN-IP>:3000` (`ipconfig` on Windows,
+`ip addr` elsewhere). Nothing needs configuring per address: the browser
+resolves the API host from the page it was served, Django adds its own
+addresses to `ALLOWED_HOSTS` and accepts private-range origins while `DEBUG`
+is on, and the membership QR encodes whichever host the visitor used. All of
+that is development-only — in production `NEXT_PUBLIC_API_URL`,
+`NEXT_PUBLIC_SITE_URL` and `FRONTEND_URL` are the single source of truth.
+
+Windows Firewall prompts the first time something connects from outside; the
+ports have to be allowed on a **private** network for it to work.
+
 ## Environment
 
 Copy `.env.example` to `.env.local` (gitignored):
