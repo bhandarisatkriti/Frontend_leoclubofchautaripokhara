@@ -2,11 +2,16 @@ import Link from "next/link";
 import { AboutSection, type ClubAbout } from "@/app/components/home/about-section";
 import { CreedBand } from "@/app/components/home/creed-band";
 import { Hero } from "@/app/components/home/hero";
+import { ImpactBand } from "@/app/components/home/impact-band";
+import { OurWork, type WorkPhoto } from "@/app/components/home/our-work";
+import { TeamPreview } from "@/app/components/home/team-preview";
+import { WelcomeMessage } from "@/app/components/home/welcome-message";
 import { MissionVisionCards } from "@/app/components/home/mission-vision-cards";
 import { SectionHeading } from "@/app/components/home/section-heading";
 import { WhyJoinSection } from "@/app/components/home/why-join-section";
 import { type ClubStats } from "@/app/components/home/stats-grid";
 import { ArticleCard, type Article } from "@/app/components/news/article-card";
+import { type Member } from "@/app/components/team/team-card";
 import { EmptyState } from "@/app/components/page-header";
 import {
   CompactEventItem,
@@ -17,7 +22,7 @@ import { JoinNowPopup } from "@/app/components/join-now-popup";
 import { Container } from "@/app/components/ui/container";
 import { Motif } from "@/app/components/ui/motif";
 import { Reveal } from "@/app/components/ui/reveal";
-import { apiFetchOr, endpoints, type Paginated } from "@/app/lib/api";
+import { apiFetchOr, endpoints, mediaUrl, type Paginated } from "@/app/lib/api";
 import { joinPopupConfig } from "@/app/lib/join-popup";
 import { joinQrSvg } from "@/app/lib/join-qr";
 import { stagger } from "@/app/lib/motion";
@@ -25,6 +30,9 @@ import type { ClubInformation } from "@/app/lib/types";
 
 /** Only the totals are read from these, so the row shapes are irrelevant. */
 type CountedRow = { id: number };
+
+/** The gallery rows the "Our work" strip renders. */
+type GalleryRow = { id: number; title?: string | null; image: string | null };
 
 /**
  * Homepage, ordered as one narrative rather than a stack of components:
@@ -41,8 +49,8 @@ type CountedRow = { id: number };
 export default async function Home() {
   const [eventsData, teamData, photosData, newsData, club] = await Promise.all([
     apiFetchOr<Paginated<LeoEvent> | LeoEvent[]>(endpoints.events, []),
-    apiFetchOr<Paginated<CountedRow> | CountedRow[]>(endpoints.team, []),
-    apiFetchOr<Paginated<CountedRow> | CountedRow[]>(endpoints.gallery, []),
+    apiFetchOr<Paginated<Member> | Member[]>(endpoints.team, []),
+    apiFetchOr<Paginated<GalleryRow> | GalleryRow[]>(endpoints.gallery, []),
     apiFetchOr<Paginated<Article> | Article[]>(endpoints.news, []),
     apiFetchOr<(ClubInformation & ClubStats & ClubAbout) | null>(endpoints.club, null),
   ]);
@@ -57,6 +65,22 @@ export default async function Home() {
     events: totalOf(eventsData),
     photos: totalOf(photosData),
   };
+
+  const rowsOf = <T,>(data: Paginated<T> | T[]) =>
+    Array.isArray(data) ? data : data.results;
+
+  // Four photographs fill the strip's row exactly at every breakpoint.
+  const workPhotos: WorkPhoto[] = rowsOf(photosData)
+    .filter((photo) => photo.image)
+    .slice(0, 4)
+    .map((photo) => ({
+      id: photo.id,
+      src: mediaUrl(photo.image)!,
+      title: photo.title ?? null,
+    }));
+
+  // Three fills the teaser row; the rest are a click away on /team.
+  const team = rowsOf(teamData).slice(0, 3);
 
   const events = [...(Array.isArray(eventsData) ? eventsData : eventsData.results)].sort(
     (a, b) => new Date(a.event_date).valueOf() - new Date(b.event_date).valueOf(),
@@ -90,6 +114,14 @@ export default async function Home() {
 
       {/* 04 — WHAT WE DO -------------------------------------------------- */}
       <WhyJoinSection />
+
+      {/* 06 — WHAT WE HAVE DONE ------------------------------------------- */}
+      <OurWork photos={workPhotos} />
+      <ImpactBand />
+
+      {/* 07 — WHO IS BEHIND IT -------------------------------------------- */}
+      <WelcomeMessage />
+      <TeamPreview team={team} />
 
       {/* 05 — WHAT IS HAPPENING ------------------------------------------- */}
       <section className="bg-surface-blue py-20 sm:py-24">

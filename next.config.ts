@@ -18,6 +18,17 @@ const backendPattern = {
   pathname: "/media/**",
 } as const;
 
+/**
+ * Cloudinary, when the backend is configured to store uploads there. The API
+ * then returns absolute res.cloudinary.com URLs rather than backend-relative
+ * /media paths, so next/image needs this host allow-listed too.
+ */
+const cloudinaryPattern = {
+  protocol: "https",
+  hostname: "res.cloudinary.com",
+  pathname: "/**",
+} as const;
+
 /** Both spellings of the local backend, so either works during development. */
 const localPatterns = [
   { protocol: "http", hostname: "127.0.0.1", port: "8000", pathname: "/media/**" },
@@ -25,14 +36,53 @@ const localPatterns = [
 ] as const;
 
 const nextConfig: NextConfig = {
+  /**
+   * Hosts allowed to request dev-only assets. Next blocks cross-origin requests
+   * to them by default, which stops the site loading from another device on the
+   * LAN. Wildcards keep this working when DHCP hands out a different address.
+   *
+   * Development only — `next start` ignores it.
+   */
+  allowedDevOrigins: [
+    // Next allows only the hostname it booted with, which is `localhost`.
+    // Browsing the same server as `127.0.0.1` counts as cross-origin, and the
+    // page then renders but never hydrates — no scroll reveals, no menus.
+    "localhost",
+    "127.0.0.1",
+    "[::1]",
+    "192.168.*.*",
+    "10.*.*.*",
+    "172.16.*.*",
+    "*.local",
+  ],
+
   images: {
     // Next.js 16 refuses to optimize images served from local IP addresses as
     // an SSRF guard, which blocks the Django dev server on 127.0.0.1 even
     // though it is allow-listed below. Development only — a production backend
     // sits on a public host and must not need this.
     dangerouslyAllowLocalIP: isDev,
-    remotePatterns: isDev ? [backendPattern, ...localPatterns] : [backendPattern],
+    remotePatterns: isDev
+      ? [backendPattern, cloudinaryPattern, ...localPatterns]
+      : [backendPattern, cloudinaryPattern],
   },
+  /**
+   * Public API calls made from the browser are proxied through this origin
+   * rather than sent straight to Django.
+   *
+   * Same-origin removes CORS from the picture entirely, and it means only one
+   * port has to be reachable: over the LAN, or through a tunnel, the backend
+   * can stay on loopback and still be reached. Server components keep calling
+   * Django directly — they are already on the same machine.
+   */
+  async rewrites() {
+    // The trailing slash is re-added because Next strips it from the incoming
+    // path before matching, while Django's APPEND_SLASH expects it.
+    return [
+      { source: "/api/backend/:path*", destination: `${apiUrl}/:path*/` },
+    ];
+  },
+
   async redirects() {
     return [{ source: "/membership", destination: "/join", permanent: true }];
   },

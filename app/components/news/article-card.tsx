@@ -78,7 +78,8 @@ function Meta({
  *
  *  - `lead`     the top story: oversized, image beside the text
  *  - `row`      the archive row: image left, copy right
- *  - `default`  the grid card
+ *  - `card`     the boxed grid card, for multi-column indexes
+ *  - `default`  the bare grid card, for a white ground
  *  - `compact`  a text-only row for dense lists
  */
 export function ArticleCard({
@@ -86,7 +87,7 @@ export function ArticleCard({
   variant = "default",
 }: {
   article: Article;
-  variant?: "lead" | "row" | "default" | "compact";
+  variant?: "lead" | "row" | "card" | "default" | "compact";
 }) {
   const image = mediaUrl(article.featured_image);
   const href = `/news/${article.slug}`;
@@ -116,7 +117,7 @@ export function ArticleCard({
     return (
       <Link
         href={href}
-        className="group grid gap-0 overflow-hidden rounded-xl border border-border bg-background shadow-soft-sm transition-[transform,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-0.5 hover:border-leo-blue/30 hover:shadow-soft-md sm:grid-cols-[minmax(0,20rem)_1fr]"
+        className="group grid gap-0 overflow-hidden rounded-xl border border-border bg-background shadow-soft-sm transition-[translate,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-0.5 hover:border-leo-blue/30 hover:shadow-soft-md sm:grid-cols-[minmax(0,20rem)_1fr]"
       >
         <div className="relative aspect-16/10 overflow-hidden bg-surface sm:aspect-auto sm:h-full sm:min-h-[13rem]">
           {image ? (
@@ -125,7 +126,7 @@ export function ArticleCard({
               alt={article.title}
               fill
               sizes="(max-width: 640px) 100vw, 20rem"
-              className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.04]"
+              className="object-cover transition-[scale] duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.04]"
             />
           ) : (
             <Motif variant="grid" tone="blue" />
@@ -148,7 +149,7 @@ export function ArticleCard({
             Read more
             <span
               aria-hidden
-              className="transition-transform duration-[var(--duration-fast)] group-hover:translate-x-1"
+              className="transition-[translate] duration-[var(--duration-fast)] group-hover:translate-x-1"
             >
               →
             </span>
@@ -169,7 +170,7 @@ export function ArticleCard({
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 38vw"
-              className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.03]"
+              className="object-cover transition-[scale] duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.03]"
             />
           ) : (
             <Motif variant="grid" tone="blue" />
@@ -194,6 +195,53 @@ export function ArticleCard({
     );
   }
 
+  if (variant === "card") {
+    return (
+      <Link
+        href={href}
+        className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-background shadow-soft-sm transition-[translate,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-0.5 hover:border-leo-blue/30 hover:shadow-soft-md"
+      >
+        <div className="relative aspect-16/10 overflow-hidden bg-surface">
+          {image ? (
+            <Image
+              src={image}
+              alt={article.title}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+              className="object-cover transition-[scale] duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.04]"
+            />
+          ) : (
+            <Motif variant="grid" tone="blue" />
+          )}
+        </div>
+
+        <div className="flex flex-1 flex-col p-5">
+          <h3 className="text-[1rem] font-bold leading-snug tracking-tight text-balance transition-colors duration-[var(--duration-fast)] group-hover:text-leo-blue">
+            {article.title}
+          </h3>
+          <div className="mt-2">
+            <Meta article={article} />
+          </div>
+          {(article.excerpt || article.content) && (
+            <p className="mt-2.5 line-clamp-3 text-[0.8125rem] leading-relaxed text-muted">
+              {article.excerpt ?? article.content}
+            </p>
+          )}
+          {/* Pushed to the foot so every card in a row shares one baseline. */}
+          <span className="mt-auto inline-flex items-center gap-2 pt-4 text-[10px] font-bold uppercase tracking-[0.16em] text-leo-blue">
+            Read more
+            <span
+              aria-hidden
+              className="transition-[translate] duration-[var(--duration-fast)] group-hover:translate-x-1"
+            >
+              →
+            </span>
+          </span>
+        </div>
+      </Link>
+    );
+  }
+
   return (
     <Link href={href} className="group flex h-full flex-col">
       <div className="relative aspect-16/10 overflow-hidden rounded-lg bg-surface">
@@ -203,7 +251,7 @@ export function ArticleCard({
             alt={article.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.04]"
+            className="object-cover transition-[scale] duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-[1.04]"
           />
         ) : (
           <Motif variant="grid" tone="blue" />
@@ -223,7 +271,7 @@ export function ArticleCard({
         {/* Rule sits at the card foot so a row of cards shares one baseline. */}
         <span
           aria-hidden
-          className="mt-auto block h-px w-full origin-left scale-x-0 bg-leo-blue pt-0 transition-transform duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:scale-x-100"
+          className="mt-auto block h-px w-full origin-left scale-x-0 bg-leo-blue pt-0 transition-[scale] duration-[var(--duration-base)] ease-[var(--ease-premium)] group-hover:scale-x-100"
           style={{ marginTop: "1.25rem" }}
         />
       </div>

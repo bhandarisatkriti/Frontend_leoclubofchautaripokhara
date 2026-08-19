@@ -11,6 +11,28 @@ export const API_URL =
 
 export type { Paginated } from "@/app/lib/types";
 
+/**
+ * Same-origin prefix the browser uses instead of the backend's own address.
+ * `next.config.ts` rewrites it to NEXT_PUBLIC_API_URL on the server.
+ */
+const BROWSER_API_PREFIX = "/api/backend";
+
+/**
+ * The API base to use from wherever this code is running.
+ *
+ * On the server that is the configured backend address. In the browser it is
+ * a path on this same origin, because the configured address is only reachable
+ * from this machine: a phone on the same Wi-Fi resolves `127.0.0.1` to the
+ * phone itself, and a visitor coming through a tunnel cannot reach it at all.
+ * Going through this origin means form posts work from any device, no CORS is
+ * involved, and only the frontend's port ever has to be exposed.
+ */
+export function resolveApiUrl(): string {
+  if (typeof window === "undefined") return API_URL;
+  return BROWSER_API_PREFIX;
+}
+
+
 type ApiOptions = RequestInit & {
   /** Seconds before the cached response is refetched. Defaults to 5 minutes. */
   revalidate?: number | false;
@@ -149,7 +171,7 @@ export async function submitForm(
 
   let res: Response;
   try {
-    res = await fetch(`${API_URL}${path}`, {
+    res = await fetch(`${resolveApiUrl()}${path}`, {
       method: "POST",
       headers: isFormData ? undefined : { "Content-Type": "application/json" },
       body: isFormData ? payload : JSON.stringify(payload),

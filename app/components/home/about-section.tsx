@@ -22,22 +22,24 @@ export type ClubAbout = {
 /** The collage. One portrait anchor plus two smaller supporting frames. */
 const collage = [
   {
-    src: "/images/about/members-uniform.jpg",
-    alt: "Leo Club of Chautari Pokhara members in club uniform",
+    src: "/images/about/club-uniform.jpg",
+    alt: "Leo Club of Chautari Pokhara members in club uniform at a district programme",
     className: "absolute inset-y-0 left-0 w-[64%] rounded-[22px]",
     sizes: "(max-width: 1024px) 60vw, 27vw",
   },
   {
-    src: "/images/about/community-service.jpg",
-    alt: "Club members carrying out a community service activity",
+    src: "/images/about/tika-welcome.jpg",
+    alt: "A Leo receiving a tika welcome at a club programme",
     className: "absolute right-0 top-[6%] h-[40%] w-[46%] rounded-[18px]",
     sizes: "(max-width: 1024px) 40vw, 18vw",
   },
   {
-    src: "/images/about/youth-camp.jpg",
-    alt: "Leos gathered at a district youth camp",
-    className: "absolute bottom-[6%] right-0 h-[44%] w-[52%] rounded-[18px]",
-    sizes: "(max-width: 1024px) 45vw, 20vw",
+    src: "/images/about/members-group.jpg",
+    alt: "Four Leo Club of Chautari Pokhara members in club uniform at a programme",
+    // Sized to the photograph's 4:3 shape. A squarer frame cropped the group
+    // down the sides and cut the member on the left out of the picture.
+    className: "absolute bottom-[6%] right-0 h-[36%] w-[60%] rounded-[18px]",
+    sizes: "(max-width: 1024px) 52vw, 23vw",
   },
 ];
 
@@ -84,7 +86,7 @@ export function AboutSection({
                     alt={frame.alt}
                     fill
                     sizes={frame.sizes}
-                    className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-105"
+                    className="object-cover transition-[scale] duration-[var(--duration-slow)] ease-[var(--ease-premium)] group-hover:scale-105"
                   />
                 </div>
               ))}
