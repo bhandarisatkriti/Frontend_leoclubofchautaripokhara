@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/app/components/page-header";
 import { CalendarView } from "@/app/components/events/calendar-view";
 import { type LeoEvent } from "@/app/components/events/event-card";
 import { ViewTabs } from "@/app/components/events/view-tabs";
@@ -21,12 +20,6 @@ export default async function EventsCalendarPage() {
 
   return (
     <>
-      <PageHeader
-        kicker="Events"
-        title="Calendar"
-        description="Browse everything on the calendar by month."
-      />
-
       <Container size="narrow" className="py-16 sm:py-20">
         <Reveal className="flex justify-end">
           <ViewTabs />
