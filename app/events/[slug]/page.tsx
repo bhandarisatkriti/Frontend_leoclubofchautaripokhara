@@ -3,15 +3,46 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatEventDate, type LeoEvent } from "@/app/components/events/event-card";
+import { EventGallery, type EventPhoto } from "@/app/components/events/event-gallery";
+import { SectionLabel } from "@/app/components/ui/section-label";
 import { Container } from "@/app/components/ui/container";
 import { Motif } from "@/app/components/ui/motif";
 import { Reveal } from "@/app/components/ui/reveal";
-import { apiFetchOr, endpoints, mediaUrl } from "@/app/lib/api";
+import { apiFetchOr, endpoints, fetchList, mediaUrl, query } from "@/app/lib/api";
+
+type GalleryRow = {
+  id: number;
+  title?: string | null;
+  description?: string | null;
+  image: string | null;
+};
 
 async function getEvent(slug: string) {
   return apiFetchOr<LeoEvent | null>(`${endpoints.events}${slug}/`, null, {
     revalidate: false,
   });
+}
+
+/**
+ * The event's own photographs.
+ *
+ * `GalleryImage` carries an optional link to an event, so an album uploaded
+ * once serves both the gallery page and the event it belongs to — there is no
+ * separate per-event upload to keep in step. Filtering by slug rather than id
+ * keeps this to a single request.
+ */
+async function getEventPhotos(slug: string): Promise<EventPhoto[]> {
+  const rows = await fetchList<GalleryRow>(
+    `${endpoints.gallery}${query({ event: slug, page_size: 60, ordering: "display_order" })}`,
+  );
+  return rows
+    .filter((row) => row.image)
+    .map((row) => ({
+      id: row.id,
+      src: mediaUrl(row.image)!,
+      title: row.title ?? null,
+      caption: row.description ?? row.title ?? null,
+    }));
 }
 
 export async function generateMetadata({
@@ -28,7 +59,10 @@ export default async function EventDetailPage({
   params,
 }: PageProps<"/events/[slug]">) {
   const { slug } = await params;
-  const event = await getEvent(slug);
+  const [event, photos] = await Promise.all([
+    getEvent(slug),
+    getEventPhotos(slug),
+  ]);
   if (!event) notFound();
 
   const image = mediaUrl(event.featured_image);
@@ -74,6 +108,21 @@ export default async function EventDetailPage({
             {event.description || event.short_description}
           </p>
         </Reveal>
+
+        {photos.length > 0 && (
+          <div className="mt-14 border-t border-border pt-10">
+            <Reveal>
+              <SectionLabel>Photographs</SectionLabel>
+              <p className="mt-2 text-sm text-muted">
+                {photos.length} photo{photos.length === 1 ? "" : "s"} from this
+                event. Select one to view it larger.
+              </p>
+            </Reveal>
+            <div className="mt-7">
+              <EventGallery photos={photos} />
+            </div>
+          </div>
+        )}
       </Container>
     </>
   );
