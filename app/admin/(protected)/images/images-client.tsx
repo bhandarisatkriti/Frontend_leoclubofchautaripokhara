@@ -23,6 +23,7 @@ const placements = [
   { value: "ABOUT_PRIMARY", label: "About — main photo" },
   { value: "ABOUT_SECONDARY", label: "About — second photo" },
   { value: "ABOUT_TERTIARY", label: "About — third photo" },
+  { value: "WELCOME_PORTRAIT", label: "Homepage — welcome message portrait" },
   { value: "JOIN", label: "Join page banner" },
   { value: "OTHER", label: "Other / unplaced" },
 ];

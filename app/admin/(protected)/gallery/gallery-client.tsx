@@ -22,6 +22,8 @@ type AdminPhoto = Record<string, unknown> & {
   image: string | null;
   description: string;
   category: { id: number; name: string; slug: string } | null;
+  event_id: number | null;
+  event_title: string | null;
   is_featured: boolean;
   display_order: number;
 };
@@ -32,6 +34,10 @@ type AdminPhoto = Record<string, unknown> & {
  * `category_id` is the write field — the API returns the category as a nested
  * object, hence the `initial` reader — and its choices come from the albums
  * endpoint managed below, so a new album is selectable as soon as it is added.
+ *
+ * `event_id` works the same way and is what puts a photo on an event's own
+ * page. A photo can carry both: the album groups it in the gallery, the event
+ * decides which event page shows it, and neither requires a second upload.
  */
 const photoConfig: ResourceConfig<AdminPhoto> = {
   path: "gallery",
@@ -51,6 +57,16 @@ const photoConfig: ResourceConfig<AdminPhoto> = {
           <Pill tone="grey">{row.category.name}</Pill>
         ) : (
           <span className="text-admin-muted">Uncategorised</span>
+        ),
+    },
+    {
+      key: "event_title",
+      label: "Event",
+      render: (row) =>
+        row.event_title ? (
+          <Pill tone="blue">{row.event_title}</Pill>
+        ) : (
+          <span className="text-admin-muted">—</span>
         ),
     },
     {
@@ -82,6 +98,17 @@ const photoConfig: ResourceConfig<AdminPhoto> = {
       hint: "Groups the photo on the public gallery page. Add albums below.",
     },
     {
+      name: "event_id",
+      label: "Event",
+      type: "select",
+      optionsFrom: { path: "events", labelKey: "title" },
+      // `event_id` is returned as a plain id, not a nested object like
+      // `category`, so it is read straight back.
+      initial: (row) => (row.event_id as number | null) ?? "",
+      emptyLabel: "Not tied to an event",
+      hint: "Adds this photo to that event's page. Leave blank for a photo that belongs to the gallery only.",
+    },
+    {
       name: "display_order",
       label: "Display order",
       type: "number",
@@ -100,6 +127,7 @@ const photoConfig: ResourceConfig<AdminPhoto> = {
     title: "",
     description: "",
     category_id: "",
+    event_id: "",
     display_order: 0,
     is_featured: false,
   },
