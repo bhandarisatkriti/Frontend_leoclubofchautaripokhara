@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Logo } from "@/app/components/logo";
 import { ButtonLink } from "@/app/components/ui/button-link";
 import { solidBlueButton } from "@/app/components/ui/button-link";
@@ -47,17 +46,7 @@ export function AboutHero() {
 
       <Container className="relative">
         <Reveal delay={stagger(0, 100)}>
-          <nav aria-label="Breadcrumb" className="text-xs text-on-navy-muted">
-            <Link href="/" className="transition-colors hover:text-white">
-              Home
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="text-white">About Us</span>
-          </nav>
-        </Reveal>
-
-        <Reveal delay={stagger(1, 100)}>
-          <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 py-1.5 pl-1.5 pr-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 py-1.5 pl-1.5 pr-4">
             <Logo size={22} />
             <span className="text-[11px] font-bold uppercase tracking-wide text-on-navy-muted">
               {site.name}
@@ -65,7 +54,7 @@ export function AboutHero() {
           </div>
         </Reveal>
 
-        <Reveal delay={stagger(2, 100)} distance={24}>
+        <Reveal delay={stagger(1, 100)} distance={24}>
           <h1 className="mt-5 max-w-xl text-[clamp(2.25rem,5vw,3.75rem)] font-bold leading-[1.08] tracking-tight text-balance text-white">
             Driven by <GradientWord>Service</GradientWord>.
             <br />
@@ -75,13 +64,13 @@ export function AboutHero() {
           </h1>
         </Reveal>
 
-        <Reveal delay={stagger(3, 100)}>
+        <Reveal delay={stagger(2, 100)}>
           <p className="mt-5 max-w-md text-sm leading-relaxed text-on-navy-muted sm:text-base">
             Discover the story, purpose, and people behind {site.name}.
           </p>
         </Reveal>
 
-        <Reveal delay={stagger(4, 100)}>
+        <Reveal delay={stagger(3, 100)}>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a href="#who-we-are" className={solidBlueButton}>
               Discover Our Story
@@ -97,7 +86,7 @@ export function AboutHero() {
           </div>
         </Reveal>
 
-        <Reveal delay={stagger(5, 100)}>
+        <Reveal delay={stagger(4, 100)}>
           <a
             href="#who-we-are"
             className="mt-14 inline-flex flex-col items-start gap-2 text-[11px] font-bold uppercase tracking-widest text-on-navy-muted transition-colors duration-[var(--duration-fast)] hover:text-white"
