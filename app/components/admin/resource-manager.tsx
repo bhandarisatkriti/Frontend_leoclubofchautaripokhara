@@ -47,6 +47,30 @@ export type FieldSpec = {
   hint?: string;
   placeholder?: string;
   options?: { value: string; label: string }[];
+  /**
+   * Fill a `select` from a backend list endpoint instead of hard-coded
+   * `options` — categories, albums and anything else an administrator can add
+   * without a redeploy. Loaded once when the form opens; anything in `options`
+   * is listed first, so the two can be combined.
+   */
+  optionsFrom?: {
+    /** Django path, without slashes: "gallery/categories". */
+    path: string;
+    /** Row field submitted as the value. Default "id". */
+    valueKey?: string;
+    /** Row field shown in the dropdown. Default "name". */
+    labelKey?: string;
+  };
+  /**
+   * Read this field's starting value out of the row being edited.
+   *
+   * Foreign keys are written as `category_id` but read back as a nested
+   * `category` object, so without this the edit form would open with the
+   * category blank and silently clear it on save.
+   */
+  initial?: (row: Record<string, unknown>) => unknown;
+  /** Blank the field out with a placeholder other than "Not set". */
+  emptyLabel?: string;
   /** Span both columns in the two-column form grid. */
   full?: boolean;
 };
@@ -387,11 +411,12 @@ function forInput(value: unknown, type?: FieldType): unknown {
 }
 
 /**
- * Empty date, time and number inputs must not be sent as `""`.
+ * Empty date, time, number and select inputs must not be sent as `""`.
  *
  * DRF rejects an empty string for those field types outright ("Date has wrong
- * format"), so leaving an optional start time blank would fail the whole save.
- * `null` is what actually clears a nullable column.
+ * format", or for a foreign key "This field may not be null" vs an invalid pk),
+ * so leaving an optional start time or category blank would fail the whole
+ * save. `null` is what actually clears a nullable column.
  */
 function forApi(
   values: Record<string, unknown>,
@@ -402,7 +427,10 @@ function forApi(
   for (const [key, value] of Object.entries(values)) {
     const type = typeByName.get(key);
     const blank = value === "" || value === null || value === undefined;
-    if (blank && (type === "date" || type === "time" || type === "number")) {
+    if (
+      blank &&
+      (type === "date" || type === "time" || type === "number" || type === "select")
+    ) {
       payload[key] = null;
     } else {
       payload[key] = value;
@@ -428,7 +456,7 @@ function ResourceForm<T extends RowLike>({
     const initial: Record<string, unknown> = {};
     for (const field of config.fields) {
       if (field.type === "image") continue;
-      const value = row[field.name];
+      const value = field.initial ? field.initial(row) : row[field.name];
       initial[field.name] =
         value === null || value === undefined
           ? (config.defaults[field.name] ?? "")
@@ -436,6 +464,45 @@ function ResourceForm<T extends RowLike>({
     }
     return initial;
   });
+
+  // Options fetched from the backend, keyed by field name. Empty until the
+  // request lands; the select still renders, just with nothing to pick yet.
+  const [remoteOptions, setRemoteOptions] = useState<
+    Record<string, { value: string; label: string }[]>
+  >({});
+
+  useEffect(() => {
+    const sources = config.fields.filter((field) => field.optionsFrom);
+    if (!sources.length) return;
+    let cancelled = false;
+
+    void (async () => {
+      for (const field of sources) {
+        const source = field.optionsFrom!;
+        try {
+          const data = await adminApi.get<Paginated<RowLike> | RowLike[]>(
+            `${source.path}?page_size=200&ordering=${source.labelKey ?? "name"}`,
+          );
+          if (cancelled) return;
+          const list = Array.isArray(data) ? data : data.results;
+          setRemoteOptions((current) => ({
+            ...current,
+            [field.name]: list.map((item) => ({
+              value: String(item[source.valueKey ?? "id"] ?? ""),
+              label: String(item[source.labelKey ?? "name"] ?? ""),
+            })),
+          }));
+        } catch {
+          // A dropdown that cannot load its choices must not block the rest of
+          // the form — the field simply offers nothing to select.
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [config.fields]);
 
   const [files, setFiles] = useState<Record<string, File>>({});
   const [previews, setPreviews] = useState<Record<string, string>>({});
@@ -483,11 +550,20 @@ function ResourceForm<T extends RowLike>({
       const hasFile = Object.keys(files).length > 0;
 
       if (hasFile) {
+        const selects = new Set(
+          config.fields.filter((f) => f.type === "select").map((f) => f.name),
+        );
         const form = new FormData();
         for (const [key, value] of Object.entries(payload)) {
           // Multipart has no null, so a blank optional field is omitted
-          // instead — the backend then leaves it untouched.
-          if (value === null || value === undefined || value === "") continue;
+          // instead — the backend then leaves it untouched. A cleared dropdown
+          // is the exception: it is sent as an empty value, or clearing a
+          // photo's album while also replacing the photo would silently keep
+          // the old album.
+          if (value === null || value === undefined || value === "") {
+            if (selects.has(key)) form.append(key, "");
+            continue;
+          }
           form.append(key, String(value));
         }
         for (const [key, file] of Object.entries(files)) form.append(key, file);
@@ -623,8 +699,11 @@ function ResourceForm<T extends RowLike>({
                       onChange={(event) => setValue(field.name, event.target.value)}
                       className={fieldClasses}
                     >
-                      <option value="">Not set</option>
-                      {field.options?.map((option) => (
+                      <option value="">{field.emptyLabel ?? "Not set"}</option>
+                      {[
+                        ...(field.options ?? []),
+                        ...(remoteOptions[field.name] ?? []),
+                      ].map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
                         </option>

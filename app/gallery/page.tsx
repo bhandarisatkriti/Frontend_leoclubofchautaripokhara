@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/app/components/ui/container";
-import { apiFetchOr, endpoints, mediaUrl, type Paginated } from "@/app/lib/api";
+import { endpoints, fetchList, mediaUrl } from "@/app/lib/api";
 import { localGalleryPhotos } from "@/app/lib/local-photos";
 import { GalleryGrid, type ResolvedPhoto } from "@/app/gallery/gallery-grid";
 
@@ -25,11 +25,13 @@ function categoryName(category: BackendPhoto["category"]): string | null {
 }
 
 export default async function GalleryPage() {
-  const data = await apiFetchOr<Paginated<BackendPhoto> | BackendPhoto[]>(
-    endpoints.gallery,
-    [],
-  );
-  const backendPhotos: ResolvedPhoto[] = (Array.isArray(data) ? data : data.results)
+  // The gallery endpoint pages at 24 (LargeResultsSetPagination), so without
+  // an explicit page size this page silently showed only the first 24 photos
+  // and dropped whole albums off the filter bar. 200 is the endpoint's
+  // `max_page_size`; past that this needs real pagination rather than a bigger
+  // number.
+  const data = await fetchList<BackendPhoto>(endpoints.gallery, { page_size: 200 });
+  const backendPhotos: ResolvedPhoto[] = data
     .filter((photo) => photo.image)
     .map((photo) => ({
       id: photo.id,
