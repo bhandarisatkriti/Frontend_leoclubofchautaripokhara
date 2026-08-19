@@ -77,6 +77,21 @@ const config: ResourceConfig<AdminEvent> = {
       type: "date",
     },
     { name: "registration_required", label: "Registration required", type: "checkbox" },
+    {
+      name: "upcoming_override",
+      label: "Upcoming or past",
+      type: "select",
+      options: [
+        { value: "true", label: "Upcoming" },
+        { value: "false", label: "Past" },
+      ],
+      emptyLabel: "Decide from the date (recommended)",
+      hint: "Only override when the date gets it wrong — an event pinned to Upcoming stays there even after its date passes.",
+      initial: (row) =>
+        row.upcoming_override === null || row.upcoming_override === undefined
+          ? ""
+          : String(row.upcoming_override),
+    },
     { name: "is_published", label: "Published (visible publicly)", type: "checkbox" },
     { name: "is_featured", label: "Featured on the homepage", type: "checkbox" },
   ],

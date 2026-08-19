@@ -17,6 +17,11 @@ export type LeoEvent = {
   event_date: string;
   location?: string | null;
   featured_image: string | null;
+  /**
+   * Whether the backend still counts this as upcoming. Usually derived from
+   * the date, but an editor can override it, so trust this over the date.
+   */
+  is_upcoming?: boolean;
 };
 
 const dateFormat = new Intl.DateTimeFormat("en-GB", {

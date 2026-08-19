@@ -2,17 +2,15 @@ import Link from "next/link";
 import { Logo } from "@/app/components/logo";
 import { NewsletterForm } from "@/app/components/newsletter-form";
 import { Container } from "@/app/components/ui/container";
-import { site } from "@/app/lib/site";
+import { navLinks, site } from "@/app/lib/site";
 
-const pageLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/team", label: "Team" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/news", label: "News & Article" },
-  { href: "/contact", label: "Contact" },
-  { href: "/join", label: "Join Now" },
-];
+/**
+ * The footer lists the same pages as the header. It used to keep its own copy,
+ * which is how it came to be missing a page the header had.
+ */
+const pageLinks = navLinks;
+
+
 
 const socials = [
   {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EmptyState, PageHeader } from "@/app/components/page-header";
+import { EmptyState } from "@/app/components/page-header";
 import { EventCard, type LeoEvent } from "@/app/components/events/event-card";
 import { ViewTabs } from "@/app/components/events/view-tabs";
 import { Container } from "@/app/components/ui/container";
@@ -21,21 +21,19 @@ export default async function EventsPage() {
     (a, b) => new Date(a.event_date).valueOf() - new Date(b.event_date).valueOf(),
   );
 
+  // `is_upcoming` comes from the backend, which honours an editor's override;
+  // the date comparison is only the fallback for a payload without it.
   // Server Component rendered fresh per request — reading the current time here is intentional.
   // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
-  const featuredIndex = events.findIndex((event) => new Date(event.event_date).valueOf() >= now);
+  const isUpcoming = (event: LeoEvent) =>
+    event.is_upcoming ?? new Date(event.event_date).valueOf() >= now;
+  const featuredIndex = events.findIndex(isUpcoming);
   const featured = featuredIndex >= 0 ? events[featuredIndex] : null;
   const rest = featured ? events.filter((_, i) => i !== featuredIndex) : events;
 
   return (
     <>
-      <PageHeader
-        kicker="Events"
-        title="Service projects &amp; club gatherings"
-        description="Camps, drives, and get-togethers — upcoming and past."
-      />
-
       <Container className="py-16 sm:py-20">
         <Reveal className="flex justify-end">
           <ViewTabs />
