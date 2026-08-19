@@ -18,6 +18,17 @@ const backendPattern = {
   pathname: "/media/**",
 } as const;
 
+/**
+ * Cloudinary, when the backend is configured to store uploads there. The API
+ * then returns absolute res.cloudinary.com URLs rather than backend-relative
+ * /media paths, so next/image needs this host allow-listed too.
+ */
+const cloudinaryPattern = {
+  protocol: "https",
+  hostname: "res.cloudinary.com",
+  pathname: "/**",
+} as const;
+
 /** Both spellings of the local backend, so either works during development. */
 const localPatterns = [
   { protocol: "http", hostname: "127.0.0.1", port: "8000", pathname: "/media/**" },
@@ -33,6 +44,12 @@ const nextConfig: NextConfig = {
    * Development only — `next start` ignores it.
    */
   allowedDevOrigins: [
+    // Next allows only the hostname it booted with, which is `localhost`.
+    // Browsing the same server as `127.0.0.1` counts as cross-origin, and the
+    // page then renders but never hydrates — no scroll reveals, no menus.
+    "localhost",
+    "127.0.0.1",
+    "[::1]",
     "192.168.*.*",
     "10.*.*.*",
     "172.16.*.*",
@@ -45,7 +62,9 @@ const nextConfig: NextConfig = {
     // though it is allow-listed below. Development only — a production backend
     // sits on a public host and must not need this.
     dangerouslyAllowLocalIP: isDev,
-    remotePatterns: isDev ? [backendPattern, ...localPatterns] : [backendPattern],
+    remotePatterns: isDev
+      ? [backendPattern, cloudinaryPattern, ...localPatterns]
+      : [backendPattern, cloudinaryPattern],
   },
   /**
    * Public API calls made from the browser are proxied through this origin
