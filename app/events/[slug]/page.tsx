@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatEventDate, type LeoEvent } from "@/app/components/events/event-card";
+import { EventFacts, factIcons, type Fact } from "@/app/components/events/event-facts";
 import { EventGallery, type EventPhoto } from "@/app/components/events/event-gallery";
-import { Container } from "@/app/components/ui/container";
-import { Motif } from "@/app/components/ui/motif";
+import { EventHero } from "@/app/components/events/event-hero";
+import { EventNav, type EventNavItem } from "@/app/components/events/event-nav";
+import { EventStatement, EventStory } from "@/app/components/events/event-story";
 import { Reveal } from "@/app/components/ui/reveal";
 import { SectionLabel } from "@/app/components/ui/section-label";
 import { apiFetchOr, endpoints, fetchList, mediaUrl, query } from "@/app/lib/api";
+import { overlayStatement, storyBlocks, storyParagraphs } from "@/app/lib/event-story";
+import { site } from "@/app/lib/site";
 
 /** The detail payload carries more than the card type needs. */
 type EventDetail = LeoEvent & {
@@ -16,8 +19,10 @@ type EventDetail = LeoEvent & {
   end_time?: string | null;
   organizer?: string | null;
   category?: { name: string } | null;
+  registration_required?: boolean;
   registration_open?: boolean;
   registration_url?: string | null;
+  registration_deadline?: string | null;
 };
 
 type GalleryRow = {
@@ -26,6 +31,9 @@ type GalleryRow = {
   description?: string | null;
   image: string | null;
 };
+
+/** How many photographs the story may take before the gallery gets the rest. */
+const STORY_PHOTOS = 3;
 
 async function getEvent(slug: string) {
   return apiFetchOr<EventDetail | null>(`${endpoints.events}${slug}/`, null, {
@@ -37,9 +45,9 @@ async function getEvent(slug: string) {
  * The event's own photographs.
  *
  * `GalleryImage` carries an optional link to an event, so an album uploaded
- * once serves both the gallery page and the event it belongs to — there is no
- * separate per-event upload to keep in step. Filtering by slug rather than id
- * keeps this to a single request.
+ * once serves both the gallery page and the event it belongs to. Titles are
+ * generated from file names, so they serve as alternative text but are never
+ * shown as captions — only a description an editor wrote counts as one.
  */
 async function getEventPhotos(slug: string): Promise<EventPhoto[]> {
   const rows = await fetchList<GalleryRow>(
@@ -50,23 +58,9 @@ async function getEventPhotos(slug: string): Promise<EventPhoto[]> {
     .map((row) => ({
       id: row.id,
       src: mediaUrl(row.image)!,
-      title: row.title ?? null,
-      caption: row.description ?? row.title ?? null,
+      title: row.title?.trim() || null,
+      caption: row.description?.trim() || null,
     }));
-}
-
-/**
- * Split body copy into paragraphs on blank lines.
- *
- * Text pasted into the admin as one run-on block stays one paragraph — the
- * measure set on the container is what carries readability there — but copy
- * written with breaks keeps them instead of being flattened into a wall.
- */
-function paragraphs(text: string): string[] {
-  return text
-    .split(/\r?\n\s*\r?\n|\r?\n/)
-    .map((part) => part.trim())
-    .filter(Boolean);
 }
 
 /** "09:00:00" -> "09:00" */
@@ -92,143 +86,150 @@ export default async function EventDetailPage({
   ]);
   if (!event) notFound();
 
-  const image = mediaUrl(event.featured_image);
-  const body = paragraphs(event.description ?? "");
-  const lead = event.short_description?.trim();
+  const hero = mediaUrl(event.featured_image);
   const start = clock(event.start_time);
   const end = clock(event.end_time);
+  const date = formatEventDate(event.event_date);
 
-  const facts = [
-    { label: "Date", value: formatEventDate(event.event_date) },
-    { label: "Time", value: start ? (end ? `${start} – ${end}` : start) : null },
-    { label: "Location", value: event.location || null },
-    { label: "Organised by", value: event.organizer || null },
-    { label: "Category", value: event.category?.name ?? null },
-  ].filter((fact): fact is { label: string; value: string } => Boolean(fact.value));
+  // The photographs are divided between the three places that want them, so
+  // the same picture never turns up twice on one page.
+  const storyPhotos = photos.slice(0, STORY_PHOTOS);
+  const afterStory = photos.slice(STORY_PHOTOS);
+  const statement = overlayStatement(event.short_description);
+  const bannerPhoto = statement ? (afterStory[0] ?? null) : null;
+  const galleryPhotos = bannerPhoto ? afterStory.slice(1) : afterStory;
+
+  const blocks = storyBlocks(
+    storyParagraphs(event.description),
+    Math.max(storyPhotos.length, 1),
+  );
+
+  const factCandidates: (Fact | null)[] = [
+    { key: "date", label: "Date", value: date, icon: factIcons.date },
+    start
+      ? {
+          key: "time",
+          label: "Time",
+          value: end ? `${start} – ${end}` : `From ${start}`,
+          icon: factIcons.time,
+        }
+      : null,
+    event.location
+      ? {
+          key: "location",
+          label: "Location",
+          value: event.location,
+          icon: factIcons.location,
+        }
+      : null,
+    event.organizer
+      ? {
+          key: "organizer",
+          label: "Organised by",
+          value: event.organizer,
+          icon: factIcons.people,
+        }
+      : null,
+    event.registration_required
+      ? {
+          key: "registration",
+          label: "Registration",
+          value: event.registration_open
+            ? event.registration_deadline
+              ? `Open until ${formatEventDate(event.registration_deadline)}`
+              : "Open"
+            : "Closed",
+          icon: factIcons.ticket,
+        }
+      : null,
+    {
+      key: "phone",
+      label: "Contact",
+      value: site.phone,
+      href: `tel:${site.phone.replace(/[^+\d]/g, "")}`,
+      icon: factIcons.phone,
+    },
+    {
+      key: "email",
+      label: "Email",
+      value: site.email,
+      href: `mailto:${site.email}`,
+      icon: factIcons.email,
+    },
+  ];
+  const facts = factCandidates.filter((fact): fact is Fact => fact !== null);
+
+  // Only sections that exist are offered, so no link scrolls to nothing.
+  const navItems: EventNavItem[] = [
+    blocks.length > 0 ? { id: "story", label: "The story" } : null,
+    galleryPhotos.length > 0 ? { id: "gallery", label: "Gallery" } : null,
+    { id: "details", label: "Details" },
+  ].filter((item): item is EventNavItem => item !== null);
+
+  const cta =
+    event.registration_open && event.registration_url
+      ? { href: event.registration_url, label: "Register now", external: true }
+      : galleryPhotos.length > 0
+        ? { href: "#gallery", label: "See the photographs" }
+        : { href: "/join", label: "Join the club" };
 
   return (
     <>
-      {/* Full-bleed opener. The photograph is the event's own, so it earns the
-          width; the gradient is what keeps the title legible over any of them. */}
-      <section className="relative isolate overflow-hidden">
-        <div className="relative h-[52vh] min-h-[22rem] w-full sm:h-[62vh]">
-          {image ? (
-            <Image
-              src={image}
-              alt={event.title}
-              fill
-              sizes="100vw"
-              priority
-              className="object-cover"
-            />
-          ) : (
-            <Motif variant="waves" tone="blue" />
-          )}
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-linear-to-t from-surface-navy via-surface-navy/55 to-surface-navy/10"
-          />
-        </div>
+      <EventHero
+        title={event.title}
+        image={hero}
+        date={date}
+        location={event.location}
+        intro={event.short_description}
+        upcoming={Boolean(event.is_upcoming)}
+        cta={cta}
+      />
 
-        <Container size="wide" className="absolute inset-x-0 bottom-0 pb-10 sm:pb-14">
-          <Reveal className="mx-auto max-w-[60rem]">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="rounded-full bg-leo-blue px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
-                {event.is_upcoming ? "Upcoming" : "Past event"}
-              </span>
-              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/85">
-                {formatEventDate(event.event_date)}
-              </span>
-            </div>
-            <h1 className="mt-4 max-w-4xl font-display text-[clamp(2rem,4.6vw,3.5rem)] font-bold leading-[1.06] tracking-[-0.02em] text-balance text-white">
-              {event.title}
-            </h1>
-          </Reveal>
-        </Container>
-      </section>
+      <EventNav items={navItems} />
 
-      <Container size="wide" className="py-12 sm:py-16">
-        <Reveal className="mx-auto max-w-[60rem]">
-          <Link
-            href="/events"
-            className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-leo-blue transition-colors duration-[var(--duration-fast)] hover:text-leo-blue-dark"
-          >
-            ← Back to events
-          </Link>
-        </Reveal>
-
-        {/* Copy and facts sit side by side so the page uses its width, while the
-            text itself keeps a readable measure rather than running edge to
-            edge. The photographs below share the copy column's left edge, which
-            is what makes the two read as one article rather than two blocks. */}
-        <div className="mx-auto mt-10 grid max-w-[60rem] gap-12 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-16">
-          <div className="min-w-0">
-            {lead && (
-              <Reveal>
-                <p className="text-lead font-medium text-foreground">
-                  {lead}
-                </p>
-              </Reveal>
-            )}
-
-            {body.length > 0 && (
-              <Reveal delay={80}>
-                <div
-                  className={`space-y-5 text-base leading-[1.9] text-muted ${
-                    lead ? "mt-7 border-t border-border pt-7" : ""
-                  }`}
-                >
-                  {body.map((part, i) => (
-                    <p key={i}>{part}</p>
-                  ))}
-                </div>
-              </Reveal>
-            )}
-
-            {photos.length > 0 && (
-              <div className="mt-14 border-t border-border pt-10">
-                <Reveal>
-                  <SectionLabel>Photographs</SectionLabel>
-                </Reveal>
-                <div className="mt-6">
-                  <EventGallery photos={photos} />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {facts.length > 0 && (
-            <Reveal direction="left" as="aside" className="lg:sticky lg:top-24 lg:h-fit">
-              <div className="rounded-2xl border border-border bg-surface p-6 shadow-soft-sm">
-                <SectionLabel>Details</SectionLabel>
-                <dl className="mt-5 space-y-4">
-                  {facts.map((fact) => (
-                    <div key={fact.label}>
-                      <dt className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted">
-                        {fact.label}
-                      </dt>
-                      <dd className="mt-1 text-sm font-medium text-foreground">
-                        {fact.value}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-
-                {event.registration_open && event.registration_url && (
-                  <a
-                    href={event.registration_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 flex w-full items-center justify-center rounded-lg bg-leo-blue px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-colors duration-[var(--duration-fast)] hover:bg-leo-blue-dark"
-                  >
-                    Register
-                  </a>
-                )}
-              </div>
+      {blocks.length > 0 && (
+        <section id="story" className="scroll-mt-32 bg-background py-16 sm:py-24">
+          <div className="mx-auto max-w-[72rem] px-4">
+            <Reveal className="mb-12 sm:mb-16">
+              <SectionLabel>The story</SectionLabel>
             </Reveal>
-          )}
+            <EventStory blocks={blocks} photos={storyPhotos} />
+          </div>
+        </section>
+      )}
+
+      {statement && bannerPhoto && (
+        <EventStatement photo={bannerPhoto} statement={statement} />
+      )}
+
+      {galleryPhotos.length > 0 && (
+        <section id="gallery" className="scroll-mt-32 bg-surface-blue py-16 sm:py-24">
+          <div className="mx-auto max-w-[72rem] px-4">
+            <Reveal className="mb-10">
+              <SectionLabel>Gallery</SectionLabel>
+            </Reveal>
+            <EventGallery photos={galleryPhotos} />
+          </div>
+        </section>
+      )}
+
+      <section id="details" className="scroll-mt-32 bg-background py-16 sm:py-24">
+        <div className="mx-auto max-w-[72rem] px-4">
+          <Reveal className="mb-10">
+            <SectionLabel>Event information</SectionLabel>
+          </Reveal>
+          <EventFacts facts={facts} />
+
+          <Reveal className="mt-12">
+            <Link
+              href="/events"
+              className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-leo-blue transition-colors duration-[var(--duration-fast)] hover:text-leo-blue-dark"
+            >
+              ← Back to all events
+            </Link>
+          </Reveal>
         </div>
-      </Container>
+      </section>
     </>
   );
 }
