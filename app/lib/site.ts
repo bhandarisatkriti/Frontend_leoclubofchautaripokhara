@@ -55,3 +55,38 @@ export const navLinks: readonly NavLink[] = [
   { href: "/contact", label: "Contact" },
   { href: "/join", label: "Join Now" },
 ] as const;
+
+/**
+ * Headline figures the club publishes about itself.
+ *
+ * These are declared rather than counted: nothing in the database knows how
+ * many leaders the club has trained or how many regions it has reached, and
+ * the API's row counts (members, events, photos) measure the website's content
+ * rather than the club's work. They live here so a committee member can revise
+ * them in one obvious place — see `StatsGrid` for the figures that *are*
+ * derived from real records.
+ */
+export const impactFigures = [
+  { value: 1000, suffix: "+", label: "Leaders" },
+  { value: 100, suffix: "+", label: "Works" },
+  { value: 6, suffix: "+", label: "Regions" },
+  { value: 10, suffix: "+", label: "Partners" },
+] as const;
+
+/** Standing introduction to the club's service work. */
+export const ourWorkIntro =
+  "The Leo Club of Chautari Pokhara empowers youth through leadership training and community service projects, fostering global connections and promoting environmental sustainability. We strive to create compassionate, skilled leaders dedicated to making a positive impact locally and globally.";
+
+/**
+ * The welcome message carried on the homepage.
+ *
+ * `photo` is a path under `public/`; leave it null and the portrait falls back
+ * to the speaker's initials rather than an empty frame.
+ */
+export const welcomeMessage = {
+  quote: "Empowering Tomorrow's Leaders Today",
+  body: "Welcome to the Leo Club of Chautari Pokhara. Our goal is to help young people grow into strong leaders by serving our community and learning together. Every member plays a vital role in making a positive difference. Let's work together to create a brighter future for everyone.",
+  name: "Sahansil Baral",
+  role: "Immed. Past President",
+  photo: null as string | null,
+} as const;

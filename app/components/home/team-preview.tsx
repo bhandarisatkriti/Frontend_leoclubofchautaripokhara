@@ -1,8 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
 import { type Member } from "@/app/components/team/team-card";
+import { SectionHeading } from "@/app/components/home/section-heading";
 import { EmptyState } from "@/app/components/page-header";
-import { solidBlueButton } from "@/app/components/ui/button-link";
 import { Container } from "@/app/components/ui/container";
 import { Reveal } from "@/app/components/ui/reveal";
 import { mediaUrl } from "@/app/lib/api";
@@ -21,20 +20,21 @@ function initials(name: string) {
  * Homepage team teaser. Deliberately separate from `TeamCard` (used on /team):
  * this one centres the name and position under an inset portrait, matching the
  * club's reference design, rather than overlaying the position on the photo.
+ *
+ * The heading and onward link go through `SectionHeading` like every other
+ * band, so the section sits in the page's rhythm instead of introducing a
+ * third way of titling things.
  */
 export function TeamPreview({ team }: { team: Member[] }) {
   return (
-    <section className="bg-linear-to-b from-background to-surface-blue py-16 sm:py-20">
+    <section className="bg-background py-20 sm:py-24">
       <Container>
-        <Reveal className="text-center">
-          <h2 className="text-h2 font-bold tracking-tight text-leo-indigo">
-            Our People
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-balance text-muted">
-            A dedicated group of young leaders committed to community service
-            and personal growth.
-          </p>
-        </Reveal>
+        <SectionHeading
+          label="Our people"
+          title="Our team"
+          description="A dedicated group of young leaders committed to community service and personal growth."
+          action={{ href: "/team", label: "View more" }}
+        />
 
         {team.length === 0 ? (
           <div className="mt-12">
@@ -51,7 +51,7 @@ export function TeamPreview({ team }: { team: Member[] }) {
                   delay={stagger(i, 120)}
                   className="list-none"
                 >
-                  <article className="h-full rounded-2xl bg-background p-5 text-center shadow-soft-md transition-[transform,box-shadow] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1 hover:shadow-soft-lg">
+                  <article className="h-full rounded-2xl border border-border bg-surface p-5 text-center shadow-soft-sm transition-[translate,box-shadow,border-color] duration-[var(--duration-base)] ease-[var(--ease-premium)] hover:-translate-y-1 hover:border-leo-blue/30 hover:shadow-soft-md">
                     <div className="relative aspect-square overflow-hidden rounded-xl bg-leo-indigo">
                       {photo ? (
                         <Image
@@ -78,11 +78,6 @@ export function TeamPreview({ team }: { team: Member[] }) {
           </ul>
         )}
 
-        <Reveal className="mt-12 text-center">
-          <Link href="/team" className={solidBlueButton}>
-            Meet the full team
-          </Link>
-        </Reveal>
       </Container>
     </section>
   );
