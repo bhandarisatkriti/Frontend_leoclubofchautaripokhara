@@ -113,10 +113,6 @@ export default async function EventDetailPage({
           <div className="mt-14 border-t border-border pt-10">
             <Reveal>
               <SectionLabel>Photographs</SectionLabel>
-              <p className="mt-2 text-sm text-muted">
-                {photos.length} photo{photos.length === 1 ? "" : "s"} from this
-                event. Select one to view it larger.
-              </p>
             </Reveal>
             <div className="mt-7">
               <EventGallery photos={photos} />
