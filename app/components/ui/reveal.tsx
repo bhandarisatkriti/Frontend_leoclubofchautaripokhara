@@ -34,12 +34,15 @@ export function Reveal({
     const node = ref.current;
     if (!node) return;
 
-    // Anything already above the viewport will never intersect again once
-    // `once` unobserves, so it would stay at opacity 0 permanently. That
-    // happens whenever the browser restores a scroll position on reload, or
-    // when someone scrolls past a section before hydration attaches the
-    // observer. Reveal those immediately instead.
-    if (node.getBoundingClientRect().bottom <= 0) {
+    // Anything already on screen at mount — whether scrolled past above the
+    // viewport, or simply sitting within it (even just barely, e.g. a card
+    // near the fold with only a few px showing) — should just be visible
+    // immediately rather than waiting for a scroll-driven intersection
+    // change. The observer below only fires again once the intersection
+    // ratio crosses `threshold`, so an element that starts out barely
+    // visible (below that ratio) would otherwise stay invisible until the
+    // user scrolls further, even though the user can already see it.
+    if (node.getBoundingClientRect().top < window.innerHeight) {
       setVisible(true);
       return;
     }
