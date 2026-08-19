@@ -12,6 +12,8 @@ export type Member = {
   facebook_url?: string | null;
   instagram_url?: string | null;
   linkedin_url?: string | null;
+  /** Admin-controlled rank (apps/team/models.py) — lower shows first. */
+  display_order?: number;
 };
 
 function initials(name: string) {
